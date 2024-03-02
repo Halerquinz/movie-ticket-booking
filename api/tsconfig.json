@@ -1,6 +1,6 @@
 {
     "$schema": "https://json.schemastore.org/tsconfig",
-    "display": "Node 21",
+    "display": "Node 20",
     "files": [
         "src/main.ts"
     ],
