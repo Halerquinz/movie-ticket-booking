@@ -31,7 +31,7 @@ export function getSessionsRouter(
     router.get(
         "/api/sessions/user",
         userLoggedInAuthMiddleware,
-        asyncHandler(async (req, res) => {
+        asyncHandler(async (_req, res) => {
             const authenticatedUserInformation = res.locals.authenticatedUserInformation as AuthenticatedUserInformation;
             res.json({
                 user: authenticatedUserInformation.user,
@@ -43,7 +43,7 @@ export function getSessionsRouter(
     router.delete(
         "/api/sessions",
         userLoggedInAuthMiddlewareWithoutTokenRefresh,
-        asyncHandler(async (_, res) => {
+        asyncHandler(async (_req, res) => {
             const authenticatedUserInformation = res.locals
                 .authenticatedUserInformation as AuthenticatedUserInformation;
             await sessionManagementOperator.logout(authenticatedUserInformation.token);

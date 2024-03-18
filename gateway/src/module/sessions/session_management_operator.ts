@@ -22,6 +22,7 @@ export class SessionManagementOperatorImpl implements SessionManagementOperator 
             this.userServiceDM.loginWithPassword.bind(this.userServiceDM),
             { username, password }
         );
+
         if (loginWithPasswordError !== null) {
             this.logger.error("failed to call user_service.loginWithPassword()", { error: loginWithPasswordError });
             throw new ErrorWithHTTPCode(

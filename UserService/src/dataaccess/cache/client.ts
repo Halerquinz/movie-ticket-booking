@@ -10,7 +10,7 @@ export interface CacheClient {
 }
 
 export class InMemoryClient implements CacheClient {
-    private nodeCache = new NodeCache({ forceString: true });
+    private readonly nodeCache = new NodeCache({ forceString: true });
 
     constructor(private readonly logger: Logger) { }
 
@@ -20,11 +20,13 @@ export class InMemoryClient implements CacheClient {
             this.logger.error("no value found", { key, value });
             throw new ErrorWithStatus("no value found", status.INTERNAL);
         }
+
+        return value;
     }
 
     public async set(key: string, value: string, ttlInSecond: number): Promise<void> {
         if (!this.nodeCache.set(key, value, ttlInSecond)) {
-            this.logger.error("failed to store value into key", { key, value });
+            this.logger.error("failed to store value into key", { key });
             throw new ErrorWithStatus("failed to store value into key", status.INTERNAL);
         }
     }

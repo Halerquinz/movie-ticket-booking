@@ -11,4 +11,5 @@ export class TimeImpl implements Timer {
 }
 
 injected(TimeImpl);
+
 export const TIMER_TOKEN = token<Timer>("Timer");

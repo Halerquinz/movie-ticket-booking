@@ -141,7 +141,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
             throw ErrorWithStatus.wrapWithStatus("more than one user with userId", status.INTERNAL);
         }
 
-        return rows[0];
+        return this.getUserFromRow(rows[0]);
     }
 
     public async getUserByUsername(username: string): Promise<User | null> {
@@ -168,7 +168,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
             throw ErrorWithStatus.wrapWithStatus("more than one user with username", status.INTERNAL);
         }
 
-        return rows[0];
+        return this.getUserFromRow(rows[0]);
     }
 
     public async getUserByUsernameWithXLock(username: string): Promise<User | null> {
@@ -197,7 +197,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
             throw ErrorWithStatus.wrapWithStatus("more than one user with username", status.INTERNAL);
         }
 
-        return rows[0];
+        return this.getUserFromRow(rows[0]);
     }
 
     public async getUserList(
@@ -217,7 +217,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
             queryBuilder = this.applyUserListOrderByClause(queryBuilder, sortOrder);
             queryBuilder = queryBuilder.where((qb) => this.getUserListFilterOptionsWhereClause(qb, filterOptions));
             const rows = await queryBuilder;
-            return rows[0];
+            return rows.map((row: Record<string, any>) => this.getUserFromRow(row));
         } catch (error) {
             this.logger.error("get user list fail", {
                 offset,
@@ -236,7 +236,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
                 .count()
                 .from(TabNameUserServiceUser)
                 .where((qb) => this.getUserListFilterOptionsWhereClause(qb, filterOptions));
-            return rows;
+            return +rows[0]["count"];
         } catch (error) {
             this.logger.error("get user count fail", {
                 filterOptions,
@@ -255,7 +255,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
             .limit(limit);
         try {
             const rows = await queryBuilder
-            return rows[0];
+            return rows.map((row: Record<string, any>) => this.getUserFromRow(row));
         } catch (error) {
             this.logger.error("get user list fail", {
                 query,

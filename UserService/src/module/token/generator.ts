@@ -125,7 +125,7 @@ export class JWTGenerator implements TokenGenerator {
             const tokenPublicKey = await this.tokenPublicKeyCacheDM.get(keyId);
             return tokenPublicKey;
         } catch (error) {
-            this.logger.warn("cannot get token public key from cache", error);
+            this.logger.warn("cannot get token public key from cache", { keyId, error });
         }
 
         const tokenPublicKey = await this.tokenPublicKeyDataAccessor.getTokenPublicKey(keyId);
@@ -136,7 +136,7 @@ export class JWTGenerator implements TokenGenerator {
         try {
             await this.tokenPublicKeyCacheDM.set(keyId, tokenPublicKey.data);
         } catch (error) {
-            this.logger.warn("cannot set token public key to cache", { error, keyId });
+            this.logger.warn("cannot set token public key to cache", { keyId, error });
         }
 
         return tokenPublicKey.data;
