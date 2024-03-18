@@ -1,0 +1,127 @@
+syntax = "proto3";
+
+service UserService {
+    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+    rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
+    rpc GetUserList(GetUserListRequest) returns (GetUserListResponse) {}
+    rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+    rpc SearchUser(SearchUserRequest) returns (SearchUserResponse) {}
+
+    rpc CreateUserPassword(CreateUserPasswordRequest) returns (CreateUserPasswordResponse) {}
+    rpc UpdateUserPassword(UpdateUserPasswordRequest) returns (UpdateUserPasswordResponse) {}
+    rpc LoginWithPassword(LoginWithPasswordRequest) returns (LoginWithPasswordResponse) {}
+
+    rpc GetUserFromToken(GetUserFromTokenRequest) returns (GetUserFromTokenResponse) {}
+    rpc BlacklistToken(BlacklistTokenRequest) returns (BlacklistTokenResponse) {}
+}
+
+message User {
+    uint32 id = 1;
+    string username = 2;
+    string display_name = 3;
+}
+
+message UserPassword {
+    uint32 of_user_id = 2;
+    string password = 3;
+}
+
+message CreateUserRequest {
+    string username = 1;
+    string display_name = 2;
+}
+
+message CreateUserResponse {
+    User user=1;
+}
+
+message UpdateUserRequest {
+    User user=1;
+}
+
+message UpdateUserResponse {
+    User user=1;
+}
+
+message UserListSortOrder {
+    enum Values {
+        ID_ASCENDING = 0;
+        ID_DESCENDING = 1;
+        USERNAME_ASCENDING = 2;
+        USERNAME_DESCENDING = 3;
+        DISPLAY_NAME_ASCENDING = 4;
+        DISPLAY_NAME_DESCENDING = 5;
+    }
+}
+message UserListFilterOptions {
+    string username_query = 1;
+    repeated uint32 user_tag_id_list = 2;
+    repeated uint32 user_role_id_list = 3;
+}
+
+message GetUserListRequest {
+    uint32 offset = 1;
+    uint32 limit = 2;
+    UserListSortOrder.Values sort_order = 3;
+    UserListFilterOptions filter_options = 4;
+}
+
+message GetUserListResponse {
+    uint32 total_user_count = 1;
+    repeated User user_list = 2;
+}
+
+message GetUserRequest {
+    uint32 id = 1;
+}
+
+message GetUserResponse {
+    User user = 1;
+}
+
+message SearchUserRequest {
+    string query = 1;
+    uint32 limit = 2;
+    repeated uint32 included_user_id_list = 3;
+}
+
+message SearchUserResponse {
+    repeated User user_list = 1;
+}
+
+message CreateUserPasswordRequest {
+    UserPassword password = 1;
+}
+
+message CreateUserPasswordResponse {}
+
+message UpdateUserPasswordRequest {
+    UserPassword password = 1;
+}
+
+message UpdateUserPasswordResponse {}
+
+message LoginWithPasswordRequest {
+    string username = 1;
+    string password = 2;
+}
+
+message LoginWithPasswordResponse {
+    User user = 1;
+    string token = 2;
+}
+
+message GetUserFromTokenRequest {
+    string token = 1;
+}
+
+message GetUserFromTokenResponse {
+    User user = 1;
+    string new_token = 2;
+}
+
+message BlacklistTokenRequest {
+    string token = 1;
+}
+
+message BlacklistTokenResponse {}

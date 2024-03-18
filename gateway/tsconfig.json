@@ -2,13 +2,13 @@
     "$schema": "https://json.schemastore.org/tsconfig",
     "display": "Node 20",
     "files": [
-        "src/main.ts"
+        "src/main.ts" 
     ],
     "include": [
         "src/**/*.ts"
     ],
     "compilerOptions": {
-        "outDir": "./dist",
+        "outDir": "dist",
         "lib": [
             "es2021",
             "DOM"
