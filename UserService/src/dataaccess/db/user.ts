@@ -158,8 +158,8 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
-        if (rows.length === 0) {
-            this.logger.error("cannot found user with username", { username });
+        if (rows.length == 0) {
+            this.logger.debug("no user with username found", { username });
             return null;
         }
 
@@ -187,8 +187,8 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
-        if (rows.length === 0) {
-            this.logger.error("cannot found user with username", { username });
+        if (rows.length == 0) {
+            this.logger.debug("no user with username found", { username });
             return null;
         }
 

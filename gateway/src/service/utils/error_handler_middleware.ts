@@ -3,10 +3,10 @@ import { ErrorRequestHandler } from "express";
 import { Logger } from "winston";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, maskSensitiveFields } from "../../utils";
 import { error as OpenAPIError } from "express-openapi-validator";
-import httpStatus from "http-status";
 
 export function getErrorHandlerMiddleware(logger: Logger): ErrorRequestHandler {
-    return ((err, req, res) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    return ((err, req, res, _) => {
         logger.error("failed to handle request", {
             method: req.method,
             path: req.originalUrl,
@@ -14,16 +14,8 @@ export function getErrorHandlerMiddleware(logger: Logger): ErrorRequestHandler {
             error: err,
         });
 
-        const statusCode = err.status || 500;
-        res.status(statusCode).json({
-            status: err.status || "error",
-            reasonStatuscode: `error ${statusCode}`,
-            message: err.message || "Server error",
-        });
-
         if (err instanceof ErrorWithHTTPCode) {
             res.json({ message: err.message });
-            console.log("ngu");
         } else if (err instanceof OpenAPIError.BadRequest) {
             res.json({ message: "Bad request" });
         } else if (err instanceof OpenAPIError.Unauthorized) {

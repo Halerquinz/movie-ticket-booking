@@ -1,6 +1,6 @@
 import { injected, token } from "brandi";
 import compression from "compression";
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import { GATEWAY_SERVER_CONFIG_TOKEN, GatewayServerConfig } from "../config/gateway_server";
 // import { middleware } from "express-openapi-validator";
 import cookieParser from "cookie-parser";
@@ -11,10 +11,10 @@ import { LOGGER_TOKEN } from "../utils";
 
 export class GatewayHTTPServer {
     constructor(
-        public readonly routes: express.Router[],
-        public readonly errorHandler: express.ErrorRequestHandler,
-        public readonly logger: Logger,
-        public readonly gatewayServerConfig: GatewayServerConfig
+        private readonly routes: express.Router[],
+        private readonly errorHandler: express.ErrorRequestHandler,
+        private readonly logger: Logger,
+        private readonly gatewayServerConfig: GatewayServerConfig
     ) { }
 
     public loadApiDefinitionAndStart(apiSpecPath: string): void {
@@ -27,7 +27,8 @@ export class GatewayHTTPServer {
         })
     }
 
-    public getGatewayHTTPServer(apiSpecPath: string): express.Express {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    private getGatewayHTTPServer(_apiSpecPath: string): express.Express {
         const server = express();
         server.use(express.json({ limit: "1mb" }));
         server.use(express.urlencoded({ extended: true }));
@@ -41,7 +42,6 @@ export class GatewayHTTPServer {
 }
 
 injected(GatewayHTTPServer, ROUTES_TOKEN, ERROR_HANDLER_MIDDLEWARE_TOKEN, LOGGER_TOKEN, GATEWAY_SERVER_CONFIG_TOKEN);
-// injected(GatewayHTTPServer, ROUTES_TOKEN, LOGGER_TOKEN, GATEWAY_SERVER_CONFIG_TOKEN);
 
 export const GATEWAY_HTTP_SERVER_TOKEN = token<GatewayHTTPServer>("GatewayHTTPServer");
 
