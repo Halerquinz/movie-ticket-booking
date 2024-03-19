@@ -18,14 +18,14 @@ export interface BlacklistedTokenDataAccessor {
 }
 
 export class BlacklistedTokenDataAccessorImpl implements BlacklistedTokenDataAccessor {
-    constructor(private readonly knex: Knex<any, any>, private readonly logger: Logger) { }
+    constructor(private readonly knex: Knex<any, any[]>, private readonly logger: Logger) { }
 
     public async createBlacklistedToken(tokenId: number, expireAt: number): Promise<void> {
         try {
-            await this.knex.
-                insert({
+            await this.knex
+                .insert({
                     [ColNameUserServiceBlacklistedTokenId]: tokenId,
-                    [ColNameUserServiceBlacklistedTokenExpireAt]: expireAt
+                    [ColNameUserServiceBlacklistedTokenExpireAt]: expireAt,
                 })
                 .into(TabNameUserServiceBlacklistedToken);
         } catch (error) {
@@ -98,9 +98,9 @@ export class BlacklistedTokenDataAccessorImpl implements BlacklistedTokenDataAcc
     }
 
     public async withTransaction<T>(cb: (dataAccessor: BlacklistedTokenDataAccessor) => Promise<T>): Promise<T> {
-        return this.knex.transaction((trx) => {
+        return this.knex.transaction(async (trx) => {
             const trxDataAccessor = new BlacklistedTokenDataAccessorImpl(trx, this.logger);
-            cb(trxDataAccessor);
+            return cb(trxDataAccessor);
         });
     }
 }
