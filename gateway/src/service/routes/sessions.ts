@@ -23,8 +23,15 @@ export function getSessionsRouter(
         asyncHandler(async (req, res) => {
             const username = req.body.username as string;
             const password = req.body.password as string;
-            const { user, token } = await sessionManagementOperator.loginWithPassword(username, password);
-            res.cookie(MOVIE_TICKET_BOOKING_AUTH_COOKIE_NAME, token, getCookieOptions()).json({ user });
+            const { user, token, userRoleList, userPermissionList } = await sessionManagementOperator.loginWithPassword(
+                username,
+                password
+            );
+            res.cookie(MOVIE_TICKET_BOOKING_AUTH_COOKIE_NAME, token, getCookieOptions()).json({
+                user,
+                userRoleList,
+                userPermissionList
+            });
         })
     )
 
@@ -35,7 +42,9 @@ export function getSessionsRouter(
             const authenticatedUserInformation = res.locals.authenticatedUserInformation as AuthenticatedUserInformation;
             res.json({
                 user: authenticatedUserInformation.user,
-                token: authenticatedUserInformation.token
+                token: authenticatedUserInformation.token,
+                userRoleList: authenticatedUserInformation.userRoleList,
+                userPermissionList: authenticatedUserInformation.userPermissionList
             })
         })
     );

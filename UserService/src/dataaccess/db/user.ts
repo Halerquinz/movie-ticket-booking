@@ -50,7 +50,7 @@ const ColNameUserServiceUserDisplayName = "display_name";
 const ColNameUserServiceUserFullTextSearchDocument = "full_text_search_document";
 
 export default class UserDataAccessorImpl implements UserDataAccessor {
-    constructor(private readonly knex: Knex<any, any>, private readonly logger: Logger) { }
+    constructor(private readonly knex: Knex<any, any[]>, private readonly logger: Logger) { }
 
     public async createUser(username: string, displayName: string): Promise<number> {
         try {
@@ -97,7 +97,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
                 .from(TabNameUserServiceUser)
                 .where(ColNameUserServiceUserId, userId);
         } catch (error) {
-            this.logger.error("fail to get user by userId", {
+            this.logger.error("failed to get user by userId", {
                 userId
             })
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
@@ -125,7 +125,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
                 .where(ColNameUserServiceUserId, userId)
                 .forUpdate();
         } catch (error) {
-            this.logger.error("fail to get user by userId", {
+            this.logger.error("failed to get user by userId", {
                 userId
             })
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
@@ -181,7 +181,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
                 .forUpdate();
 
         } catch (error) {
-            this.logger.error("fail to get user by username", {
+            this.logger.error("failed to get user by username", {
                 username
             })
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
@@ -231,12 +231,12 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
     }
 
     public async getUserCount(filterOptions: UserListFilterOptions): Promise<number> {
+        let rows: Record<string, any>[];
         try {
-            const rows = await this.knex
+            rows = await this.knex
                 .count()
                 .from(TabNameUserServiceUser)
                 .where((qb) => this.getUserListFilterOptionsWhereClause(qb, filterOptions));
-            return +rows[0]["count"];
         } catch (error) {
             this.logger.error("get user count fail", {
                 filterOptions,
@@ -244,6 +244,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
             });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
+        return +rows[0]["count"];
     }
 
     public async searchUser(query: string, limit: number, includedUserIdList: number[]): Promise<User[]> {

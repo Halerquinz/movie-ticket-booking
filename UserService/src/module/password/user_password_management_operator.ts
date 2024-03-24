@@ -10,10 +10,7 @@ import { HASHER_TOKEN, Hasher } from "./hasher";
 export interface UserPasswordManagementOperator {
     createUserPassword(userId: number, password: string): Promise<void>;
     updateUserPassword(userId: number, password: string): Promise<void>;
-    loginWithPassword(
-        username: string,
-        password: string
-    ): Promise<{ user: User; token: string }>;
+    loginWithPassword(username: string, password: string): Promise<{ user: User; token: string }>;
 }
 
 export class UserPasswordManagementOperatorImpl implements UserPasswordManagementOperator {
@@ -105,28 +102,18 @@ export class UserPasswordManagementOperatorImpl implements UserPasswordManagemen
         const user = await this.userDM.getUserByUsername(username);
         if (user === null) {
             this.logger.error("no user with username found", { username });
-            throw new ErrorWithStatus(
-                `no user with username ${username} found`,
-                status.NOT_FOUND
-            );
+            throw new ErrorWithStatus(`no user with username ${username} found`, status.NOT_FOUND);
         }
 
         const hash = await this.userPasswordDM.getUserPasswordHash(user.id);
         if (hash === null) {
-            this.logger.error("user doesn't have password", {
-                userId: user.id,
-            });
-            throw new ErrorWithStatus(
-                "user doesn't have password",
-                status.NOT_FOUND
-            );
+            this.logger.error("user doesn't have password", { userId: user.id, });
+            throw new ErrorWithStatus("user doesn't have password", status.NOT_FOUND);
         }
 
         if (!(await this.hasher.isEqual(password, hash))) {
-            throw new ErrorWithStatus(
-                "incorrect password",
-                status.UNAUTHENTICATED
-            );
+            this.logger.error("incorrect password", { userId: user.id, });
+            throw new ErrorWithStatus("incorrect password", status.UNAUTHENTICATED);
         }
 
         const token = await this.tokenGenerator.generate(user.id);

@@ -83,7 +83,7 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
                 throw new ErrorWithStatus(`can not find user with userId`, status.INVALID_ARGUMENT);
             }
 
-            if (user.username !== null) {
+            if (user.username !== undefined) {
                 const userWithUsernameRecord = await this.userDM.getUserByUsernameWithXLock(user.username);
                 if (userWithUsernameRecord !== null) {
                     this.logger.error("username already exist");
@@ -94,6 +94,11 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
             }
 
             await this.userDM.updateUser(user);
+
+            if (user.displayName !== undefined) {
+                userRecord.displayName = user.displayName;
+            }
+
             return userRecord;
         })
     }

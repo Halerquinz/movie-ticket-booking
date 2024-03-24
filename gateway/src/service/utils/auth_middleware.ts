@@ -1,5 +1,5 @@
 import { Request, RequestHandler } from "express";
-import { User } from "../../module/schemas";
+import { User, UserPermission, UserRole } from "../../module/schemas";
 import asyncHandler from "express-async-handler";
 import { ErrorWithHTTPCode } from "../../utils/errors";
 import httpStatus from "http-status";
@@ -9,8 +9,10 @@ import { injected, token } from "brandi";
 
 export class AuthenticatedUserInformation {
     constructor(
-        public user: User,
-        public token: string
+        public readonly user: User,
+        public readonly token: string,
+        public readonly userRoleList: UserRole[],
+        public readonly userPermissionList: UserPermission[],
     ) { }
 }
 
@@ -36,11 +38,15 @@ export class AuthMiddlewareFactoryImpl implements AuthMiddlewareFactory {
 
             let user: User;
             let newToken: string | null;
+            let userRoleList: UserRole[];
+            let userPermissionList: UserPermission[];
 
             try {
                 const userFromSession = await this.sessionManagementOperator.getUserOfSession(token);
                 user = userFromSession.user;
                 newToken = userFromSession.newToken;
+                userRoleList = userFromSession.userRoleList;
+                userPermissionList = userFromSession.userPermissionList;
             } catch (error) {
                 if (error instanceof ErrorWithHTTPCode && error.code === httpStatus.UNAUTHORIZED) {
                     res.clearCookie(MOVIE_TICKET_BOOKING_AUTH_COOKIE_NAME);
@@ -48,7 +54,7 @@ export class AuthMiddlewareFactoryImpl implements AuthMiddlewareFactory {
                 throw error;
             }
 
-            const authenticatedUserInformation = new AuthenticatedUserInformation(user, token);
+            const authenticatedUserInformation = new AuthenticatedUserInformation(user, token, userRoleList, userPermissionList);
 
             const isUserAuthorized = authorizationFunc(authenticatedUserInformation, req);
             if (!isUserAuthorized) {

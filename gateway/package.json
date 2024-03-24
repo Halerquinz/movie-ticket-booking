@@ -2,7 +2,7 @@
   "name": "api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start-watch": "nodemon dist/main.js",
@@ -22,6 +22,7 @@
   "author": "halerquinz",
   "license": "ISC",
   "dependencies": {
+    "@elastic/elasticsearch": "^8.12.2",
     "@zapier/secret-scrubber": "^1.1.0",
     "brandi": "^5.0.0",
     "compression": "^1.7.4",
@@ -34,7 +35,8 @@
     "nodemon": "^3.1.0",
     "typescript": "^5.3.3",
     "winston": "^3.12.0",
-    "winston-daily-rotate-file": "^5.0.0"
+    "winston-daily-rotate-file": "^5.0.0",
+    "winston-elasticsearch": "^0.18.0"
   },
   "devDependencies": {
     "@grpc/grpc-js": "^1.10.2",

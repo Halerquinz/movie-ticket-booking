@@ -4,6 +4,8 @@ import { GRPCServerConfig } from "./grpc_server";
 import { LogConfig } from "./log";
 import { TokenConfig } from "./token";
 import { DistributedConfig } from "./distributed";
+import { ApplicationConfig } from "./application";
+import { ElasticsearchConfig } from "./elasticsearch";
 
 export class UserServiceConfig {
     public databaseConfig = new DatabaseConfig();
@@ -11,6 +13,8 @@ export class UserServiceConfig {
     public logConfig = new LogConfig();
     public tokenConfig = new TokenConfig();
     public distributedConfig = new DistributedConfig();
+    public applicationConfig = new ApplicationConfig();
+    public elasticsearchConfig = new ElasticsearchConfig();
 
     public static fromEnv(): UserServiceConfig {
         const config = new UserServiceConfig();
@@ -19,6 +23,8 @@ export class UserServiceConfig {
         config.logConfig = LogConfig.fromEnv();
         config.tokenConfig = TokenConfig.fromEnv();
         config.distributedConfig = DistributedConfig.fromEnv();
+        config.applicationConfig = ApplicationConfig.fromEnv();
+        config.elasticsearchConfig = ElasticsearchConfig.fromEnv();
         return config;
     }
 }

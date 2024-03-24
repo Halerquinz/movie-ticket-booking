@@ -1,13 +1,13 @@
 import { injected, token } from "brandi";
 import compression from "compression";
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import { GATEWAY_SERVER_CONFIG_TOKEN, GatewayServerConfig } from "../config/gateway_server";
 // import { middleware } from "express-openapi-validator";
 import cookieParser from "cookie-parser";
 import { Logger } from "winston";
+import { LOGGER_TOKEN } from "../utils";
 import { ROUTES_TOKEN } from "./routes";
 import { ERROR_HANDLER_MIDDLEWARE_TOKEN } from "./utils";
-import { LOGGER_TOKEN } from "../utils";
 
 export class GatewayHTTPServer {
     constructor(

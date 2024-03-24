@@ -5,6 +5,7 @@ import { ERROR_HANDLER_MIDDLEWARE_TOKEN, getErrorHandlerMiddleware } from "./err
 export * from "./error_handler_middleware";
 export * from "./auth_middleware";
 export * from "./cookie";
+export * from "./permission";
 
 export function bindToContainer(container: Container): void {
     container.bind(AUTH_MIDDLEWARE_FACTORY_TOKEN).toInstance(AuthMiddlewareFactoryImpl).inSingletonScope();

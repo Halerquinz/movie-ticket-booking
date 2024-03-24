@@ -27,23 +27,13 @@ export class UserInfoProviderImpl implements UserInfoProvider {
                 return null;
             }
 
-            this.logger.error("failed to call user_service.getUser()", {
-                error: getUserError,
-            });
-            throw new ErrorWithHTTPCode(
-                "Failed to get user",
-                getHttpCodeFromGRPCStatus(getUserError.code)
-            );
+            this.logger.error("failed to call user_service.getUser()", { error: getUserError });
+            throw new ErrorWithHTTPCode("Failed to get user", getHttpCodeFromGRPCStatus(getUserError.code));
         }
 
         if (getUserResponse?.user === undefined) {
-            this.logger.error("invalid user_service.getUser() response", {
-                userId,
-            });
-            throw new ErrorWithHTTPCode(
-                "Failed to get user",
-                getHttpCodeFromGRPCStatus(httpStatus.INTERNAL_SERVER_ERROR)
-            );
+            this.logger.error("invalid user_service.getUser() response", { userId });
+            throw new ErrorWithHTTPCode("Failed to get user", getHttpCodeFromGRPCStatus(httpStatus.INTERNAL_SERVER_ERROR));
         }
 
         return getUserResponse?.user;

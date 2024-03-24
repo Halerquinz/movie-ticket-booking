@@ -6,10 +6,7 @@ import { injected, token } from "brandi";
 import { KNEX_INSTANCE_TOKEN } from "./knex";
 
 export class TokenPublicKey {
-    constructor(
-        public id: number,
-        public data: string
-    ) { }
+    constructor(public id: number, public data: string) { }
 }
 
 export interface TokenPublicKeyDataAccessor {
@@ -22,7 +19,7 @@ const ColNameUserServiceTokenPublicKeyId = "public_key_id";
 const ColNameUserServiceTokenPublicKeyData = "data";
 
 export class TokenPublicKeyDataAccessorImpl implements TokenPublicKeyDataAccessor {
-    constructor(private readonly knex: Knex<any, any>, private readonly logger: Logger) { }
+    constructor(private readonly knex: Knex<any, any[]>, private readonly logger: Logger) { }
 
     public async createTokenPublicKey(data: string): Promise<number> {
         try {
@@ -32,9 +29,7 @@ export class TokenPublicKeyDataAccessorImpl implements TokenPublicKeyDataAccesso
                 .into(TabNameUserServiceTokenPublicKey);
             return +rows[0][ColNameUserServiceTokenPublicKeyId];
         } catch (error) {
-            this.logger.error("failed to create token public key", {
-                error,
-            });
+            this.logger.error("failed to create token public key", { error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
     }
@@ -47,10 +42,7 @@ export class TokenPublicKeyDataAccessorImpl implements TokenPublicKeyDataAccesso
                 .from(TabNameUserServiceTokenPublicKey)
                 .where({ [ColNameUserServiceTokenPublicKeyId]: id })
         } catch (error) {
-            this.logger.error("failed to get token public key by id", {
-                id,
-                error,
-            });
+            this.logger.error("failed to get token public key by id", { id, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
@@ -60,9 +52,7 @@ export class TokenPublicKeyDataAccessorImpl implements TokenPublicKeyDataAccesso
         }
 
         if (rows.length > 1) {
-            this.logger.error("more than one token public key with id found", {
-                id,
-            });
+            this.logger.error("more than one token public key with id found", { id });
             throw new ErrorWithStatus("more than one token public key was found", status.INTERNAL);
         }
 

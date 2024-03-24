@@ -29,11 +29,7 @@ export class BlacklistedTokenDataAccessorImpl implements BlacklistedTokenDataAcc
                 })
                 .into(TabNameUserServiceBlacklistedToken);
         } catch (error) {
-            this.logger.error("fail to create blacklisted token", {
-                tokenId,
-                expireAt,
-                error
-            });
+            this.logger.error("fail to create blacklisted token", { tokenId, expireAt, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
     }
@@ -43,17 +39,10 @@ export class BlacklistedTokenDataAccessorImpl implements BlacklistedTokenDataAcc
             const deleteCount = await this.knex
                 .delete()
                 .from(TabNameUserServiceBlacklistedToken)
-                .where(
-                    ColNameUserServiceBlacklistedTokenExpireAt,
-                    "<=",
-                    requestTime
-                );
+                .where(ColNameUserServiceBlacklistedTokenExpireAt, "<=", requestTime);
             return deleteCount;
         } catch (error) {
-            this.logger.error("fail to delete expired blacklisted token", {
-                requestTime,
-                error
-            });
+            this.logger.error("fail to delete expired blacklisted token", { requestTime, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
     }
@@ -69,10 +58,7 @@ export class BlacklistedTokenDataAccessorImpl implements BlacklistedTokenDataAcc
             }
             return +rows[0][ColNameUserServiceBlacklistedTokenExpireAt];
         } catch (error) {
-            this.logger.error("fail to get blacklisted token expired", {
-                tokenId,
-                error
-            });
+            this.logger.error("fail to get blacklisted token expired", { tokenId, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
     }
@@ -89,10 +75,7 @@ export class BlacklistedTokenDataAccessorImpl implements BlacklistedTokenDataAcc
             }
             return +rows[0][ColNameUserServiceBlacklistedTokenExpireAt];
         } catch (error) {
-            this.logger.error("fail to get blacklisted token expired", {
-                tokenId,
-                error
-            });
+            this.logger.error("fail to get blacklisted token expired", { tokenId, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
     }

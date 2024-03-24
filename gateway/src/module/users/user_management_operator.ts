@@ -7,20 +7,6 @@ import { USER_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
 
 export interface UserManagementOperator {
     createUser(username: string, displayName: string, password: string): Promise<User>;
-    // getUserList(
-    //     offset: number,
-    //     limit: number,
-    //     sortOrder: number,
-    //     withUserRole: boolean,
-    //     withUserTag: boolean,
-    //     filterOptions: UserListFilterOptions
-    // ): Promise<{
-    //     totalUserCount: number;
-    //     userList: User[];
-    //     userRoleList: UserRole[][] | undefined;
-    //     userTagList: UserTag[][] | undefined;
-    // }>;
-    // searchUserList(query: string, limit: number): Promise<User[]>;
     updateUser(
         id: number,
         username: string | undefined,
@@ -43,9 +29,7 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
         );
 
         if (createUserError !== null) {
-            this.logger.error("failed to call user_service.createUser()", {
-                error: createUserError,
-            });
+            this.logger.error("failed to call user_service.createUser()", { error: createUserError });
             throw new ErrorWithHTTPCode("failed to create new user", getHttpCodeFromGRPCStatus(createUserError.code));
         }
 
@@ -61,32 +45,20 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
         );
 
         if (createUserPasswordError !== null) {
-            this.logger.error("failed to call user_service.createUserPassword()", {
-                error: createUserError,
-            });
-            throw new ErrorWithHTTPCode(
-                "failed to create new user's password",
-                getHttpCodeFromGRPCStatus(createUserPasswordError.code)
-            );
+            this.logger.error("failed to call user_service.createUserPassword()", { error: createUserError });
+            throw new ErrorWithHTTPCode("failed to create new user's password", getHttpCodeFromGRPCStatus(createUserPasswordError.code));
         }
 
         return user;
     }
 
-    public async updateUser(
-        id: number,
-        username: string | undefined,
-        displayName: string | undefined,
-        password: string | undefined
-    ): Promise<User> {
+    public async updateUser(id: number, username: string | undefined, displayName: string | undefined, password: string | undefined): Promise<User> {
         const { error: updateUserError, response: updateUserResponse } = await promisifyGRPCCall(
             this.userServiceDM.updateUser.bind(this.userServiceDM),
             { user: { id, username, displayName, password } }
         );
         if (updateUserError !== null) {
-            this.logger.error("failed to call user_service.updateUser()", {
-                error: updateUserError,
-            });
+            this.logger.error("failed to call user_service.updateUser()", { error: updateUserError });
             throw new ErrorWithHTTPCode("failed to update user's info", getHttpCodeFromGRPCStatus(updateUserError.code));
         }
 
@@ -96,13 +68,8 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
                 { password: { ofUserId: id, password: password } }
             );
             if (updateUserPasswordError !== null) {
-                this.logger.error("failed to call user_service.updateUserPassword()", {
-                    error: updateUserPasswordError,
-                });
-                throw new ErrorWithHTTPCode(
-                    "failed to update user's information",
-                    getHttpCodeFromGRPCStatus(updateUserPasswordError.code)
-                );
+                this.logger.error("failed to call user_service.updateUserPassword()", { error: updateUserPasswordError });
+                throw new ErrorWithHTTPCode("failed to update user's information", getHttpCodeFromGRPCStatus(updateUserPasswordError.code));
             }
         }
 

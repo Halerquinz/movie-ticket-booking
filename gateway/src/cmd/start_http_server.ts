@@ -4,7 +4,8 @@ import * as service from "../service";
 import * as config from "../config";
 import * as modules from "../module";
 import * as utils from "../utils";
-import * as grpc from "../dataaccess/grpc"
+import * as grpc from "../dataaccess/grpc";
+import * as elasticsearch from "../dataaccess/elasticsearch";
 
 
 export function startHTTPServer(dotEnvPath: string) {
@@ -16,6 +17,7 @@ export function startHTTPServer(dotEnvPath: string) {
     modules.bindToContainer(container);
     utils.bindToContainer(container);
     grpc.bindToContainer(container);
+    elasticsearch.bindToContainer(container);
 
     const server = container.get(service.GATEWAY_HTTP_SERVER_TOKEN);
     server.loadApiDefinitionAndStart("/");

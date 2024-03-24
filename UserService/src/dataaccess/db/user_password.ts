@@ -10,9 +10,7 @@ export interface UserPasswordDataAccessor {
     updateUserPassword(ofUserId: number, hash: string): Promise<void>;
     getUserPasswordHash(ofUserId: number): Promise<string | null>;
     getUserPasswordHashWithXLock(ofUserId: number): Promise<string | null>;
-    withTransaction<T>(
-        cb: (dataAccessor: UserPasswordDataAccessor) => Promise<T>
-    ): Promise<T>;
+    withTransaction<T>(cb: (dataAccessor: UserPasswordDataAccessor) => Promise<T>): Promise<T>;
 }
 
 const TabNameUserServiceUserPassword = "user_service_password_tab";
@@ -20,10 +18,7 @@ const ColNameUserServiceUserPasswordOfUserId = "of_user_id";
 const ColNameUserServiceUserPasswordHash = "hash";
 
 export class UserPasswordDataAccessorImpl implements UserPasswordDataAccessor {
-    constructor(
-        private readonly knex: Knex<any, any>,
-        private readonly logger: Logger
-    ) { }
+    constructor(private readonly knex: Knex<any, any[]>, private readonly logger: Logger) { }
 
     public async createUserPassword(ofUserId: number, hash: string): Promise<void> {
         try {
