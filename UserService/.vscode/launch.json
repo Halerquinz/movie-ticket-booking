@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "node",
+        "request": "launch",
+        "name": "debug userservice",
+        "skipFiles": [
+          "<node_internals>/**"
+        ],
+        "program": "${workspaceFolder}/src/main.ts",
+        "preLaunchTask": "tsc: build - tsconfig.json",
+        "outFiles": ["${workspaceFolder}/dist/**/*.js"]
+      },
+    ]
+  }
