@@ -9,5 +9,18 @@
 		{
 			"path": "../../MovieService"
 		}
-	]
+	],
+	"settings": {
+		"sqltools.connections": [
+			{
+				"previewLimit": 50,
+				"server": "localhost",
+				"port": 5432,
+				"driver": "PostgreSQL",
+				"database": "movie_ticket_booking_user_service_db",
+				"username": "postgres",
+				"name": "user service"
+			}
+		]
+	}
 }
