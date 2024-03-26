@@ -11,6 +11,7 @@ export function initializeLogger(elasticsearchClient: Client, logConfig: LogConf
         format: format.combine(format.timestamp(), format.json()),
         defaultMeta: {},
         transports: [
+            new transports.Console(),
             new transports.DailyRotateFile({
                 level: "error",
                 dirname: logConfig.logDir,
