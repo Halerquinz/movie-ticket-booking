@@ -95,7 +95,9 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
             rows = await this.knex
                 .select()
                 .from(TabNameUserServiceUser)
-                .where(ColNameUserServiceUserId, userId);
+                .where({
+                    [ColNameUserServiceUserId]: userId
+                });
         } catch (error) {
             this.logger.error("failed to get user by userId", {
                 userId
@@ -122,7 +124,9 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
             rows = await this.knex
                 .select()
                 .from(TabNameUserServiceUser)
-                .where(ColNameUserServiceUserId, userId)
+                .where({
+                    [ColNameUserServiceUserId]: userId
+                })
                 .forUpdate();
         } catch (error) {
             this.logger.error("failed to get user by userId", {
@@ -150,7 +154,9 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
             rows = await this.knex
                 .select()
                 .from(TabNameUserServiceUser)
-                .where(ColNameUserServiceUserUsername, username);
+                .where({
+                    [ColNameUserServiceUserUsername]: username
+                });
         } catch (error) {
             this.logger.error("failed to get user by username", {
                 username
@@ -177,7 +183,9 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
             rows = await this.knex
                 .select()
                 .from(TabNameUserServiceUser)
-                .where(ColNameUserServiceUserUsername, username)
+                .where({
+                    [ColNameUserServiceUserUsername]: username
+                })
                 .forUpdate();
 
         } catch (error) {

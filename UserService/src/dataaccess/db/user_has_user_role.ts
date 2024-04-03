@@ -56,7 +56,7 @@ export class UserHasUserRoleDataAccessorImpl implements UserHasUserRoleDataAcces
                     [ColNameUserServiceUserHasUserRoleUserRoleId]: userRoleId,
                 });
         } catch (error) {
-            this.logger.error("failed to create user has user role relation", { error });
+            this.logger.error("failed to delete user has user role relation", { error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
         if (deletedCount === 0) {

@@ -12,6 +12,21 @@ export function newKnexInstance(databaseConfig: DatabaseConfig): Knex {
             password: databaseConfig.password,
             database: databaseConfig.database,
         },
+        // debug: true, // Enable debugging to log SQL queries
+        // log: {
+        //     warn(message) {
+        //         console.log(message);
+        //     },
+        //     error(message) {
+        //         console.log(message);
+        //     },
+        //     deprecate(message) {
+        //         console.log(message);
+        //     },
+        //     debug(message) {
+        //         console.log(message);
+        //     },
+        // },
     });
 }
 

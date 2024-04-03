@@ -3,11 +3,13 @@ import { GatewayServerConfig } from "./gateway_server";
 import { LogConfig, } from "./log";
 import { UserServiceConfig } from "./user_service";
 import { ElasticsearchConfig } from "./elasticsearch";
+import { MovieServiceConfig } from "./movie_service";
 
 export class GatewayConfig {
     public gatewayServerConfig = new GatewayServerConfig();
     public logConfig = new LogConfig();
     public userServiceConfig = new UserServiceConfig();
+    public movieServiceConfig = new MovieServiceConfig();
     public elasticsearchConfig = new ElasticsearchConfig();
 
     public static fromEnv(): GatewayConfig {
@@ -15,6 +17,7 @@ export class GatewayConfig {
         config.gatewayServerConfig = GatewayServerConfig.fromEnv();
         config.logConfig = LogConfig.fromEnv();
         config.userServiceConfig = UserServiceConfig.fromEnv();
+        config.movieServiceConfig = MovieServiceConfig.fromEnv();
         config.elasticsearchConfig = ElasticsearchConfig.fromEnv();
         return config;
     }

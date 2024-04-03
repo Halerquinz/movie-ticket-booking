@@ -27,10 +27,7 @@ export async function up(knex: Knex): Promise<void> {
             table.string("display_name", 256).notNullable();
             table.string("description", 256).notNullable();
 
-            table.index(
-                ["display_name"],
-                "user_service_user_role_display_name_idx"
-            );
+            table.index(["display_name"], "user_service_user_role_display_name_idx");
         });
     }
 
@@ -40,10 +37,7 @@ export async function up(knex: Knex): Promise<void> {
             table.string("permission_name", 256).notNullable().unique();
             table.string("description", 256).notNullable();
 
-            table.index(
-                ["permission_name"],
-                "user_service_user_permission_permission_name_idx"
-            );
+            table.index(["permission_name"], "user_service_user_permission_permission_name_idx");
         });
     }
 
@@ -62,8 +56,7 @@ export async function up(knex: Knex): Promise<void> {
 
             table.unique(["user_id", "user_role_id"]);
             table.index(["user_id"], "user_service_user_has_user_role_idx");
-        }
-        );
+        });
     }
 
     if (!(await knex.schema.hasTable(TabNameUserServiceUserRoleHasUserPermission))) {

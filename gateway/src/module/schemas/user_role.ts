@@ -8,7 +8,7 @@ export class UserRole {
     public static fromProto(UserRoleProto: any | undefined): UserRole {
         return new UserRole(
             UserRoleProto?.id || 0,
-            UserRoleProto?.display_name || "",
+            UserRoleProto?.displayName || "",
             UserRoleProto?.description || "",
         )
     }

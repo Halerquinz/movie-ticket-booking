@@ -111,7 +111,10 @@ export class UserRoleHasUserPermissionDataAccessorImpl implements UserRoleHasUse
         }
     }
 
-    public async getUserRoleHasUserPermissionWithXLock(userRoleId: number, userPermissionId: number): Promise<{ userRoleId: number; userPermissionId: number } | null> {
+    public async getUserRoleHasUserPermissionWithXLock(
+        userRoleId: number,
+        userPermissionId: number
+    ): Promise<{ userRoleId: number; userPermissionId: number } | null> {
         try {
             const rows = await this.knex
                 .select()

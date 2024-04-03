@@ -85,7 +85,7 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
 
             if (user.username !== undefined) {
                 const userWithUsernameRecord = await this.userDM.getUserByUsernameWithXLock(user.username);
-                if (userWithUsernameRecord !== null) {
+                if (userWithUsernameRecord !== null && userWithUsernameRecord.id !== user.id) {
                     this.logger.error("username already exist");
                     throw new ErrorWithStatus(`username already exist`, status.ALREADY_EXISTS);
                 }

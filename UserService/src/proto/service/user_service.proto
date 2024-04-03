@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 service UserService {
-    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+    rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {};
     rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
     rpc GetUserList(GetUserListRequest) returns (GetUserListResponse) {}
     rpc GetUser(GetUserRequest) returns (GetUserResponse) {}

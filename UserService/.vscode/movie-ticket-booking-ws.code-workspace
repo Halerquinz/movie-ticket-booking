@@ -20,7 +20,20 @@
 				"database": "movie_ticket_booking_user_service_db",
 				"username": "postgres",
 				"name": "user service"
+			},
+			{
+				"previewLimit": 50,
+				"server": "localhost",
+				"port": 5432,
+				"driver": "PostgreSQL",
+				"name": "movie_service",
+				"database": "movie_ticket_booking_movie_service_db",
+				"username": "postgres"
 			}
+		],
+		"cSpell.words": [
+			"cloudiary",
+			"CLOUDINARY"
 		]
 	}
 }

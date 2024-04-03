@@ -1,0 +1,161 @@
+syntax = "proto3";
+
+service MovieService {
+   rpc CreateMovieGenre(CreateMovieGenreRequest) returns (CreateMovieGenreResponse)  {}
+   rpc UpdateMovieGenre(UpdateMovieGenreRequest) returns (UpdateMovieGenreResponse)  {}
+   rpc DeleteMovieGenre(DeleteMovieGenreRequest) returns (DeleteMovieGenreResponse)  {}
+   
+   rpc CreateImage(CreateImageRequest) returns (CreateImageResponse)  {}
+   rpc GetImage(GetImageRequest) returns (GetImageResponse)  {}
+   rpc DeleteImage(DeleteImageRequest) returns (DeleteImageResponse)  {}
+
+   rpc CreatePoster(CreatePosterRequest) returns (CreatePosterResponse)  {}
+   rpc GetPoster(GetPosterRequest) returns (GetPosterResponse)  {}
+   rpc DeletePoster(DeletePosterRequest) returns (DeletePosterResponse)  {}
+
+   rpc CreateMovie(CreateMovieRequest) returns (CreateMovieResponse)  {}
+   rpc GetMovie(GetMovieRequest) returns (GetMovieResponse)  {}
+   rpc DeleteMovie(DeleteMovieRequest) returns (DeleteMovieResponse)  {}
+   rpc GetCurrentShowingMovieList(GetCurrentShowingMovieListRequest) returns (GetCurrentShowingMovieListResponse)  {}
+   rpc GetUpcomingMovieList(GetUpcomingMovieListRequest) returns (GetUpcomingMovieListResponse)  {}
+}
+
+message MovieGenre {
+    uint32 movie_genre_id = 1;
+    string display_name = 2;
+}
+
+message MovieImage {
+    uint32 image_id = 1;
+    uint32 of_movie_id = 2;
+    string original_file_name = 3;
+    string original_image_file_name = 4;
+    string thumbnail_image_file_name = 5;
+}
+
+message MoviePoster {
+    uint32 of_movie_id = 1;
+    string original_file_name = 2;
+    string original_image_file_name = 3;
+    string thumbnail_image_file_name = 4;
+}
+
+message Movie {
+    uint32 movie_id = 1;
+    string title = 2;
+    string description = 3;
+    uint32 duration = 4;
+    uint64 release_date = 5;
+}
+
+message CreateMovieGenreRequest {
+    string display_name = 1;
+}
+
+message CreateMovieGenreResponse {
+    MovieGenre movie_genre = 1;
+}
+
+message UpdateMovieGenreRequest {
+    uint32 id = 1;
+    string display_name = 2;
+}
+
+message UpdateMovieGenreResponse {
+    MovieGenre movie_genre = 1;
+}
+
+message DeleteMovieGenreRequest {
+    uint32 id = 1;
+}
+
+message DeleteMovieGenreResponse {}
+
+message CreateImageRequest {
+    uint32 of_movie_id = 1; 
+    string originalFileName = 2;
+    bytes imageData = 3;
+}
+
+message CreateImageResponse {
+    MovieImage movie_image = 1;
+}
+
+message GetImageRequest {
+    uint32 movie_id = 1;
+}
+
+message GetImageResponse {
+    repeated MovieImage movie_image_list = 1;
+}
+
+message DeleteImageRequest {
+    uint32 id = 1;
+}
+
+message DeleteImageResponse {}
+
+message CreatePosterRequest {
+    uint32 of_movie_id = 1; 
+    string originalFileName = 2;
+    bytes imageData = 3; 
+}
+
+message CreatePosterResponse {
+    MoviePoster movie_poster = 1;
+}
+
+message GetPosterRequest {
+    uint32 movie_id = 1;
+}
+
+message GetPosterResponse {
+    MoviePoster movie_poster = 1;
+}
+
+message DeletePosterRequest {
+    uint32 of_movie_id = 1;
+}
+
+message DeletePosterResponse {}
+
+message CreateMovieRequest {
+    string title = 1;
+    string description = 2;
+    uint32 duration = 3;
+    uint64 release_date = 4;
+    repeated uint32 genre_id_list = 5;
+}
+
+message CreateMovieResponse {
+    Movie movie = 1;
+}
+
+message GetMovieRequest {
+    uint32 id = 1;
+}
+
+message GetMovieResponse {
+    Movie movie = 1;
+    repeated MovieGenre movie_genre_list = 2;
+    MoviePoster movie_poster = 3;
+    repeated MovieImage movie_image_list = 4;
+}
+
+message GetCurrentShowingMovieListRequest {}
+
+message GetCurrentShowingMovieListResponse {
+    repeated Movie movie_list = 1;
+}
+
+message GetUpcomingMovieListRequest {}
+
+message GetUpcomingMovieListResponse {
+    repeated Movie movie_list = 1;
+}
+
+message DeleteMovieRequest {
+    uint32 id = 1;
+}
+
+message DeleteMovieResponse {}
