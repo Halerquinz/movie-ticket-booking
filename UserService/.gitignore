@@ -3,3 +3,4 @@ dist
 # Protobuf generated files
 src/proto/gen
 logs
+.env
