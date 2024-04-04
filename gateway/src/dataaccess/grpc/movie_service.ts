@@ -30,4 +30,5 @@ function loadMovieServiceProtoGrpc(protoPath: string): ProtoGrpcType {
 }
 
 injected(getMovieServiceDM, MOVIE_SERVICE_CONFIG_TOKEN);
+
 export const MOVIE_SERVICE_DM_TOKEN = token<MovieServiceClient>("MovieServiceClient");

@@ -6,11 +6,11 @@ export class ErrorWithHTTPCode extends Error {
         super(message);
     }
 
-    public static wrapWithStatus(error: any, code: number) {
+    public static wrapWithStatus(error: any, code: number): ErrorWithHTTPCode {
         if (error instanceof Error) {
             return new ErrorWithHTTPCode(error.message, code);
         }
-        return new ErrorWithHTTPCode(JSON.stringify({ error }), code);
+        return new ErrorWithHTTPCode(JSON.stringify(error), code);
     }
 }
 

@@ -74,7 +74,7 @@ export class MovieGenreDataAccessorImpl implements MovieGenreDataAccessor {
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
         if (deletedCount === 0) {
-            this.logger.debug("no movie genre with movie_genre_id found", { userRoleId: id, });
+            this.logger.debug("no movie genre with movie_genre_id found", { id, });
             throw new ErrorWithStatus(`no movie genre with movie_genre_id ${id} found`, status.NOT_FOUND);
         }
     }

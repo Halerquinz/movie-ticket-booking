@@ -2,17 +2,16 @@ import { injected, token } from "brandi";
 import compression from "compression";
 import express from "express";
 import { GATEWAY_SERVER_CONFIG_TOKEN, GatewayServerConfig } from "../config/gateway_server";
-// import { middleware } from "express-openapi-validator";
 import cookieParser from "cookie-parser";
 import { Logger } from "winston";
 import { LOGGER_TOKEN } from "../utils";
 import { ROUTES_TOKEN } from "./routes";
-import { ERROR_HANDLER_MIDDLEWARE_TOKEN } from "./utils";
+import { ERROR_HANDLER_MIDDLEWARE_FACTORY_TOKEN, ErrorHandlerMiddlewareFactory } from "./utils";
 
 export class GatewayHTTPServer {
     constructor(
         private readonly routes: express.Router[],
-        private readonly errorHandler: express.ErrorRequestHandler,
+        private readonly errorHandlerMiddlewareFactory: ErrorHandlerMiddlewareFactory,
         private readonly logger: Logger,
         private readonly gatewayServerConfig: GatewayServerConfig
     ) { }
@@ -34,14 +33,13 @@ export class GatewayHTTPServer {
         server.use(express.urlencoded({ extended: true }));
         server.use(cookieParser());
         server.use(compression());
-        // server.use(middleware({ apiSpec: apiSpecPath }));
         server.use(this.routes);
-        server.use(this.errorHandler);
+        server.use(this.errorHandlerMiddlewareFactory.getErrorHandlerMiddleware());
         return server;
     }
 }
 
-injected(GatewayHTTPServer, ROUTES_TOKEN, ERROR_HANDLER_MIDDLEWARE_TOKEN, LOGGER_TOKEN, GATEWAY_SERVER_CONFIG_TOKEN);
+injected(GatewayHTTPServer, ROUTES_TOKEN, ERROR_HANDLER_MIDDLEWARE_FACTORY_TOKEN, LOGGER_TOKEN, GATEWAY_SERVER_CONFIG_TOKEN);
 
 export const GATEWAY_HTTP_SERVER_TOKEN = token<GatewayHTTPServer>("GatewayHTTPServer");
 

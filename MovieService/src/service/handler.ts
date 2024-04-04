@@ -52,13 +52,14 @@ export class MovieServiceHandlerFactory {
                 const description = req.description || "";
                 const duration = req.duration || 0;
                 const genreIdList = req.genreIdList || [];
+                const releaseDate = +req.releaseDate.toString();
 
                 try {
                     const createdMovie = await this.movieManagementOperator.createMovie(
                         req.title,
                         description,
                         duration,
-                        req.releaseDate,
+                        releaseDate,
                         genreIdList as any
                     )
                     callback(null, { movie: createdMovie });
