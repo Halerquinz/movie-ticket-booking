@@ -1,4 +1,4 @@
-import { ShowtimeType } from "./showtime";
+import { _ShowtimeType_Values } from "../../proto/gen/ShowtimeType";
 
 export class MovieGenre {
     constructor(
@@ -90,6 +90,6 @@ export class Showtime {
         public ofScreenId: number,
         public timeStart: number,
         public timeEnd: number,
-        public showtimeType: ShowtimeType
+        public showtimeType: _ShowtimeType_Values
     ) { }
 }

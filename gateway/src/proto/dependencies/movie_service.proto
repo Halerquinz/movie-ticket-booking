@@ -29,6 +29,10 @@ service MovieService {
    rpc DeleteScreen(DeleteScreenRequest) returns (DeleteScreenResponse) {}
 
    rpc CreateAllSeatOfScreen(CreateAllSeatOfScreenRequest) returns (CreateAllSeatOfScreenResponse) {}
+
+   rpc CreateShowtime(CreateShowtimeRequest) returns (CreateShowtimeResponse) {}
+   rpc DeleteShowtime(DeleteShowtimeRequest) returns (DeleteShowtimeResponse) {}
+
 }
 
 message MovieGenre {
@@ -57,6 +61,13 @@ message Movie {
     string description = 3;
     uint32 duration = 4;
     uint64 release_date = 5;
+}
+
+message ShowtimeType {
+    enum Values {
+        SUBTITLE = 0;
+        DUBBING = 1;
+    }
 }
 
 message CreateMovieGenreRequest {
@@ -238,3 +249,24 @@ message CreateAllSeatOfScreenRequest {
 }
 
 message CreateAllSeatOfScreenResponse {}
+
+message CreateShowtimeRequest {
+    uint32 movie_id = 1;
+    uint32 screen_id = 2;
+    uint64 time_start = 3;
+    ShowtimeType.Values showtime_type = 4;
+}
+
+message CreateShowtimeResponse {
+    uint32 shotime_id = 1;
+    uint32 of_movie_id = 2;
+    uint32 of_screen_id = 3;
+    uint64 time_start = 4;
+    ShowtimeType.Values showtime_type = 5; 
+}
+
+message DeleteShowtimeRequest {
+    uint32 id = 1;
+}
+
+message DeleteShowtimeResponse {}

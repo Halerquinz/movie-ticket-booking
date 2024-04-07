@@ -10,8 +10,8 @@ import {
     ScreenDataAccessor,
     Showtime,
     ShowtimeDataAccessor,
-    ShowtimeType
 } from "../../dataaccess/db";
+import { _ShowtimeType_Values } from "../../proto/gen/ShowtimeType";
 import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 
 export interface ShowtimeManagementOperator {
@@ -19,8 +19,7 @@ export interface ShowtimeManagementOperator {
         movieId: number,
         screenId: number,
         timeStart: number,
-        timeEnd: number,
-        showtimeType: ShowtimeType
+        showtimeType: _ShowtimeType_Values
     ): Promise<Showtime>;
     deleteShowtime(id: number): Promise<void>;
 }
@@ -37,16 +36,11 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
         movieId: number,
         screenId: number,
         timeStart: number,
-        timeEnd: number,
-        showtimeType: ShowtimeType
+        showtimeType: _ShowtimeType_Values
     ): Promise<Showtime> {
-        if (
-            !this.isValidReleaseDate(timeStart) &&
-            !this.isValidReleaseDate(timeEnd) &&
-            timeEnd - timeStart <= 0
-        ) {
-            this.logger.error("invalid time", { timeStart, timeEnd });
-            throw new ErrorWithStatus(`invalid time ${timeStart} ${timeEnd}`, status.INVALID_ARGUMENT);
+        if (!this.isValidReleaseDate(timeStart)) {
+            this.logger.error("invalid time start", { timeStart, });
+            throw new ErrorWithStatus(`invalid time start${timeStart}`, status.INVALID_ARGUMENT);
         }
 
         const movie = await this.movieDM.getMovieById(movieId);
@@ -60,6 +54,8 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
             this.logger.error("no screen with screenId", { screenId });
             throw new ErrorWithStatus(`no screen with screen_id ${screenId} found`, status.NOT_FOUND);
         }
+
+        const timeEnd = timeStart + movie.duration * 60 * 1000; // minutes to ms
 
         return this.showtimeDM.withTransaction<Showtime>(async (showtimeDM) => {
             const createdShowtimeId = await showtimeDM.createShowtime({
@@ -79,7 +75,6 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
                 timeStart: timeStart
             }
         })
-
     }
 
     public async deleteShowtime(id: number): Promise<void> {

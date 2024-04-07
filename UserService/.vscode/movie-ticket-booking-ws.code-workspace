@@ -8,6 +8,9 @@
 		},
 		{
 			"path": "../../MovieService"
+		},
+		{
+			"path": "../../BookingService"
 		}
 	],
 	"settings": {

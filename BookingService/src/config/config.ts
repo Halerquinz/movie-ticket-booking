@@ -5,25 +5,34 @@ import { LogConfig } from "./log";
 import { DistributedConfig } from "./distributed";
 import { ApplicationConfig } from "./application";
 import { ElasticsearchConfig } from "./elasticsearch";
+import { UserServiceConfig } from "./user_service";
+import { MovieServiceConfig } from "./movie_service";
+import { CacheConfig } from "./cache";
 
-export class UserServiceConfig {
+export class BookingServiceConfig {
+    public userServiceConfig = new UserServiceConfig();
+    public movieServiceConfig = new MovieServiceConfig();
     public databaseConfig = new DatabaseConfig();
     public grpcServerConfig = new GRPCServerConfig();
     public logConfig = new LogConfig();
     public distributedConfig = new DistributedConfig();
     public applicationConfig = new ApplicationConfig();
     public elasticsearchConfig = new ElasticsearchConfig();
+    public cacheConfig = new CacheConfig();
 
-    public static fromEnv(): UserServiceConfig {
-        const config = new UserServiceConfig();
+    public static fromEnv(): BookingServiceConfig {
+        const config = new BookingServiceConfig();
+        config.userServiceConfig = UserServiceConfig.fromEnv();
+        config.movieServiceConfig = MovieServiceConfig.fromEnv();
         config.databaseConfig = DatabaseConfig.fromEnv();
         config.grpcServerConfig = GRPCServerConfig.fromEnv();
         config.logConfig = LogConfig.fromEnv();
         config.distributedConfig = DistributedConfig.fromEnv();
         config.applicationConfig = ApplicationConfig.fromEnv();
         config.elasticsearchConfig = ElasticsearchConfig.fromEnv();
+        config.cacheConfig = CacheConfig.fromEnv();
         return config;
     }
 }
 
-export const USER_SERVICE_CONFIG_TOKEN = token<UserServiceConfig>("UserServiceConfig");
+export const BOOKING_SERVICE_CONFIG_TOKEN = token<BookingServiceConfig>("BookingServiceConfig");

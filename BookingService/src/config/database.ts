@@ -5,7 +5,7 @@ export class DatabaseConfig {
     public port = 5432;
     public user = "postgres";
     public password = "201171";
-    public database = "movie_ticket_booking_user_service_db";
+    public database = "movie_ticket_booking_booking_service_db";
 
     public static fromEnv(): DatabaseConfig {
         const config = new DatabaseConfig();

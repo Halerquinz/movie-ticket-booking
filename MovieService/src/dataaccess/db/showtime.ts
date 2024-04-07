@@ -5,18 +5,15 @@ import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 import { KNEX_INSTANCE_TOKEN } from "./knex";
 import { status } from "@grpc/grpc-js";
 import { Showtime } from "./models";
+import { _ShowtimeType_Values } from "../../proto/gen/ShowtimeType";
 
-export enum ShowtimeType {
-    Subtitle = 1,
-    Dubbing = 2
-}
 
 export interface CreateShowtimeArguments {
     ofMovieId: number,
     ofScreenId: number,
     timeStart: number,
     timeEnd: number,
-    showtimeType: ShowtimeType
+    showtimeType: _ShowtimeType_Values
 }
 
 export interface UpdateShowtimeArguments {
@@ -25,7 +22,7 @@ export interface UpdateShowtimeArguments {
     ofScreenId: number,
     timeStart: number,
     timeEnd: number,
-    showtimeType: ShowtimeType
+    showtimeType: _ShowtimeType_Values
 }
 
 export interface ShowtimeDataAccessor {

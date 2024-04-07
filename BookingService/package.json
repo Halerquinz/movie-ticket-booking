@@ -27,6 +27,7 @@
   "author": "halerquinz",
   "license": "ISC",
   "dependencies": {
+    "@elastic/elasticsearch": "^8.13.0",
     "@types/knex": "^0.16.1",
     "brandi": "^5.0.0",
     "concurrently": "^8.2.2",

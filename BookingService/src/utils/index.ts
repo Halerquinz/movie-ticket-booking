@@ -7,6 +7,7 @@ export * from "./errors";
 export * from "./logging";
 export * from "./time"
 export * from "./snowflake_id";
+export * from "./grpc";
 
 export function bindToContainer(container: Container): void {
     container.bind(LOGGER_TOKEN).toInstance(initializeLogger).inSingletonScope();

@@ -9,6 +9,7 @@ import { SCREEN_TYPE_MANAGEMENT_OPERATOR_TOKEN, ScreenTypeManagementOperator } f
 import { SCREEN_MANAGEMENT_OPERATOR_TOKEN, ScreenManagementOperator } from "../module/screen";
 import { THEATER_MANAGEMENT_OPERATOR_TOKEN, TheaterManagementOperator } from "../module/theater";
 import { SEAT_MANAGEMENT_OPERATOR_TOKEN, SeatManagementOperator } from "../module/seat";
+import { SHOWTIME_MANAGEMENT_OPERATOR_TOKEN, ShowtimeManagementOperator } from "../module/showtime";
 
 export class MovieServiceHandlerFactory {
     constructor(
@@ -20,6 +21,7 @@ export class MovieServiceHandlerFactory {
         private readonly screenManagementOperator: ScreenManagementOperator,
         private readonly theaterManagementOperator: TheaterManagementOperator,
         private readonly seatManagementOperator: SeatManagementOperator,
+        private readonly showtimeManagementOperator: ShowtimeManagementOperator,
     ) { }
 
     public getMovieServiceHandlers(): MovieServiceHandlers {
@@ -216,6 +218,54 @@ export class MovieServiceHandlerFactory {
                     callback(null, {});
                 } catch (error) {
                     this.handleError(error, callback);
+                }
+            },
+
+
+            CreateShowtime: async (call, callback) => {
+                const req = call.request;
+                if (req.movieId === undefined) {
+                    return callback({ message: "movie id is required", code: status.INVALID_ARGUMENT });
+                }
+
+                if (req.screenId === undefined) {
+                    return callback({ message: "screen type id is required", code: status.INVALID_ARGUMENT });
+                }
+
+                if (req.timeStart === undefined) {
+                    return callback({ message: "time start is required", code: status.INVALID_ARGUMENT });
+                }
+
+                if (req.showtimeType === undefined) {
+                    return callback({ message: "showtime type is required", code: status.INVALID_ARGUMENT });
+                }
+
+                const timeStart = +req.timeStart.toString();
+
+                try {
+                    const createdShowtime = await this.showtimeManagementOperator.createShowtime(
+                        req.movieId,
+                        req.screenId,
+                        timeStart,
+                        req.showtimeType
+                    );
+                    callback(null, createdShowtime);
+                } catch (error) {
+                    this.handleError(error, callback);
+                }
+            },
+
+            DeleteShowtime: async (call, callback) => {
+                const req = call.request;
+                if (req.id === undefined) {
+                    return callback({ message: "id is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    await this.showtimeManagementOperator.deleteShowtime(req.id);
+                    callback(null, {});
+                } catch (error) {
+                    this.handleError(error, callback)
                 }
             },
 
@@ -429,7 +479,8 @@ injected(MovieServiceHandlerFactory,
     SCREEN_TYPE_MANAGEMENT_OPERATOR_TOKEN,
     SCREEN_MANAGEMENT_OPERATOR_TOKEN,
     THEATER_MANAGEMENT_OPERATOR_TOKEN,
-    SEAT_MANAGEMENT_OPERATOR_TOKEN
+    SEAT_MANAGEMENT_OPERATOR_TOKEN,
+    SHOWTIME_MANAGEMENT_OPERATOR_TOKEN
 );
 
 export const MOVIE_SERVICE_HANDLERS_FACTORY_TOKEN = token<MovieServiceHandlerFactory>("MovieServiceHandlersFactory");

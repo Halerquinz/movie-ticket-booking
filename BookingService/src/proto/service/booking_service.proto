@@ -1,0 +1,13 @@
+message BookingStatus {
+    enum Values {
+        PENDING = 0;
+        CONFIRMED = 1;
+    }
+}
+
+message PaymentStatus {
+    enum Values {
+        PENDING = 0;
+        CONFIRMED = 1;
+    }
+}

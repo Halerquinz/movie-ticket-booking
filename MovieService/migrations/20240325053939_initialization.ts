@@ -175,8 +175,8 @@ export async function up(knex: Knex): Promise<void> {
     if (!(await knex.schema.hasTable(TabNameMovieServiceShowtime))) {
         await knex.schema.createTable(TabNameMovieServiceShowtime, (table) => {
             table.increments("showtime_id", { primaryKey: true });
-            table.integer("of_movie_id", 256);
-            table.integer("of_screen_id", 256);
+            table.integer("of_movie_id");
+            table.integer("of_screen_id");
 
             table.bigInteger("time_start").notNullable();
             table.bigInteger("time_end").notNullable();
