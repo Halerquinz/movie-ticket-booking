@@ -7,13 +7,13 @@ import { status } from "@grpc/grpc-js";
 import { Theater } from "./models";
 
 export interface CreateTheaterArguments {
-    name: string;
+    displayName: string;
     location: string;
 }
 
 export interface UpdateTheaterArguments {
     theaterId: number;
-    name: string;
+    displayName: string;
     location: string;
 }
 
@@ -21,14 +21,15 @@ export interface TheaterDataAccessor {
     createTheater(args: CreateTheaterArguments): Promise<number>;
     updateTheater(args: UpdateTheaterArguments): Promise<void>;
     deleteTheater(id: number): Promise<void>;
-    getTheater(id: number): Promise<Theater | null>;
+    getTheaterById(id: number): Promise<Theater | null>;
+    getTheaterByIdWithXLock(id: number): Promise<Theater | null>;
     getTheaterList(): Promise<Theater[]>;
     withTransaction<T>(cb: (dataAccessor: TheaterDataAccessor) => Promise<T>): Promise<T>;
 }
 
 const TabNameMovieServiceTheaterTab = "movie_service_theater_tab";
 const ColNameMovieServiceTheaterId = "theater_id";
-const ColNameMovieServiceTheaterName = "name";
+const ColNameMovieServiceTheaterDisplayName = "display_name";
 const ColNameMovieServiceTheaterLocation = "location";
 const ColNameMovieServiceTheaterScreenCount = "screen_count";
 const ColNameMovieServiceTheaterSeatCount = "seat_count";
@@ -43,14 +44,14 @@ export class TheaterDataAccessorImpl implements TheaterDataAccessor {
         try {
             const rows = await this.knex
                 .insert({
-                    [ColNameMovieServiceTheaterName]: args.name,
+                    [ColNameMovieServiceTheaterDisplayName]: args.displayName,
                     [ColNameMovieServiceTheaterLocation]: args.location
                 })
                 .returning(ColNameMovieServiceTheaterId)
                 .into(TabNameMovieServiceTheaterTab);
             return +rows[0][ColNameMovieServiceTheaterId];
         } catch (error) {
-            this.logger.error("failed to create theater", { theater: { name: args.name, location: args.location }, error });
+            this.logger.error("failed to create theater", { theater: { name: args.displayName, location: args.location }, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
     }
@@ -60,7 +61,7 @@ export class TheaterDataAccessorImpl implements TheaterDataAccessor {
             await this.knex
                 .table(TabNameMovieServiceTheaterTab)
                 .update({
-                    [ColNameMovieServiceTheaterName]: args.name,
+                    [ColNameMovieServiceTheaterDisplayName]: args.displayName,
                     [ColNameMovieServiceTheaterLocation]: args.location
                 })
                 .where({
@@ -91,7 +92,29 @@ export class TheaterDataAccessorImpl implements TheaterDataAccessor {
         }
     }
 
-    public async getTheater(id: number): Promise<Theater | null> {
+    public async getTheaterById(id: number): Promise<Theater | null> {
+        let rows;
+        try {
+            rows = await this.knex
+                .select()
+                .from(TabNameMovieServiceTheaterTab)
+                .where({
+                    [ColNameMovieServiceTheaterId]: id
+                });
+        } catch (error) {
+            this.logger.error("failed to get theater", { theaterId: id, error });
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+
+        if (rows.length === 0) {
+            this.logger.debug("no theater of theater id  found", { theaterId: id, });
+            return null;
+        }
+
+        return rows[0];
+    }
+
+    public async getTheaterByIdWithXLock(id: number): Promise<Theater | null> {
         let rows;
         try {
             rows = await this.knex
@@ -100,6 +123,7 @@ export class TheaterDataAccessorImpl implements TheaterDataAccessor {
                 .where({
                     [ColNameMovieServiceTheaterId]: id
                 })
+                .forUpdate();
         } catch (error) {
             this.logger.error("failed to get theater", { theaterId: id, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
@@ -121,7 +145,7 @@ export class TheaterDataAccessorImpl implements TheaterDataAccessor {
 
             return rows.map(row => new Theater(
                 +row[ColNameMovieServiceTheaterId],
-                row[ColNameMovieServiceTheaterName],
+                row[ColNameMovieServiceTheaterDisplayName],
                 row[ColNameMovieServiceTheaterLocation],
                 +row[ColNameMovieServiceTheaterScreenCount],
                 +row[ColNameMovieServiceTheaterSeatCount]

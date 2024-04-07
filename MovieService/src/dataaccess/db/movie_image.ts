@@ -24,7 +24,7 @@ export interface MovieImageDataAccessor {
 const TabNameMovieServiceMovieImageTab = "movie_service_movie_image_tab";
 const ColNameMovieServiceMovieImageId = "image_id";
 const ColNameMovieServiceMovieImageOfMovieId = "of_movie_id";
-const ColNameMovieServiceMovieOriginalFileName = "original_filename";
+const ColNameMovieServiceMovieOriginalFileName = "original_file_name";
 const ColNameMovieServiceMovieOriginalImageFileName = "original_image_filename";
 const ColNameMovieServiceMovieThumbnailImageFileName = "thumbnail_image_filename";
 
@@ -43,7 +43,7 @@ export class MovieImageDataAccessorImpl implements MovieImageDataAccessor {
                     [ColNameMovieServiceMovieThumbnailImageFileName]: args.thumbnailImageFileName,
                     [ColNameMovieServiceMovieImageOfMovieId]: args.ofMovieId
                 })
-                .returning(ColNameMovieServiceMovieImageOfMovieId)
+                .returning(ColNameMovieServiceMovieImageId)
                 .into(TabNameMovieServiceMovieImageTab);
             return +rows[0][ColNameMovieServiceMovieImageId];
         } catch (error) {

@@ -29,7 +29,7 @@ export async function up(knex: Knex): Promise<void> {
 
             table.string("title", 256).notNullable().unique();
             table.text("description").notNullable();
-            table.string("duration", 256);
+            table.integer("duration");
             table.bigInteger("release_date").notNullable();
 
             table.index(["title"], "movie_service_movie_title_idx");
@@ -105,12 +105,12 @@ export async function up(knex: Knex): Promise<void> {
         await knex.schema.createTable(TabNameMovieServiceTheater, (table) => {
             table.increments("theater_id", { primaryKey: true });
 
-            table.string("name", 256).notNullable();
+            table.string("display_name", 256).notNullable();
             table.string("location", 256).notNullable();
             table.integer("screen_count").defaultTo(0);
             table.integer("seat_count").defaultTo(0);
 
-            table.index(["name"], "movie_service_theater_name_idx");
+            table.index(["display_name"], "movie_service_theater_display_name_idx");
             table.index(["location"], "movie_service_theater_location_idx");
         });
     }
@@ -119,11 +119,13 @@ export async function up(knex: Knex): Promise<void> {
         await knex.schema.createTable(TabNameMovieServiceScreenType, (table) => {
             table.increments("screen_type_id", { primaryKey: true });
 
-            table.string("name", 256).notNullable();
+            table.string("display_name", 256).notNullable().unique();
             table.string("description", 256).notNullable();
             table.integer("seat_count").notNullable();
+            table.integer("row_count").notNullable();
+            table.integer("seat_of_row_count").notNullable();
 
-            table.index(["name"], "movie_service_screen_type_name_idx");
+            table.index(["display_name"], "movie_service_screen_type_display_name_idx");
             table.index(["description"], "movie_service_screen_type_description_idx");
             table.index(["seat_count"], "movie_service_screen_type_seat_count_idx");
         });
@@ -134,6 +136,8 @@ export async function up(knex: Knex): Promise<void> {
             table.increments("screen_id", { primaryKey: true });
             table.integer("of_theater_id");
             table.integer("of_screen_type_id");
+
+            table.string("display_name", 256).notNullable().unique();
 
             table.foreign("of_theater_id")
                 .references("theater_id")
@@ -146,6 +150,7 @@ export async function up(knex: Knex): Promise<void> {
 
             table.index(["of_theater_id"], "movie_service_screen_of_theater_id_idx");
             table.index(["of_screen_type_id"], "movie_service_screen_of_screen_type_idx");
+            table.index(["display_name"], "movie_service_screen_display_name_idx");
         });
     }
 
@@ -154,10 +159,9 @@ export async function up(knex: Knex): Promise<void> {
             table.increments("seat_id", { primaryKey: true });
             table.integer("of_screen_id", 256);
 
-            table.string("column", 256).notNullable();
-            table.integer("row", 256).notNullable();
+            table.integer("column").notNullable();
+            table.string("row", 256).notNullable();
             table.string("no", 256).notNullable();
-            table.smallint("status").notNullable().defaultTo(0);
 
             table.foreign("of_screen_id")
                 .references("screen_id")
@@ -165,7 +169,6 @@ export async function up(knex: Knex): Promise<void> {
                 .onDelete("CASCADE");
 
             table.index(["of_screen_id"], "movie_service_seat_of_screen_id_idx");
-            table.index(["status"], "movie_service_seat_of_screen_status_idx");
         });
     }
 

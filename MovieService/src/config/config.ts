@@ -6,8 +6,9 @@ import { DistributedConfig } from "./distributed";
 import { ApplicationConfig } from "./application";
 import { ElasticsearchConfig } from "./elasticsearch";
 import { S3Config } from "./s3";
+import { KafkaConfig } from "./kafka";
 
-export class UserServiceConfig {
+export class MovieServiceConfig {
     public databaseConfig = new DatabaseConfig();
     public grpcServerConfig = new GRPCServerConfig();
     public logConfig = new LogConfig();
@@ -15,9 +16,10 @@ export class UserServiceConfig {
     public applicationConfig = new ApplicationConfig();
     public elasticsearchConfig = new ElasticsearchConfig();
     public s3Config = new S3Config();
+    public kafkaConfig = new KafkaConfig();
 
-    public static fromEnv(): UserServiceConfig {
-        const config = new UserServiceConfig();
+    public static fromEnv(): MovieServiceConfig {
+        const config = new MovieServiceConfig();
         config.databaseConfig = DatabaseConfig.fromEnv();
         config.grpcServerConfig = GRPCServerConfig.fromEnv();
         config.logConfig = LogConfig.fromEnv();
@@ -25,8 +27,9 @@ export class UserServiceConfig {
         config.applicationConfig = ApplicationConfig.fromEnv();
         config.elasticsearchConfig = ElasticsearchConfig.fromEnv();
         config.s3Config = S3Config.fromEnv();
+        config.kafkaConfig = KafkaConfig.fromEnv();
         return config;
     }
 }
 
-export const USER_SERVICE_CONFIG_TOKEN = token<UserServiceConfig>("UserServiceConfig");
+export const MOVIE_SERVICE_CONFIG_TOKEN = token<MovieServiceConfig>("MovieServiceConfig");

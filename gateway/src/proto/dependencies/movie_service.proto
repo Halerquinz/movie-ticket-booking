@@ -18,6 +18,17 @@ service MovieService {
    rpc DeleteMovie(DeleteMovieRequest) returns (DeleteMovieResponse)  {}
    rpc GetCurrentShowingMovieList(GetCurrentShowingMovieListRequest) returns (GetCurrentShowingMovieListResponse)  {}
    rpc GetUpcomingMovieList(GetUpcomingMovieListRequest) returns (GetUpcomingMovieListResponse)  {}
+
+   rpc CreateScreenType(CreateScreenTypeRequest) returns (CreateScreenTypeResponse) {}
+   rpc DeleteScreenType(DeleteScreenTypeRequest) returns (DeleteScreenTypeResponse) {}
+
+   rpc CreateTheater(CreateTheaterRequest) returns (CreateTheaterResponse) {}
+   rpc DeleteTheater(DeleteTheaterRequest) returns (DeleteTheaterResponse) {}
+
+   rpc CreateScreen(CreateScreenRequest) returns (CreateScreenResponse) {}
+   rpc DeleteScreen(DeleteScreenRequest) returns (DeleteScreenResponse) {}
+
+   rpc CreateAllSeatOfScreen(CreateAllSeatOfScreenRequest) returns (CreateAllSeatOfScreenResponse) {}
 }
 
 message MovieGenre {
@@ -159,3 +170,71 @@ message DeleteMovieRequest {
 }
 
 message DeleteMovieResponse {}
+
+message CreateScreenTypeRequest {
+    string display_name = 1;
+    string description = 2;
+    uint32 seat_count = 3;
+    uint32 seat_of_row_count = 4;
+    uint32 row_count = 5;
+}
+
+message CreateScreenTypeResponse {
+    uint32 screen_type_id = 1;
+    string display_name = 2;
+    string description = 3;
+    uint32 seat_count = 4;
+    uint32 seat_of_row_count = 5;
+    uint32 row_count = 6;
+}
+
+message DeleteScreenTypeRequest {
+    uint32 id = 1;
+}
+
+message DeleteScreenTypeResponse {}
+
+message CreateTheaterRequest {
+    string display_name = 1;
+    string location = 2;
+}
+
+message CreateTheaterResponse {
+    uint32 theater_id = 1;
+    string display_name = 2;
+    string location = 3;
+    uint32 screen_count = 4;
+    uint32 seat_count = 5;
+}
+
+message DeleteTheaterRequest {
+    uint32 id = 1;
+}
+
+message DeleteTheaterResponse {}
+
+message CreateScreenRequest {
+    uint32 theater_id = 1;
+    uint32 screen_type_id = 2;
+    string display_name = 3;
+}
+
+message CreateScreenResponse {
+    uint32 screen_id = 1;
+    uint32 of_theater_id = 2;
+    uint32 of_screen_type_id = 3;
+    string display_name = 4;
+}
+
+message DeleteScreenRequest {
+    uint32 id = 1;
+}
+
+message DeleteScreenResponse {}
+
+message CreateAllSeatOfScreenRequest {
+    uint32 screen_id = 1;
+    uint32 screen_type_id = 2;
+}
+
+message CreateAllSeatOfScreenResponse {}

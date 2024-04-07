@@ -5,6 +5,10 @@ import { MOVIE_GENRE_MANAGEMENT_OPERATOR, MovieGenreManagementOperator } from ".
 import { MOVIE_IMAGE_MANAGEMENT_OPERATOR_TOKEN, MOVIE_POSTER_MANAGEMENT_OPERATOR_TOKEN, MovieImageManagementOperator, MoviePosterManagementOperator } from "../module/movie_image";
 import { MovieServiceHandlers } from "../proto/gen/MovieService";
 import { ErrorWithStatus } from "../utils";
+import { SCREEN_TYPE_MANAGEMENT_OPERATOR_TOKEN, ScreenTypeManagementOperator } from "../module/screen_type";
+import { SCREEN_MANAGEMENT_OPERATOR_TOKEN, ScreenManagementOperator } from "../module/screen";
+import { THEATER_MANAGEMENT_OPERATOR_TOKEN, TheaterManagementOperator } from "../module/theater";
+import { SEAT_MANAGEMENT_OPERATOR_TOKEN, SeatManagementOperator } from "../module/seat";
 
 export class MovieServiceHandlerFactory {
     constructor(
@@ -12,6 +16,10 @@ export class MovieServiceHandlerFactory {
         private readonly movieImageManagementOperator: MovieImageManagementOperator,
         private readonly moviePosterManagementOperator: MoviePosterManagementOperator,
         private readonly movieManagementOperator: MovieManagementOperator,
+        private readonly screenTypeManagementOperator: ScreenTypeManagementOperator,
+        private readonly screenManagementOperator: ScreenManagementOperator,
+        private readonly theaterManagementOperator: TheaterManagementOperator,
+        private readonly seatManagementOperator: SeatManagementOperator,
     ) { }
 
     public getMovieServiceHandlers(): MovieServiceHandlers {
@@ -108,6 +116,109 @@ export class MovieServiceHandlerFactory {
                 }
             },
 
+            CreateScreenType: async (call, callback) => {
+                const req = call.request;
+                if (req.displayName === undefined) {
+                    return callback({ message: "displayname is required", code: status.INVALID_ARGUMENT });
+                }
+
+                if (req.rowCount === undefined) {
+                    return callback({ message: "row count data is required", code: status.INVALID_ARGUMENT });
+                }
+
+                if (req.seatOfRowCount === undefined) {
+                    return callback({ message: "seat of row count data is required", code: status.INVALID_ARGUMENT });
+                }
+
+                if (req.seatCount === undefined) {
+                    return callback({ message: "seat count is required", code: status.INVALID_ARGUMENT });
+                }
+
+                const description = req.description || "";
+
+
+                try {
+                    const createdScreenType = await this.screenTypeManagementOperator.createScreenType(
+                        req.displayName,
+                        description,
+                        req.seatCount,
+                        req.rowCount,
+                        req.seatOfRowCount
+                    );
+                    callback(null, createdScreenType);
+                } catch (error) {
+                    this.handleError(error, callback);
+                }
+            },
+
+            CreateTheater: async (call, callback) => {
+                const req = call.request;
+                if (req.displayName === undefined) {
+                    return callback({ message: "displayname is required", code: status.INVALID_ARGUMENT });
+                }
+
+                if (req.location === undefined) {
+                    return callback({ message: "location data is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    const createdTheater = await this.theaterManagementOperator.createTheater(
+                        req.displayName,
+                        req.location
+                    );
+                    callback(null, createdTheater);
+                } catch (error) {
+                    this.handleError(error, callback);
+                }
+            },
+
+            CreateScreen: async (call, callback) => {
+                const req = call.request;
+                if (req.displayName === undefined) {
+                    return callback({ message: "displayname is required", code: status.INVALID_ARGUMENT });
+                }
+
+                if (req.screenTypeId === undefined) {
+                    return callback({ message: "screen type id data is required", code: status.INVALID_ARGUMENT });
+                }
+
+                if (req.theaterId === undefined) {
+                    return callback({ message: "theater id data is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    const createdScreen = await this.screenManagementOperator.createScreen(
+                        req.theaterId,
+                        req.screenTypeId,
+                        req.displayName,
+                    )
+                    callback(null, createdScreen);
+                } catch (error) {
+                    this.handleError(error, callback);
+                }
+            },
+
+            CreateAllSeatOfScreen: async (call, callback) => {
+                const req = call.request;
+                if (req.screenId === undefined) {
+                    return callback({ message: "screen id is required", code: status.INVALID_ARGUMENT });
+                }
+
+                if (req.screenTypeId === undefined) {
+                    return callback({ message: "screen type id is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    const createdAllSeatOfScreen = await this.seatManagementOperator.createAllSeatOfScreen(
+                        req.screenId,
+                        req.screenTypeId
+                    );
+                    callback(null, {});
+                } catch (error) {
+                    this.handleError(error, callback);
+                }
+            },
+
             DeleteImage: async (call, callback) => {
                 const req = call.request;
                 if (req.id === undefined) {
@@ -158,6 +269,48 @@ export class MovieServiceHandlerFactory {
 
                 try {
                     await this.moviePosterManagementOperator.deletePoster(req.ofMovieId);
+                    callback(null, {});
+                } catch (error) {
+                    this.handleError(error, callback)
+                }
+            },
+
+            DeleteScreen: async (call, callback) => {
+                const req = call.request;
+                if (req.id === undefined) {
+                    return callback({ message: "screen id is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    await this.screenManagementOperator.deleteScreen(req.id);
+                    callback(null, {});
+                } catch (error) {
+                    this.handleError(error, callback)
+                }
+            },
+
+            DeleteScreenType: async (call, callback) => {
+                const req = call.request;
+                if (req.id === undefined) {
+                    return callback({ message: "screen type id is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    await this.screenManagementOperator.deleteScreen(req.id);
+                    callback(null, {});
+                } catch (error) {
+                    this.handleError(error, callback)
+                }
+            },
+
+            DeleteTheater: async (call, callback) => {
+                const req = call.request;
+                if (req.id === undefined) {
+                    return callback({ message: "theater id is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    await this.theaterManagementOperator.deleteTheater(req.id);
                     callback(null, {});
                 } catch (error) {
                     this.handleError(error, callback)
@@ -272,7 +425,11 @@ injected(MovieServiceHandlerFactory,
     MOVIE_GENRE_MANAGEMENT_OPERATOR,
     MOVIE_IMAGE_MANAGEMENT_OPERATOR_TOKEN,
     MOVIE_POSTER_MANAGEMENT_OPERATOR_TOKEN,
-    MOVIE_MANAGEMENT_OPERATOR_TOKEN
+    MOVIE_MANAGEMENT_OPERATOR_TOKEN,
+    SCREEN_TYPE_MANAGEMENT_OPERATOR_TOKEN,
+    SCREEN_MANAGEMENT_OPERATOR_TOKEN,
+    THEATER_MANAGEMENT_OPERATOR_TOKEN,
+    SEAT_MANAGEMENT_OPERATOR_TOKEN
 );
 
 export const MOVIE_SERVICE_HANDLERS_FACTORY_TOKEN = token<MovieServiceHandlerFactory>("MovieServiceHandlersFactory");

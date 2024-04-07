@@ -17,7 +17,6 @@ export class MovieWithPoster {
         public originalImageFileName: string,
         public originalThumbnailFileName: string,
     ) { }
-
 }
 export interface CreateMovieArguments {
     title: string;
@@ -38,7 +37,8 @@ export interface MovieDataAccessor {
     createMovie(args: CreateMovieArguments): Promise<number>;
     updateMovie(args: UpdateMovieArguments): Promise<void>;
     deleteMovie(id: number): Promise<void>;
-    getMovie(id: number): Promise<Movie | null>;
+    getMovieById(id: number): Promise<Movie | null>;
+    getMovieByIdWithXLock(id: number): Promise<Movie | null>;
     getCurrentShowingMovieList(requestTime: number): Promise<Movie[]>;
     getUpcomingMovieList(requestTime: number): Promise<Movie[]>;
     getMovieByTitleWithXLock(title: string): Promise<Movie | null>;
@@ -121,7 +121,7 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
 
     }
 
-    public async getMovie(id: number): Promise<Movie | null> {
+    public async getMovieById(id: number): Promise<Movie | null> {
         let rows;
         try {
             rows = await this.knex
@@ -140,7 +140,30 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
             return null;
         }
 
-        return rows[0];
+        return this.getMovieFromRow(rows[0]);
+    }
+
+    public async getMovieByIdWithXLock(id: number): Promise<Movie | null> {
+        let rows;
+        try {
+            rows = await this.knex
+                .select()
+                .from(TabNameMovieServiceMovieTab)
+                .where({
+                    [ColNameMovieServiceMovieId]: id
+                })
+                .forUpdate();
+        } catch (error) {
+            this.logger.error("failed to get movie", { id, error });
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+
+        if (rows.length === 0) {
+            this.logger.debug("no movie with movie id found", { id });
+            return null;
+        }
+
+        return this.getMovieFromRow(rows[0]);
     }
 
     public async getCurrentShowingMovieList(requestTime: number): Promise<Movie[]> {

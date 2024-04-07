@@ -5,6 +5,7 @@ import { LOG_CONFIG_TOKEN } from "./log";
 import { USER_SERVICE_CONFIG_TOKEN } from "./user_service";
 import { ELASTICSEARCH_CONFIG_TOKEN } from "./elasticsearch";
 import { MOVIE_SERVICE_CONFIG_TOKEN } from "./movie_service";
+import { APPLICATION_CONFIG_TOKEN } from "./application";
 
 export * from "./config";
 export * from "./elasticsearch";
@@ -12,6 +13,7 @@ export * from "./gateway_server";
 export * from "./log";
 export * from "./user_service";
 export * from "./movie_service";
+export * from "./application";
 
 export function bindToContainer(container: Container): void {
     container.bind(GATEWAY_CONFIG_TOKEN).toInstance(GatewayConfig.fromEnv).inSingletonScope();
@@ -34,5 +36,9 @@ export function bindToContainer(container: Container): void {
     container
         .bind(ELASTICSEARCH_CONFIG_TOKEN)
         .toInstance(() => container.get(GATEWAY_CONFIG_TOKEN).elasticsearchConfig)
+        .inSingletonScope();
+    container
+        .bind(APPLICATION_CONFIG_TOKEN)
+        .toInstance(() => container.get(GATEWAY_CONFIG_TOKEN).applicationConfig)
         .inSingletonScope();
 }

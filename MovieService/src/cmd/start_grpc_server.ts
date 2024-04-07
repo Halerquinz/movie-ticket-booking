@@ -3,9 +3,8 @@ import * as config from "../config";
 import * as db from "../dataaccess/db";
 import * as elasticsearch from "../dataaccess/elasticsearch";
 import * as s3 from "../dataaccess/s3";
-import * as movie from "../module/movie";
-import * as movieGenre from "../module/movie_genre";
-import * as movieImage from "../module/movie_image";
+import * as kafka from "../dataaccess/kafka";
+import * as modules from "../module";
 import * as service from "../service";
 import * as utils from "../utils";
 import dotenv from "dotenv";
@@ -20,9 +19,8 @@ export async function startGRPCServer(dotenvPath: string): Promise<void> {
     db.bindToContainer(container);
     elasticsearch.bindToContainer(container);
     s3.bindToContainer(container);
-    movie.bindToContainer(container);
-    movieGenre.bindToContainer(container);
-    movieImage.bindToContainer(container);
+    kafka.bindToContainer(container);
+    modules.bindToContainer(container);
     utils.bindToContainer(container);
     service.bindToContainer(container);
 

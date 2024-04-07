@@ -57,7 +57,7 @@ export class MoviePosterManagementOperatorImpl implements MoviePosterManagementO
             throw new ErrorWithStatus(`invalid original file name ${originalFileName}`, status.INVALID_ARGUMENT);
         }
 
-        const movie = await this.movieDM.getMovie(ofMovieId);
+        const movie = await this.movieDM.getMovieById(ofMovieId);
         if (movie === null) {
             this.logger.error("movie with movie id not found", { ofMovieId });
             throw new ErrorWithStatus(`movie with movie id ${ofMovieId} not found`, status.NOT_FOUND);

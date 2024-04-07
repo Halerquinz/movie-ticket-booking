@@ -121,7 +121,7 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
         moviePoster: MoviePoster | null;
         movieImageList: MovieImage[] | [];
     }> {
-        const movie = await this.movieDM.getMovie(id);
+        const movie = await this.movieDM.getMovieById(id);
         if (movie === null) {
             this.logger.error("no movie with movie id found", { movieId: id });
             throw new ErrorWithStatus(`no movie with movie id ${id} found`, status.NOT_FOUND);

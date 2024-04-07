@@ -14,8 +14,8 @@ export enum ShowtimeType {
 export interface CreateShowtimeArguments {
     ofMovieId: number,
     ofScreenId: number,
-    timeStart: string,
-    timeEnd: string,
+    timeStart: number,
+    timeEnd: number,
     showtimeType: ShowtimeType
 }
 
@@ -23,8 +23,8 @@ export interface UpdateShowtimeArguments {
     showtimeId: number,
     ofMovieId: number,
     ofScreenId: number,
-    timeStart: string,
-    timeEnd: string,
+    timeStart: number,
+    timeEnd: number,
     showtimeType: ShowtimeType
 }
 
@@ -141,9 +141,9 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
                 +row[ColNameMovieServiceShowtimeId],
                 +row[ColNameMovieServiceShowtimeOfMovieId],
                 +row[ColNameMovieServiceShowtimeOfScreenId],
-                row[ColNameMovieServiceShowtimeTimeStart],
-                row[ColNameMovieServiceShowtimeTimeEnd],
-                row[ColNameMovieServiceShowtimeType]
+                +row[ColNameMovieServiceShowtimeTimeStart],
+                +row[ColNameMovieServiceShowtimeTimeEnd],
+                +row[ColNameMovieServiceShowtimeType]
             )) || [];
         } catch (error) {
             this.logger.error("failed to get showtime list", { error });

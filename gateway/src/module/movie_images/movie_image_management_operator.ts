@@ -4,6 +4,7 @@ import { MOVIE_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
 import { MovieServiceClient } from "../../proto/gen/MovieService";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGRPCCall, } from "../../utils";
 import { MovieImage } from "../schemas";
+import { IMAGE_PROTO_TO_IMAGE_CONVERTER_TOKEN, ImageProtoToImageConverter } from "../schemas/converters";
 
 export interface MovieImageManagementOperator {
     createImage(
@@ -21,6 +22,7 @@ export class MovieImageManagementOperatorImpl implements MovieImageManagementOpe
     constructor(
         private readonly movieServiceDM: MovieServiceClient,
         private readonly logger: Logger,
+        private readonly imageProtoToImageConverter: ImageProtoToImageConverter,
     ) { }
 
     public async createImage(ofMovieId: number, originalFileName: string, imageData: Buffer): Promise<MovieImage> {
@@ -39,7 +41,7 @@ export class MovieImageManagementOperatorImpl implements MovieImageManagementOpe
             );
         }
 
-        return MovieImage.fromProto(createImageResponse?.movieImage);
+        return this.imageProtoToImageConverter.convert(createImageResponse?.movieImage);
     }
 
     public async deleteImage(id: number): Promise<void> {
@@ -70,14 +72,21 @@ export class MovieImageManagementOperatorImpl implements MovieImageManagementOpe
             );
         }
 
-        return createImageResponse?.movieImageList?.map((movieImageProto) => MovieImage.fromProto(movieImageProto)) || [];
+        const movieImageProtoList = createImageResponse?.movieImageList || [];
+
+        const movieImageList = await Promise.all(
+            movieImageProtoList.map((movieImageProto) => this.imageProtoToImageConverter.convert(movieImageProto))
+        )
+
+        return movieImageList;
     }
 }
 
 injected(
     MovieImageManagementOperatorImpl,
     MOVIE_SERVICE_DM_TOKEN,
-    LOGGER_TOKEN
+    LOGGER_TOKEN,
+    IMAGE_PROTO_TO_IMAGE_CONVERTER_TOKEN
 );
 
 export const MOVIE_IMAGE_MANAGEMENT_OPERATOR_TOKEN = token<MovieImageManagementOperatorImpl>("MovieImageManagementOperator");

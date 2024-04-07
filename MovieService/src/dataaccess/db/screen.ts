@@ -4,17 +4,21 @@ import { Logger } from "winston";
 import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 import { KNEX_INSTANCE_TOKEN } from "./knex";
 import { status } from "@grpc/grpc-js";
+import { Screen } from "../db";
 
 export interface UpdateScreenArguments {
     screenId: number;
-    ofTheaterId: number;
-    ofScreenTypeId: number;
+    displayName: string;
 }
 
 export interface ScreenDataAccessor {
-    createScreen(ofTheaterId: number, ofScreenTypeId: number): Promise<number>;
+    createScreen(ofTheaterId: number, ofScreenTypeId: number, displayName: string): Promise<number>;
     updateScreen(args: UpdateScreenArguments): Promise<void>;
-    deleteScreenType(id: number): Promise<void>;
+    deleteScreen(id: number): Promise<void>;
+    getScreenByDisplayName(displayName: string): Promise<Screen | null>;
+    getScreenByDisplayNameWithXLock(displayName: string): Promise<Screen | null>;
+    getScreenById(id: number): Promise<Screen | null>;
+    getScreenByIdWithXLock(id: number): Promise<Screen | null>;
     withTransaction<T>(cb: (dataAccessor: ScreenDataAccessor) => Promise<T>): Promise<T>;
 }
 
@@ -22,6 +26,7 @@ const TabNameMovieServiceScreenTab = "movie_service_screen_tab";
 const ColNameMovieServiceScreenId = "screen_id";
 const ColNameMovieServiceScreenOfTheaterId = "of_theater_id";
 const ColNameMovieServiceScreenOfScreenTypeId = "of_screen_type_id";
+const ColNameMovieServiceScreenDisplayName = "display_name";
 
 export class ScreenDataAccessorImpl implements ScreenDataAccessor {
     constructor(
@@ -29,12 +34,13 @@ export class ScreenDataAccessorImpl implements ScreenDataAccessor {
         private readonly logger: Logger
     ) { }
 
-    public async createScreen(ofTheaterId: number, ofScreenTypeId: number): Promise<number> {
+    public async createScreen(ofTheaterId: number, ofScreenTypeId: number, displayName: string): Promise<number> {
         try {
             const rows = await this.knex
                 .insert({
                     [ColNameMovieServiceScreenOfTheaterId]: ofTheaterId,
                     [ColNameMovieServiceScreenOfScreenTypeId]: ofScreenTypeId,
+                    [ColNameMovieServiceScreenDisplayName]: displayName
                 })
                 .returning(ColNameMovieServiceScreenId)
                 .into(TabNameMovieServiceScreenTab);
@@ -50,8 +56,7 @@ export class ScreenDataAccessorImpl implements ScreenDataAccessor {
             await this.knex
                 .table(TabNameMovieServiceScreenTab)
                 .update({
-                    [ColNameMovieServiceScreenOfTheaterId]: args.ofTheaterId,
-                    [ColNameMovieServiceScreenOfScreenTypeId]: args.ofScreenTypeId,
+                    [ColNameMovieServiceScreenDisplayName]: args.displayName
                 })
                 .where({
                     [ColNameMovieServiceScreenId]: args.screenId
@@ -62,7 +67,7 @@ export class ScreenDataAccessorImpl implements ScreenDataAccessor {
         }
     }
 
-    public async deleteScreenType(id: number): Promise<void> {
+    public async deleteScreen(id: number): Promise<void> {
         let deletedCount: number;
         try {
             deletedCount = await this.knex
@@ -81,11 +86,130 @@ export class ScreenDataAccessorImpl implements ScreenDataAccessor {
         }
     }
 
+    public async getScreenById(id: number): Promise<Screen | null> {
+        let rows: Record<string, any>;
+        try {
+            rows = await this.knex
+                .select()
+                .from(TabNameMovieServiceScreenTab)
+                .where({
+                    [ColNameMovieServiceScreenId]: id
+                });
+        } catch (error) {
+            this.logger.error("failed to get screen by id", { id })
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+
+        if (rows.length === 0) {
+            this.logger.error("cannot found screen with id", { id });
+            return null;
+        }
+
+        if (rows.length > 1) {
+            this.logger.error("more than one screen with id", { id });
+            throw ErrorWithStatus.wrapWithStatus("more than one screen with id", status.INTERNAL);
+        }
+
+        return this.getScreenFromRow(rows[0]);
+    }
+
+    public async getScreenByIdWithXLock(id: number): Promise<Screen | null> {
+        let rows: Record<string, any>;
+        try {
+            rows = await this.knex
+                .select()
+                .from(TabNameMovieServiceScreenTab)
+                .where({
+                    [ColNameMovieServiceScreenId]: id
+                })
+                .forUpdate();
+        } catch (error) {
+            this.logger.error("failed to get screen by id", { id })
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+
+        if (rows.length === 0) {
+            this.logger.error("cannot found screen with id", { id });
+            return null;
+        }
+
+        if (rows.length > 1) {
+            this.logger.error("more than one screen with id", { id });
+            throw ErrorWithStatus.wrapWithStatus("more than one screen with id", status.INTERNAL);
+        }
+
+        return this.getScreenFromRow(rows[0]);
+    }
+
+    public async getScreenByDisplayName(displayName: string): Promise<Screen | null> {
+        let rows: Record<string, any>;
+        try {
+            rows = await this.knex
+                .select()
+                .from(TabNameMovieServiceScreenTab)
+                .where({
+                    [ColNameMovieServiceScreenDisplayName]: displayName
+                });
+        } catch (error) {
+            this.logger.error("failed to get screen by displayName", { displayName })
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+
+        if (rows.length === 0) {
+            this.logger.error("cannot found screen with displayName", { displayName });
+            return null;
+        }
+
+        if (rows.length > 1) {
+            this.logger.error("more than one screen with displayName", { displayName });
+            throw ErrorWithStatus.wrapWithStatus("more than one screen with displayName", status.INTERNAL);
+        }
+
+        return this.getScreenFromRow(rows[0]);
+    }
+
+    public async getScreenByDisplayNameWithXLock(displayName: string): Promise<Screen | null> {
+        let rows: Record<string, any>;
+        try {
+            rows = await this.knex
+                .select()
+                .from(TabNameMovieServiceScreenTab)
+                .where({
+                    [ColNameMovieServiceScreenDisplayName]: displayName
+                })
+                .forUpdate();
+        } catch (error) {
+            this.logger.error("failed to get screen by displayName", { displayName })
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+
+        if (rows.length === 0) {
+            this.logger.error("cannot found screen with displayName", { displayName });
+            return null;
+        }
+
+        if (rows.length > 1) {
+            this.logger.error("more than one screen with displayName", { displayName });
+            throw ErrorWithStatus.wrapWithStatus("more than one screen with displayName", status.INTERNAL);
+        }
+
+        return this.getScreenFromRow(rows[0]);
+    }
+
     public async withTransaction<T>(cb: (dataAccessor: ScreenDataAccessor) => Promise<T>): Promise<T> {
         return this.knex.transaction(async (tx) => {
             const txDataAccessor = new ScreenDataAccessorImpl(tx, this.logger);
             return cb(txDataAccessor);
         });
+    }
+
+    private getScreenFromRow(row: Record<string, any>): Screen {
+        return new Screen(
+            +row[ColNameMovieServiceScreenId],
+            +row[ColNameMovieServiceScreenOfTheaterId],
+            +row[ColNameMovieServiceScreenOfScreenTypeId],
+            row[ColNameMovieServiceScreenDisplayName]
+        );
     }
 }
 

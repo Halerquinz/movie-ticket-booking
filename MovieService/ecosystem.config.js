@@ -1,11 +1,14 @@
 module.exports = {
+
     apps: [
         {
-            name: "user_service",
+            name: "movie_service_kafka_consumer",
             script: "./dist/main.js",
-            args: " --start_grpc_server",
-            instances: 5,
+            args: "--start_kafka_consumer",
+            instances: 8,
             instance_var: "NODE_ID",
+            wait_ready: true,
         },
     ],
 };
+

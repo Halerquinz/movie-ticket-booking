@@ -76,15 +76,15 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
             }
         }
 
-        return this.userDM.withTransaction<User>(async (dm) => {
-            const userRecord = await this.userDM.getUserByUserIdWithXLock(user.id);
+        return this.userDM.withTransaction<User>(async (userDM) => {
+            const userRecord = await userDM.getUserByUserIdWithXLock(user.id);
             if (userRecord === null) {
                 this.logger.error("can not find user with userId");
                 throw new ErrorWithStatus(`can not find user with userId`, status.INVALID_ARGUMENT);
             }
 
             if (user.username !== undefined) {
-                const userWithUsernameRecord = await this.userDM.getUserByUsernameWithXLock(user.username);
+                const userWithUsernameRecord = await userDM.getUserByUsernameWithXLock(user.username);
                 if (userWithUsernameRecord !== null && userWithUsernameRecord.id !== user.id) {
                     this.logger.error("username already exist");
                     throw new ErrorWithStatus(`username already exist`, status.ALREADY_EXISTS);
@@ -93,7 +93,7 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
                 userRecord.username = user.username;
             }
 
-            await this.userDM.updateUser(user);
+            await userDM.updateUser(user);
 
             if (user.displayName !== undefined) {
                 userRecord.displayName = user.displayName;

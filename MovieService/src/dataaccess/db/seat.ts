@@ -6,24 +6,16 @@ import { KNEX_INSTANCE_TOKEN } from "./knex";
 import { status } from "@grpc/grpc-js";
 import { Seat } from "./models";
 
-export enum SeatStatus {
-    AVAILABLE = 0,
-    SELECTED = 1,
-    CANCEL = 2
-}
-
 export interface CreateSeatArguments {
     ofScreenId: number,
     column: number,
     row: string,
     no: string,
-    status: number,
 }
 
 export interface SeatDataAccessor {
     createSeat(args: CreateSeatArguments): Promise<number>;
     getSeat(id: number): Promise<Seat | null>;
-    updateSeatStatus(id: number, seatStatus: number): Promise<void>;
     deleteSeat(id: number): Promise<void>;
     withTransaction<T>(cb: (dataAccessor: SeatDataAccessor) => Promise<T>): Promise<T>;
 }
@@ -34,7 +26,6 @@ const ColNameMovieServiceSeatOfScreenId = "of_screen_id";
 const ColNameMovieServiceSeatColumn = "column";
 const ColNameMovieServiceSeatRow = "row";
 const ColNameMovieServiceSeatNo = "no";
-const ColNameMovieServiceSeatStatus = "status";
 
 export class SeatDataAccessorImpl implements SeatDataAccessor {
     constructor(
@@ -50,7 +41,6 @@ export class SeatDataAccessorImpl implements SeatDataAccessor {
                     [ColNameMovieServiceSeatColumn]: args.column,
                     [ColNameMovieServiceSeatRow]: args.row,
                     [ColNameMovieServiceSeatNo]: args.no,
-                    [ColNameMovieServiceSeatStatus]: args.status,
                 })
                 .returning(ColNameMovieServiceSeatId)
                 .into(TabNameMovieServiceSeatTab);
@@ -81,22 +71,6 @@ export class SeatDataAccessorImpl implements SeatDataAccessor {
         }
 
         return rows[0];
-    }
-
-    public async updateSeatStatus(id: number, seatStatus: number): Promise<void> {
-        try {
-            await this.knex
-                .table(TabNameMovieServiceSeatTab)
-                .update({
-                    [ColNameMovieServiceSeatStatus]: seatStatus
-                })
-                .where({
-                    [ColNameMovieServiceSeatId]: id
-                });
-        } catch (error) {
-            this.logger.error("failed to update seat status", { id, seatStatus, error });
-            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
-        }
     }
 
     public async deleteSeat(id: number): Promise<void> {

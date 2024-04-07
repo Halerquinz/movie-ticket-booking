@@ -4,6 +4,8 @@ import { MOVIE_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
 import { MovieServiceClient } from "../../proto/gen/MovieService";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGRPCCall, } from "../../utils";
 import { MoviePoster } from "../schemas";
+import { IMAGE_PROTO_TO_IMAGE_CONVERTER_TOKEN, ImageProtoToImageConverter } from "../schemas/converters";
+
 
 export interface MoviePosterManagementOperator {
     createPoster(
@@ -21,6 +23,7 @@ export class MoviePosterManagementOperatorImpl implements MoviePosterManagementO
     constructor(
         private readonly movieServiceDM: MovieServiceClient,
         private readonly logger: Logger,
+        private readonly imageProtoToImageConverter: ImageProtoToImageConverter,
     ) { }
 
     public async createPoster(ofMovieId: number, originalFileName: string, imageData: Buffer): Promise<MoviePoster> {
@@ -39,7 +42,7 @@ export class MoviePosterManagementOperatorImpl implements MoviePosterManagementO
             );
         }
 
-        return MoviePoster.fromProto(createPosterResponse?.moviePoster);
+        return this.imageProtoToImageConverter.convert(createPosterResponse?.moviePoster);
     }
 
     public async deletePoster(ofMovieId: number): Promise<void> {
@@ -70,14 +73,15 @@ export class MoviePosterManagementOperatorImpl implements MoviePosterManagementO
             );
         }
 
-        return MoviePoster.fromProto(createPosterResponse?.moviePoster);
+        return this.imageProtoToImageConverter.convert(createPosterResponse?.moviePoster);
     }
 }
 
 injected(
     MoviePosterManagementOperatorImpl,
     MOVIE_SERVICE_DM_TOKEN,
-    LOGGER_TOKEN
+    LOGGER_TOKEN,
+    IMAGE_PROTO_TO_IMAGE_CONVERTER_TOKEN
 );
 
 export const MOVIE_POSTER_MANAGEMENT_OPERATOR_TOKEN = token<MoviePosterManagementOperator>("MoviePosterManagementOperator");

@@ -1,4 +1,3 @@
-import { SeatStatus } from "./seat";
 import { ShowtimeType } from "./showtime";
 
 export class MovieGenre {
@@ -47,7 +46,7 @@ export class MovieImage {
 export class Theater {
     constructor(
         public theaterId: number,
-        public name: string,
+        public displayName: string,
         public location: string,
         public screenCount: number,
         public seatCount: number,
@@ -59,15 +58,18 @@ export class Screen {
         public screenId: number,
         public ofTheaterId: number,
         public ofScreenTypeId: number,
+        public displayName: string
     ) { }
 }
 
 export class ScreenType {
     constructor(
         public screenTypeId: number,
-        public name: string,
+        public displayName: string,
         public description: string,
-        public seatCount: number
+        public seatCount: number,
+        public rowCount: number,
+        public seatOfRowCount: number
     ) { }
 }
 
@@ -78,7 +80,6 @@ export class Seat {
         public column: number,
         public row: string,
         public no: string,
-        public status: SeatStatus,
     ) { }
 }
 
@@ -87,8 +88,8 @@ export class Showtime {
         public showtimeId: number,
         public ofMovieId: number,
         public ofScreenId: number,
-        public timeStart: string,
-        public timeEnd: string,
+        public timeStart: number,
+        public timeEnd: number,
         public showtimeType: ShowtimeType
     ) { }
 }
