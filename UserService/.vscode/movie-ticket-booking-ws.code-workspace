@@ -37,6 +37,7 @@
 		"cSpell.words": [
 			"cloudiary",
 			"CLOUDINARY"
-		]
+		],
+		"liveServer.settings.multiRootWorkspaceName": "Gateway"
 	}
 }

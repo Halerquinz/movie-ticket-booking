@@ -37,7 +37,7 @@ export function bindToContainer(container: Container): void {
             container.get(MOVIE_GENRES_ROUTER_TOKEN),
             container.get(MOVIE_IMAGES_ROUTER_TOKEN),
             // container.get(MOVIE_POSTERS_ROUTER_TOKEN),
-            // container.get(MOVIES_ROUTER_TOKEN),
+            container.get(MOVIES_ROUTER_TOKEN),
             container.get(SCREEN_TYPES_ROUTER_TOKEN),
             container.get(SCREENS_ROUTER_TOKEN),
             container.get(THEATERS_ROUTER_TOKEN),

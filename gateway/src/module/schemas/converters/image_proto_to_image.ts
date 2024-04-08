@@ -45,11 +45,11 @@ export class ImageProtoToImageConverterImpl implements ImageProtoToImageConverte
     }
 
     private getOriginalImageFileURL(originalImageFilename: string): string {
-        return `/${this.applicationConfig.originalImageURLPrefix}/${originalImageFilename}`;
+        return `http://${this.applicationConfig.originalImageURLPrefix}/${originalImageFilename}`;
     }
 
     private getThumbnailImageFileURL(thumbnailFilename: string): string {
-        return `/${this.applicationConfig.thumbnailImageURLPrefix}/${thumbnailFilename}`;
+        return `http://${this.applicationConfig.thumbnailImageURLPrefix}/${thumbnailFilename}`;
     }
 }
 

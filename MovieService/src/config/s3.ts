@@ -3,8 +3,8 @@ import { token } from "brandi";
 export class S3Config {
     public host = "127.0.0.1";
     public port = 9000;
-    public user = "minioadmin";
-    public password = "minioadmin";
+    public user = "ROOTUSER";
+    public password = "CHANGEME123";
     public originalImageBucket = "originals";
     public thumbnailImageBucket = "thumbnails";
 

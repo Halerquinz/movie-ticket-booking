@@ -37,8 +37,12 @@ export class BucketDMImpl implements BucketDM {
     }
 
     public async uploadFile(fileName: string, fileData: Buffer | ReadStream): Promise<void> {
+        const metaData = {
+            'Content-Type': "image/jpeg"
+        };
+
         try {
-            await this.minioClient.putObject(this.bucketName, fileName, fileData);
+            await this.minioClient.putObject(this.bucketName, fileName, fileData, metaData);
         } catch (error) {
             this.logger.error("failed to upload file", { bucketName: this.bucketName, fileName: fileName, error });
             throw new ErrorWithStatus("failed to upload file", status.INTERNAL);
