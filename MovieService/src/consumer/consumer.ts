@@ -10,6 +10,7 @@ import { MessageConsumer, MESSAGE_CONSUMER_TOKEN } from "../dataaccess/kafka/con
 import { SCREEN_CREATED_MESSAGE_HANDLER_TOKEN, ScreenCreatedMessageHandler } from "./screen_created";
 
 const TopicNameMovieServiceScreenCreated = "movie_service_screen_created";
+const TopicNameMovieServiceMovieCreated = "movie_service_movie_created";
 
 export class MovieServiceKafkaConsumer {
     constructor(
@@ -45,7 +46,6 @@ export class MovieServiceKafkaConsumer {
             screenCreatedMessage
         );
     }
-
 }
 
 injected(

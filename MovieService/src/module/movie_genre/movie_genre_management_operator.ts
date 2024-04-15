@@ -32,7 +32,7 @@ export class MovieGenreManagementOperatorImpl implements MovieGenreManagementOpe
             const createdMovieGenreId = await movieGenreDM.createMovieGenre(displayName);
 
             return {
-                movieGenreId: createdMovieGenreId,
+                id: createdMovieGenreId,
                 displayName
             }
         })

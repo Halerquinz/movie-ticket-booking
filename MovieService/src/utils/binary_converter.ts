@@ -16,7 +16,6 @@ export class BinaryConverterImpl implements BinaryConverter {
 
     public toBuffer<T = any>(data: T): Buffer {
         return Buffer.from(JSON.stringify(data));
-
     }
 }
 

@@ -67,7 +67,7 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
             })
 
             return {
-                showtimeId: createdShowtimeId,
+                id: createdShowtimeId,
                 ofScreenId: screenId,
                 ofMovieId: movieId,
                 showtimeType: showtimeType,
@@ -79,7 +79,6 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
 
     public async deleteShowtime(id: number): Promise<void> {
         return this.showtimeDM.deleteShowtime(id);
-
     }
 
     private isValidReleaseDate(releaseDate: number): boolean {

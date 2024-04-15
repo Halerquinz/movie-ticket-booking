@@ -15,6 +15,7 @@ export async function up(knex: Knex): Promise<void> {
 
             table.bigInteger("booking_time").notNullable();
             table.smallint("booking_status").notNullable();
+            table.integer("amount").notNullable();
 
             table.index(["status"], "booking_service_booking_status_idx");
         });

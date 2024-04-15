@@ -7,8 +7,8 @@ import { status } from "@grpc/grpc-js";
 import { MovieGenre } from "./models";
 
 export interface MovieHasMovieGenreDataAccessor {
-    createMovieHasMovieGenre(movieId: number, movieGereId: number): Promise<void>;
-    deleteMovieHasMovieGenre(movieId: number, movieGereId: number): Promise<void>;
+    createMovieHasMovieGenre(movieId: number, movieGenreId: number): Promise<void>;
+    deleteMovieHasMovieGenre(movieId: number, movieGenreId: number): Promise<void>;
     getMovieGenreListByMovieId(movieId: number): Promise<MovieGenre[]>;
     withTransaction<T>(cb: (dataAccessor: MovieHasMovieGenreDataAccessor) => Promise<T>): Promise<T>;
 }
@@ -28,21 +28,21 @@ export class MovieHasMovieGenreDataAccessorImpl implements MovieHasMovieGenreDat
         private readonly logger: Logger
     ) { }
 
-    public async createMovieHasMovieGenre(movieId: number, movieGereId: number): Promise<void> {
+    public async createMovieHasMovieGenre(movieId: number, movieGenreId: number): Promise<void> {
         try {
             await this.knex
                 .insert({
                     [ColNameMovieServiceMovieHasMovieGenreMovieId]: movieId,
-                    [ColNameMovieServiceMovieHasMovieGenreMovieGenreId]: movieGereId
+                    [ColNameMovieServiceMovieHasMovieGenreMovieGenreId]: movieGenreId
                 })
                 .into(TabNameMovieServiceMovieHasMovieGenreTab);
         } catch (error) {
-            this.logger.error("failed to create movie has movie genre relation", { movieId, movieGereId, error, });
+            this.logger.error("failed to create movie has movie genre relation", { movieId, movieGenreId, error, });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
     }
 
-    public async deleteMovieHasMovieGenre(movieId: number, movieGereId: number): Promise<void> {
+    public async deleteMovieHasMovieGenre(movieId: number, movieGenreId: number): Promise<void> {
         let deletedCount: number;
         try {
             deletedCount = await this.knex
@@ -50,16 +50,16 @@ export class MovieHasMovieGenreDataAccessorImpl implements MovieHasMovieGenreDat
                 .from(TabNameMovieServiceMovieHasMovieGenreTab)
                 .where({
                     [ColNameMovieServiceMovieHasMovieGenreMovieId]: movieId,
-                    [ColNameMovieServiceMovieHasMovieGenreMovieGenreId]: movieGereId,
+                    [ColNameMovieServiceMovieHasMovieGenreMovieGenreId]: movieGenreId,
                 });
         } catch (error) {
             this.logger.error("failed to delete movie has movie genre relation", { error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
         if (deletedCount === 0) {
-            this.logger.debug("no movie has movie genre relation found", { movie_id: movieId }, { movie_gere_id: movieGereId });
+            this.logger.debug("no movie has movie genre relation found", { movie_id: movieId }, { movie_gere_id: movieGenreId });
             throw new ErrorWithStatus(
-                `no movie has movie genre relation found with movie_id ${movieId}, movie_genre_id ${movieGereId}`,
+                `no movie has movie genre relation found with movie_id ${movieId}, movie_genre_id ${movieGenreId}`,
                 status.NOT_FOUND
             );
         }
@@ -77,15 +77,14 @@ export class MovieHasMovieGenreDataAccessorImpl implements MovieHasMovieGenreDat
                 )
                 .where(({
                     [ColNameMovieServiceMovieHasMovieGenreMovieId]: movieId
-                }))
-                .orderBy(ColNameMovieServiceMovieHasMovieGenreMovieGenreId, "asc");
+                }));
 
             return rows.map((row) => new MovieGenre(
                 +row[ColNameMovieServiceMovieHasMovieGenreMovieGenreId],
                 row[ColNameMovieServiceMovieDisplayName]
             ));
         } catch (error) {
-            this.logger.error("failed to get user role id list of user id", { error });
+            this.logger.error("failed to movie genre list by movie id", { error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
     }

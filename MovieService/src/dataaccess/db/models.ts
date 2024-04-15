@@ -2,18 +2,27 @@ import { _ShowtimeType_Values } from "../../proto/gen/ShowtimeType";
 
 export class MovieGenre {
     constructor(
-        public movieGenreId: number,
+        public id: number,
+        public displayName: string
+    ) { }
+}
+
+export class MovieType {
+    constructor(
+        public id: number,
         public displayName: string
     ) { }
 }
 
 export class Movie {
     constructor(
-        public movieId: number,
+        public id: number,
         public title: string,
         public description: string,
         public duration: number,
         public releaseDate: number,
+        public trailer: MovieTrailer | null,
+        public poster: MoviePoster | null,
     ) { }
 }
 
@@ -29,23 +38,21 @@ export class MoviePoster {
         public ofMovieId: number,
         public originalFileName: string,
         public originalImageFileName: string,
-        public thumbnailImageFileName: string
     ) { }
 }
 
 export class MovieImage {
     constructor(
-        public imageId: number,
+        public id: number,
         public ofMovieId: number,
         public originalFileName: string,
         public originalImageFileName: string,
-        public thumbnailImageFileName: string
     ) { }
 }
 
 export class Theater {
     constructor(
-        public theaterId: number,
+        public id: number,
         public displayName: string,
         public location: string,
         public screenCount: number,
@@ -55,7 +62,7 @@ export class Theater {
 
 export class Screen {
     constructor(
-        public screenId: number,
+        public id: number,
         public ofTheaterId: number,
         public ofScreenTypeId: number,
         public displayName: string
@@ -64,7 +71,7 @@ export class Screen {
 
 export class ScreenType {
     constructor(
-        public screenTypeId: number,
+        public id: number,
         public displayName: string,
         public description: string,
         public seatCount: number,
@@ -75,7 +82,7 @@ export class ScreenType {
 
 export class Seat {
     constructor(
-        public seatId: number,
+        public id: number,
         public ofScreenId: number,
         public column: number,
         public row: string,
@@ -85,7 +92,7 @@ export class Seat {
 
 export class Showtime {
     constructor(
-        public showtimeId: number,
+        public id: number,
         public ofMovieId: number,
         public ofScreenId: number,
         public timeStart: number,

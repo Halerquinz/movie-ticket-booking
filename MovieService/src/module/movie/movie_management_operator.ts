@@ -7,6 +7,7 @@ import {
     MOVIE_DATA_ACCESSOR_TOKEN,
     MOVIE_GENRE_DATA_ACCESSOR_TOKEN,
     MOVIE_HAS_MOVIE_GENRE_DATA_ACCESSOR_TOKEN,
+    MOVIE_HAS_MOVIE_TYPE_DATA_ACCESSOR_TOKEN,
     MOVIE_IMAGE_DATA_ACCESSOR_TOKEN,
     MOVIE_POSTER_DATA_ACCESSOR_TOKEN,
     MOVIE_TRAILER_DATA_ACCESSOR_TOKEN,
@@ -14,29 +15,45 @@ import {
     MovieGenre,
     MovieGenreDataAccessor,
     MovieHasMovieGenreDataAccessor,
+    MovieHasMovieTypeDataAccessor,
     MovieImage,
     MovieImageDataAccessor,
-    MoviePoster,
     MoviePosterDataAccessor,
-    MovieTrailer,
-    MovieTrailerDataAccessor
+    MovieTrailerDataAccessor,
+    MovieType
 } from "../../dataaccess/db";
-import { ErrorWithStatus, LOGGER_TOKEN, TIMER_TOKEN, Timer } from "../../utils";
 import { Movie } from "../../proto/gen/Movie";
+import { ErrorWithStatus, LOGGER_TOKEN, TIMER_TOKEN, Timer } from "../../utils";
+import { MOVIE_IMAGE_OPERATOR_TOKEN, MovieImageOperator } from "./movie_image_operator";
+import { MOVIE_POSTER_OPERATOR_TOKEN, MoviePosterOperator } from "./movie_poster_operator";
+
+export interface ImageInfo {
+    originalFileName: string,
+    imageData: Buffer,
+}
+
+export interface PosterInfo {
+    originalFileName: string,
+    imageData: Buffer,
+}
 
 export interface MovieManagementOperator {
     createMovie(
         title: string,
         description: string,
-        duration: number | undefined,
+        duration: number,
         releaseDate: number,
-        genreIdList: number[]
+        genreIdList: number[],
+        movieTypeIdList: number[],
+        trailer: string,
+        imageList: ImageInfo[],
+        poster: PosterInfo
     ): Promise<Movie>;
     getMovie(id: number): Promise<{
         movie: Movie,
-        movieGenreList: MovieGenre[] | [],
-        moviePoster: MoviePoster | null,
-        movieImageList: MovieImage[] | []
+        genreList: MovieGenre[] | undefined,
+        movieTypeList: MovieType[] | undefined,
+        imageList: MovieImage[] | undefined
     }>;
     getCurrentShowingMovieList(): Promise<Movie[]>;
     getUpcomingMovieList(): Promise<Movie[]>;
@@ -51,8 +68,11 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
         private readonly movieImageDM: MovieImageDataAccessor,
         private readonly movieGenreDM: MovieGenreDataAccessor,
         private readonly movieHasMovieGenreDM: MovieHasMovieGenreDataAccessor,
+        private readonly movieHasMovieTypeDM: MovieHasMovieTypeDataAccessor,
         private readonly moviePosterDM: MoviePosterDataAccessor,
         private readonly timer: Timer,
+        private readonly movieImageOperator: MovieImageOperator,
+        private readonly moviePosterOperator: MoviePosterOperator,
     ) { }
 
     public async createMovie(
@@ -60,7 +80,11 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
         description: string,
         duration: number,
         releaseDate: number,
-        genreIdList: number[]
+        genreIdList: number[],
+        movieTypeIdList: number[],
+        trailer: string,
+        imageList: ImageInfo[],
+        poster: PosterInfo
     ): Promise<Movie> {
         description = this.sanitizeDescription(description);
         title = this.sanitizeTitle(title);
@@ -111,15 +135,46 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
             }
         });
 
-        return createdMovie;
+        await this.movieHasMovieTypeDM.withTransaction(async (movieHasMovieTypeDM) => {
+            for (const typeId of movieTypeIdList) {
+                await movieHasMovieTypeDM.createMovieHasMovieType(createdMovie.movieId, typeId);
+            }
+        });
+
+        await Promise.all(
+            imageList.map((image) => this.movieImageOperator.createImage(
+                createdMovie.movieId,
+                image.originalFileName,
+                image.imageData
+            ))
+        )
+
+        await this.moviePosterOperator.createPoster(
+            createdMovie.movieId,
+            poster.originalFileName,
+            poster.imageData
+        );
+
+        await this.movieTrailerDM.withTransaction(async (movieTrailerDM) => {
+            const movieTrailerRecord = await movieTrailerDM.getMovieTrailerByMovieIdWithXLock(createdMovie.movieId);
+            if (movieTrailerRecord !== null) {
+                this.logger.error("trailer of movie has already exist", createdMovie.movieId);
+                throw new ErrorWithStatus(`trailer of movie id ${createdMovie.movieId} has already exist`, status.ALREADY_EXISTS);
+            }
+
+            await movieTrailerDM.createMovieTrailer(createdMovie.movieId, trailer);
+        })
+
+        return {
+            id: createdMovie.movieId,
+        };
     }
 
     public async getMovie(id: number): Promise<{
-        movie: Movie;
-        movieTrailer: MovieTrailer | null,
-        movieGenreList: MovieGenre[] | [];
-        moviePoster: MoviePoster | null;
-        movieImageList: MovieImage[] | [];
+        movie: Movie,
+        genreList: MovieGenre[] | undefined,
+        movieTypeList: MovieType[] | undefined,
+        imageList: MovieImage[] | undefined
     }> {
         const movie = await this.movieDM.getMovieById(id);
         if (movie === null) {
@@ -127,12 +182,11 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
             throw new ErrorWithStatus(`no movie with movie id ${id} found`, status.NOT_FOUND);
         }
 
-        const movieTrailer = await this.movieTrailerDM.getMovieTrailerByMovieId(id);
-        const movieGenreList = await this.movieHasMovieGenreDM.getMovieGenreListByMovieId(id);
-        const moviePoster = await this.moviePosterDM.getMoviePosterByMovieId(id);
-        const movieImageList = await this.movieImageDM.getMovieImageListByMovieId(id);
+        const genreList = await this.movieHasMovieGenreDM.getMovieGenreListByMovieId(id);
+        const movieTypeList = await this.movieHasMovieTypeDM.getMovieTypeListByMovieId(id);
+        const imageList = await this.movieImageDM.getMovieImageListByMovieId(id);
 
-        return { movie, movieTrailer, movieGenreList, moviePoster, movieImageList };
+        return { movie, genreList, imageList, movieTypeList };
     }
 
     private async isGenreIdListValid(genreIdList: number[]): Promise<boolean> {
@@ -140,7 +194,7 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
 
         const moviePermissionIdSet = new Set<number>();
         for (const movieGenre of movieGenreList) {
-            moviePermissionIdSet.add(movieGenre.movieGenreId);
+            moviePermissionIdSet.add(movieGenre.id);
         }
 
         for (const genreId of genreIdList) {
@@ -188,8 +242,11 @@ injected(
     MOVIE_IMAGE_DATA_ACCESSOR_TOKEN,
     MOVIE_GENRE_DATA_ACCESSOR_TOKEN,
     MOVIE_HAS_MOVIE_GENRE_DATA_ACCESSOR_TOKEN,
+    MOVIE_HAS_MOVIE_TYPE_DATA_ACCESSOR_TOKEN,
     MOVIE_POSTER_DATA_ACCESSOR_TOKEN,
-    TIMER_TOKEN
+    TIMER_TOKEN,
+    MOVIE_IMAGE_OPERATOR_TOKEN,
+    MOVIE_POSTER_OPERATOR_TOKEN
 );
 
 export const MOVIE_MANAGEMENT_OPERATOR_TOKEN = token<MovieManagementOperator>("MovieManagementOperator");

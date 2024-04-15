@@ -51,7 +51,7 @@ export class MovieGenreDataAccessorImpl implements MovieGenreDataAccessor {
                     [ColNameMovieServiceMovieGenreDisplayName]: movieGenre.displayName
                 })
                 .where({
-                    [ColNameMovieServiceMovieGenreId]: movieGenre.movieGenreId
+                    [ColNameMovieServiceMovieGenreId]: movieGenre.id
                 })
         } catch (error) {
             this.logger.error("failed to update movie genre", { movieGenre, error });

@@ -23,7 +23,7 @@ export class TheaterManagementOperatorImpl implements TheaterManagementOperator 
 
         const createdTheaterId = await this.theaterDM.createTheater({ displayName, location });
         return {
-            theaterId: createdTheaterId,
+            id: createdTheaterId,
             displayName: displayName,
             location: location,
             screenCount: 0,

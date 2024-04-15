@@ -17,7 +17,7 @@ export class ImageProtoToImageConverterImpl implements ImageProtoToImageConverte
     ) { }
 
     public async convert(movieImageProto: MovieImageProto | undefined): Promise<MovieImage> {
-        const imageId = movieImageProto?.imageId || 0;
+        const imageId = movieImageProto?.id || 0;
         if (movieImageProto?.ofMovieId === undefined) {
             this.logger.error("image has no movie", { imageId });
             throw new ErrorWithHTTPCode(
@@ -31,25 +31,18 @@ export class ImageProtoToImageConverterImpl implements ImageProtoToImageConverte
         const originalImageFileURL = this.getOriginalImageFileURL(
             movieImageProto?.originalImageFileName || ""
         );
-        const thumbnailImageFileURL = this.getThumbnailImageFileURL(
-            movieImageProto?.thumbnailImageFileName || ""
-        );
+
 
         return new MovieImage(
             imageId,
             +movieImageProto.ofMovieId,
             originalFileName,
             originalImageFileURL,
-            thumbnailImageFileURL
         );
     }
 
     private getOriginalImageFileURL(originalImageFilename: string): string {
-        return `http://${this.applicationConfig.originalImageURLPrefix}/${originalImageFilename}`;
-    }
-
-    private getThumbnailImageFileURL(thumbnailFilename: string): string {
-        return `http://${this.applicationConfig.thumbnailImageURLPrefix}/${thumbnailFilename}`;
+        return `http://${this.applicationConfig.imageURLPrefix}/${originalImageFilename}`;
     }
 }
 

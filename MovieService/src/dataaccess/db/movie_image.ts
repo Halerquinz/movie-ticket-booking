@@ -10,7 +10,6 @@ export interface CreateMovieImageArguments {
     ofMovieId: number,
     originalFileName: string,
     originalImageFileName: string,
-    thumbnailImageFileName: string
 }
 
 export interface MovieImageDataAccessor {
@@ -26,7 +25,6 @@ const ColNameMovieServiceMovieImageId = "image_id";
 const ColNameMovieServiceMovieImageOfMovieId = "of_movie_id";
 const ColNameMovieServiceMovieOriginalFileName = "original_file_name";
 const ColNameMovieServiceMovieOriginalImageFileName = "original_image_filename";
-const ColNameMovieServiceMovieThumbnailImageFileName = "thumbnail_image_filename";
 
 export class MovieImageDataAccessorImpl implements MovieImageDataAccessor {
     constructor(
@@ -40,7 +38,6 @@ export class MovieImageDataAccessorImpl implements MovieImageDataAccessor {
                 .insert({
                     [ColNameMovieServiceMovieOriginalFileName]: args.originalFileName,
                     [ColNameMovieServiceMovieOriginalImageFileName]: args.originalImageFileName,
-                    [ColNameMovieServiceMovieThumbnailImageFileName]: args.thumbnailImageFileName,
                     [ColNameMovieServiceMovieImageOfMovieId]: args.ofMovieId
                 })
                 .returning(ColNameMovieServiceMovieImageId)
@@ -66,7 +63,6 @@ export class MovieImageDataAccessorImpl implements MovieImageDataAccessor {
                 +row[ColNameMovieServiceMovieImageOfMovieId],
                 row[ColNameMovieServiceMovieOriginalFileName],
                 row[ColNameMovieServiceMovieOriginalImageFileName],
-                row[ColNameMovieServiceMovieThumbnailImageFileName]
             )) || [];
         } catch (error) {
             this.logger.error("failed to get movie image", { ofMovieId: ofMovieId, error });
@@ -81,7 +77,7 @@ export class MovieImageDataAccessorImpl implements MovieImageDataAccessor {
                 .from(TabNameMovieServiceMovieImageTab)
                 .where({
                     [ColNameMovieServiceMovieImageOfMovieId]: ofMovieId
-                })
+                });
 
             return rows.map((row) => this.getMovieImageFromRow(row));
         } catch (error) {
@@ -122,7 +118,6 @@ export class MovieImageDataAccessorImpl implements MovieImageDataAccessor {
             +row[ColNameMovieServiceMovieImageOfMovieId],
             row[ColNameMovieServiceMovieOriginalFileName],
             row[ColNameMovieServiceMovieOriginalImageFileName],
-            row[ColNameMovieServiceMovieThumbnailImageFileName]
         )
     }
 }

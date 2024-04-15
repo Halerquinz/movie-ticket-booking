@@ -32,3 +32,15 @@ services:
     restart: always
     volumes:
       - ../minio-data:/data 
+  elk:
+    image: sebp/elk:8.3.3
+    ports:
+      - "5601:5601"
+      - "9200:9200"
+      - "5044:5044"
+    environment:
+      - MAX_MAP_COUNT=262144
+    volumes:
+      - ../elk-data:/var/lib/elasticsearch
+
+      

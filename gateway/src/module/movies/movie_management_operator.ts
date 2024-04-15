@@ -1,23 +1,30 @@
 import { injected, token } from "brandi";
 import { Logger } from "winston";
 import { MOVIE_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
+import { ImageInfo } from "../../proto/gen/ImageInfo";
 import { MovieServiceClient } from "../../proto/gen/MovieService";
+import { PosterInfo } from "../../proto/gen/PosterInfo";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGRPCCall, } from "../../utils";
-import { Movie, MovieGenre, MovieImage, MoviePoster } from "../schemas";
+import { Movie, MovieGenre, MovieImage, MovieType } from "../schemas";
+import { IMAGE_PROTO_TO_IMAGE_CONVERTER_TOKEN, ImageProtoToImageConverter, POSTER_PROTO_TO_POSTER_CONVERTER_TOKEN, PosterProtoToPosterConverter } from "../schemas/converters";
 
 export interface MovieManagementOperator {
     createMovie(
         title: string,
         description: string,
-        duration: number | undefined,
+        duration: number,
         releaseDate: number,
-        genreIdList: number[]
-    ): Promise<Movie>;
+        genreIdList: number[],
+        movieTypeIdList: number[],
+        trailer: string,
+        imageList: ImageInfo[],
+        poster: PosterInfo
+    ): Promise<number>;
     getMovie(id: number): Promise<{
         movie: Movie,
-        movieGenreList: MovieGenre[] | [],
-        moviePoster: MoviePoster | null,
-        movieImageList: MovieImage[] | []
+        genreList: MovieGenre[] | undefined,
+        movieTypeList: MovieType[] | undefined,
+        imageList: MovieImage[] | undefined
     }>;
     getCurrentShowingMovieList(): Promise<Movie[]>;
     getUpcomingMovieList(): Promise<Movie[]>;
@@ -28,22 +35,32 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
     constructor(
         private readonly movieServiceDM: MovieServiceClient,
         private readonly logger: Logger,
+        private readonly imageProtoToImageConverter: ImageProtoToImageConverter,
+        private readonly posterProtoToPosterConverter: PosterProtoToPosterConverter,
     ) { }
 
     public async createMovie(
         title: string,
         description: string,
-        duration: number | undefined,
+        duration: number,
         releaseDate: number,
-        genreIdList: number[]
-    ): Promise<Movie> {
+        genreIdList: number[],
+        movieTypeIdList: number[],
+        trailer: string,
+        imageList: ImageInfo[],
+        poster: PosterInfo
+    ): Promise<number> {
         const { error: createMovieError, response: createMovieResponse } = await promisifyGRPCCall(
             this.movieServiceDM.createMovie.bind(this.movieServiceDM), {
             title,
             description,
             duration,
             releaseDate,
-            genreIdList
+            genreIdList,
+            imageList,
+            poster,
+            trailer,
+            typeIdList: movieTypeIdList
         });
 
         if (createMovieError !== null) {
@@ -54,7 +71,7 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
             );
         }
 
-        return Movie.fromProto(createMovieResponse?.movie);
+        return createMovieResponse?.movie?.id || 0;
     }
 
     public async deleteMovie(id: number): Promise<void> {
@@ -92,12 +109,11 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
     }
 
     public async getMovie(id: number): Promise<{
-        movie: Movie;
-        movieGenreList: MovieGenre[] | [];
-        moviePoster: MoviePoster | null;
-        movieImageList: [] | MovieImage[];
+        movie: Movie,
+        genreList: MovieGenre[] | undefined,
+        movieTypeList: MovieType[] | undefined,
+        imageList: MovieImage[] | undefined
     }> {
-
         const { error: getMovieError, response: getMovieResponse } = await promisifyGRPCCall(
             this.movieServiceDM.getMovie.bind(this.movieServiceDM), { id }
         );
@@ -110,12 +126,18 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
             );
         }
 
+        const imageList = await Promise.all(
+            getMovieResponse?.imageList?.map((movieImageProto) => this.imageProtoToImageConverter.convert(movieImageProto)) || [],
+        );
+
+        const movieProto = getMovieResponse?.movie as any;
+        movieProto.poster = await this.posterProtoToPosterConverter.convert(movieProto?.poster);
 
         return {
-            movie: Movie.fromProto(getMovieResponse?.movie),
-            movieGenreList: getMovieResponse?.movieGenreList?.map((movieGenreProto) => MovieGenre.fromProto(movieGenreProto)) || [],
-            movieImageList: getMovieResponse?.movieImageList?.map((movieImageProto) => MovieImage.fromProto(movieImageProto)) || [],
-            moviePoster: MoviePoster.fromProto(getMovieResponse?.moviePoster)
+            movie: Movie.fromProto(movieProto),
+            genreList: getMovieResponse?.genreList?.map((movieGenreProto) => MovieGenre.fromProto(movieGenreProto)) || [],
+            imageList,
+            movieTypeList: getMovieResponse?.movieTypeList?.map((movieTypeProto) => MovieType.fromProto(movieTypeProto)) || [],
         };
     }
 
@@ -143,7 +165,9 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
 injected(
     MovieManagementOperatorImpl,
     MOVIE_SERVICE_DM_TOKEN,
-    LOGGER_TOKEN
+    LOGGER_TOKEN,
+    IMAGE_PROTO_TO_IMAGE_CONVERTER_TOKEN,
+    POSTER_PROTO_TO_POSTER_CONVERTER_TOKEN
 );
 
 export const MOVIE_MANAGEMENT_OPERATOR_TOKEN = token<MovieManagementOperator>("MovieManagementOperator");

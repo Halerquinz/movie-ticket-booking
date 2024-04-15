@@ -2,6 +2,7 @@ import { injected, token } from "brandi";
 import { ErrorRequestHandler, NextFunction } from "express";
 import { Logger } from "winston";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, maskSensitiveFields } from "../../utils";
+import httpStatus from "http-status";
 
 export interface ErrorHandlerMiddlewareFactory {
     catchToErrorHandlerMiddleware(callback: () => Promise<void>, next: NextFunction): Promise<void>;
@@ -33,6 +34,8 @@ export class ErrorHandlerMiddlewareFactoryImpl implements ErrorHandlerMiddleware
 
             if (err instanceof ErrorWithHTTPCode) {
                 res.status(err.code).json({ message: err.message });
+            } else {
+                res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
             }
         })
     }

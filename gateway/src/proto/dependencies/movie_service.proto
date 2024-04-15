@@ -5,14 +5,6 @@ service MovieService {
    rpc UpdateMovieGenre(UpdateMovieGenreRequest) returns (UpdateMovieGenreResponse)  {}
    rpc DeleteMovieGenre(DeleteMovieGenreRequest) returns (DeleteMovieGenreResponse)  {}
    
-   rpc CreateImage(CreateImageRequest) returns (CreateImageResponse)  {}
-   rpc GetImage(GetImageRequest) returns (GetImageResponse)  {}
-   rpc DeleteImage(DeleteImageRequest) returns (DeleteImageResponse)  {}
-
-   rpc CreatePoster(CreatePosterRequest) returns (CreatePosterResponse)  {}
-   rpc GetPoster(GetPosterRequest) returns (GetPosterResponse)  {}
-   rpc DeletePoster(DeletePosterRequest) returns (DeletePosterResponse)  {}
-
    rpc CreateMovie(CreateMovieRequest) returns (CreateMovieResponse)  {}
    rpc GetMovie(GetMovieRequest) returns (GetMovieResponse)  {}
    rpc DeleteMovie(DeleteMovieRequest) returns (DeleteMovieResponse)  {}
@@ -32,35 +24,44 @@ service MovieService {
 
    rpc CreateShowtime(CreateShowtimeRequest) returns (CreateShowtimeResponse) {}
    rpc DeleteShowtime(DeleteShowtimeRequest) returns (DeleteShowtimeResponse) {}
-
 }
 
 message MovieGenre {
-    uint32 movie_genre_id = 1;
+    uint32 id = 1;
+    string display_name = 2;
+}
+
+message MovieType {
+    uint32 id = 1;
     string display_name = 2;
 }
 
 message MovieImage {
-    uint32 image_id = 1;
+    uint32 id = 1;
     uint32 of_movie_id = 2;
     string original_file_name = 3;
     string original_image_file_name = 4;
-    string thumbnail_image_file_name = 5;
 }
 
 message MoviePoster {
     uint32 of_movie_id = 1;
     string original_file_name = 2;
     string original_image_file_name = 3;
-    string thumbnail_image_file_name = 4;
+}
+
+message MovieTrailer {
+    uint32 of_movie_id = 1;
+    string youtube_link_url = 2;
 }
 
 message Movie {
-    uint32 movie_id = 1;
+    uint32 id = 1;
     string title = 2;
     string description = 3;
     uint32 duration = 4;
     uint64 release_date = 5;
+    MoviePoster poster = 6;
+    MovieTrailer trailer = 7;
 }
 
 message ShowtimeType {
@@ -95,8 +96,8 @@ message DeleteMovieGenreResponse {}
 
 message CreateImageRequest {
     uint32 of_movie_id = 1; 
-    string originalFileName = 2;
-    bytes imageData = 3;
+    string original_file_name = 2;
+    bytes image_data = 3;
 }
 
 message CreateImageResponse {
@@ -141,12 +142,26 @@ message DeletePosterRequest {
 
 message DeletePosterResponse {}
 
+message PosterInfo {
+    string original_file_name = 1;
+    bytes image_data = 2;
+}
+
+message ImageInfo {
+    string original_file_name = 1;
+    bytes image_data = 2;
+}
+
 message CreateMovieRequest {
     string title = 1;
     string description = 2;
     uint32 duration = 3;
     uint64 release_date = 4;
     repeated uint32 genre_id_list = 5;
+    repeated ImageInfo image_list = 6;
+    PosterInfo poster = 7;
+    repeated uint32 type_id_list = 8;
+    string trailer = 9;
 }
 
 message CreateMovieResponse {
@@ -159,9 +174,9 @@ message GetMovieRequest {
 
 message GetMovieResponse {
     Movie movie = 1;
-    repeated MovieGenre movie_genre_list = 2;
-    MoviePoster movie_poster = 3;
-    repeated MovieImage movie_image_list = 4;
+    repeated MovieGenre genre_list = 2;
+    repeated MovieType movie_type_list = 3;
+    repeated MovieImage image_list = 4;
 }
 
 message GetCurrentShowingMovieListRequest {}

@@ -1,6 +1,6 @@
 export class Theater {
     constructor(
-        public theater_id: number,
+        public id: number,
         public display_name: string,
         public location: string,
         public screen_count: number,
@@ -9,7 +9,7 @@ export class Theater {
 
     public static fromProto(theaterProto: any | undefined): Theater {
         return new Theater(
-            theaterProto?.theaterId || 0,
+            theaterProto?.id || 0,
             theaterProto?.displayName || "",
             theaterProto?.location || "",
             theaterProto?.screenCount || 0,

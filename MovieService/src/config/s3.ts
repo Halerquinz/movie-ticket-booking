@@ -5,8 +5,8 @@ export class S3Config {
     public port = 9000;
     public user = "ROOTUSER";
     public password = "CHANGEME123";
-    public originalImageBucket = "originals";
-    public thumbnailImageBucket = "thumbnails";
+    public imageBucket = "images";
+    public posterBucket = "posters";
 
     public static fromEnv(): S3Config {
         const config = new S3Config();
@@ -22,11 +22,11 @@ export class S3Config {
         if (process.env.S3_PASSWORD !== undefined) {
             config.password = process.env.S3_PASSWORD;
         }
-        if (process.env.S3_ORIGINAL_IMAGE_BUCKET !== undefined) {
-            config.originalImageBucket = process.env.S3_ORIGINAL_IMAGE_BUCKET;
+        if (process.env.S3_IMAGE_BUCKET !== undefined) {
+            config.imageBucket = process.env.S3_IMAGE_BUCKET;
         }
-        if (process.env.S3_THUMBNAIL_IMAGE_BUCKET !== undefined) {
-            config.thumbnailImageBucket = process.env.S3_THUMBNAIL_IMAGE_BUCKET;
+        if (process.env.S3_POSTER_BUCKET !== undefined) {
+            config.posterBucket = process.env.S3_POSTER_BUCKET;
         }
         return config;
     }

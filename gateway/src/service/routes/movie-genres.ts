@@ -26,9 +26,10 @@ export function getMovieGenresRouter(
 
     router.post(
         "/api/movie-genres",
-        movieGenresManageAuthMiddleware,
+        // movieGenresManageAuthMiddleware,
         asyncHandler(async (req, res, next) => {
             errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
+                console.log("body", req.body);
                 const displayName = req.body.display_name as string;
                 const movieGenre = await movieGenreManagementOperator.createMovieGenre(
                     displayName

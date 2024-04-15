@@ -2,7 +2,6 @@ import { sendUnaryData, status } from "@grpc/grpc-js";
 import { injected, token } from "brandi";
 import { MOVIE_MANAGEMENT_OPERATOR_TOKEN, MovieManagementOperator } from "../module/movie";
 import { MOVIE_GENRE_MANAGEMENT_OPERATOR, MovieGenreManagementOperator } from "../module/movie_genre";
-import { MOVIE_IMAGE_MANAGEMENT_OPERATOR_TOKEN, MOVIE_POSTER_MANAGEMENT_OPERATOR_TOKEN, MovieImageManagementOperator, MoviePosterManagementOperator } from "../module/movie_image";
 import { MovieServiceHandlers } from "../proto/gen/MovieService";
 import { ErrorWithStatus } from "../utils";
 import { SCREEN_TYPE_MANAGEMENT_OPERATOR_TOKEN, ScreenTypeManagementOperator } from "../module/screen_type";
@@ -14,8 +13,6 @@ import { SHOWTIME_MANAGEMENT_OPERATOR_TOKEN, ShowtimeManagementOperator } from "
 export class MovieServiceHandlerFactory {
     constructor(
         private readonly movieGenreManagementOperator: MovieGenreManagementOperator,
-        private readonly movieImageManagementOperator: MovieImageManagementOperator,
-        private readonly moviePosterManagementOperator: MoviePosterManagementOperator,
         private readonly movieManagementOperator: MovieManagementOperator,
         private readonly screenTypeManagementOperator: ScreenTypeManagementOperator,
         private readonly screenManagementOperator: ScreenManagementOperator,
@@ -26,30 +23,6 @@ export class MovieServiceHandlerFactory {
 
     public getMovieServiceHandlers(): MovieServiceHandlers {
         const handler: MovieServiceHandlers = {
-            CreateImage: async (call, callback) => {
-                const req = call.request;
-                if (req.ofMovieId === undefined) {
-                    return callback({ message: "movie id is required", code: status.INVALID_ARGUMENT });
-                }
-
-                if (req.imageData === undefined) {
-                    return callback({ message: "image data is required", code: status.INVALID_ARGUMENT });
-                }
-
-                const originalFileName = req.originalFileName || "";
-
-                try {
-                    const createdImage = await this.movieImageManagementOperator.createImage(
-                        req.ofMovieId,
-                        originalFileName,
-                        req.imageData
-                    );
-                    callback(null, { movieImage: createdImage });
-                } catch (error) {
-                    this.handleError(error, callback);
-                }
-            },
-
             CreateMovie: async (call, callback) => {
                 const req = call.request;
                 if (req.title === undefined) {
@@ -59,19 +32,34 @@ export class MovieServiceHandlerFactory {
                 if (req.releaseDate === undefined) {
                     return callback({ message: "release date is required", code: status.INVALID_ARGUMENT });
                 }
+
+                if (req.imageList === undefined) {
+                    return callback({ message: "image list is required", code: status.INVALID_ARGUMENT });
+                }
+
+                if (req.poster === undefined) {
+                    return callback({ message: "poster is required", code: status.INVALID_ARGUMENT });
+                }
+
                 const description = req.description || "";
                 const duration = req.duration || 0;
                 const genreIdList = req.genreIdList || [];
-                const releaseDate = +req.releaseDate.toString();
+                const typeIdList = req.typeIdList || [];
+                const trailer = req.trailer || "";
+                const imageList = req.imageList || [];
 
                 try {
                     const createdMovie = await this.movieManagementOperator.createMovie(
                         req.title,
                         description,
                         duration,
-                        releaseDate,
-                        genreIdList as any
-                    )
+                        req.releaseDate,
+                        genreIdList,
+                        typeIdList,
+                        trailer,
+                        imageList as any,
+                        req.poster as any
+                    );
                     callback(null, { movie: createdMovie });
                 } catch (error) {
                     this.handleError(error, callback);
@@ -91,30 +79,6 @@ export class MovieServiceHandlerFactory {
                     callback(null, { movieGenre: createdMovieGenre });
                 } catch (error) {
                     this.handleError(error, callback)
-                }
-            },
-
-            CreatePoster: async (call, callback) => {
-                const req = call.request;
-                if (req.ofMovieId === undefined) {
-                    return callback({ message: "movie id is required", code: status.INVALID_ARGUMENT });
-                }
-
-                if (req.imageData === undefined) {
-                    return callback({ message: "image data is required", code: status.INVALID_ARGUMENT });
-                }
-
-                const originalFileName = req.originalFileName || "";
-
-                try {
-                    const createdPoster = await this.moviePosterManagementOperator.createPoster(
-                        req.ofMovieId,
-                        originalFileName,
-                        req.imageData
-                    );
-                    callback(null, { moviePoster: createdPoster });
-                } catch (error) {
-                    this.handleError(error, callback);
                 }
             },
 
@@ -240,13 +204,12 @@ export class MovieServiceHandlerFactory {
                     return callback({ message: "showtime type is required", code: status.INVALID_ARGUMENT });
                 }
 
-                const timeStart = +req.timeStart.toString();
 
                 try {
                     const createdShowtime = await this.showtimeManagementOperator.createShowtime(
                         req.movieId,
                         req.screenId,
-                        timeStart,
+                        req.timeStart,
                         req.showtimeType
                     );
                     callback(null, createdShowtime);
@@ -263,20 +226,6 @@ export class MovieServiceHandlerFactory {
 
                 try {
                     await this.showtimeManagementOperator.deleteShowtime(req.id);
-                    callback(null, {});
-                } catch (error) {
-                    this.handleError(error, callback)
-                }
-            },
-
-            DeleteImage: async (call, callback) => {
-                const req = call.request;
-                if (req.id === undefined) {
-                    return callback({ message: "id is required", code: status.INVALID_ARGUMENT });
-                }
-
-                try {
-                    await this.movieImageManagementOperator.deleteImage(req.id);
                     callback(null, {});
                 } catch (error) {
                     this.handleError(error, callback)
@@ -311,19 +260,6 @@ export class MovieServiceHandlerFactory {
                 }
             },
 
-            DeletePoster: async (call, callback) => {
-                const req = call.request;
-                if (req.ofMovieId === undefined) {
-                    return callback({ message: "movie id is required", code: status.INVALID_ARGUMENT });
-                }
-
-                try {
-                    await this.moviePosterManagementOperator.deletePoster(req.ofMovieId);
-                    callback(null, {});
-                } catch (error) {
-                    this.handleError(error, callback)
-                }
-            },
 
             DeleteScreen: async (call, callback) => {
                 const req = call.request;
@@ -376,55 +312,22 @@ export class MovieServiceHandlerFactory {
                 }
             },
 
-            GetImage: async (call, callback) => {
-                const req = call.request;
-                if (req.movieId === undefined) {
-                    return callback({ message: "movie id is required", code: status.INVALID_ARGUMENT });
-                }
-                try {
-                    const movieImage = await this.movieImageManagementOperator.getImage(
-                        req.movieId
-                    );
-                    callback(null, { movieImageList: movieImage });
-                } catch (error) {
-                    this.handleError(error, callback)
-                }
-            },
-
             GetMovie: async (call, callback) => {
                 const req = call.request;
                 if (req.id === undefined) {
                     return callback({ message: "id is required", code: status.INVALID_ARGUMENT });
                 }
                 try {
-                    const movie = await this.movieManagementOperator.getMovie(
-                        req.id
-                    );
-                    callback(null, {
-                        movie: movie.movie,
-                        movieGenreList: movie.movieGenreList,
-                        movieImageList: movie.movieImageList,
-                        moviePoster: movie.moviePoster
-                    });
+                    const { genreList, imageList, movie, movieTypeList } =
+                        await this.movieManagementOperator.getMovie(
+                            req.id
+                        );
+                    callback(null, { genreList, imageList, movie, movieTypeList });
                 } catch (error) {
                     this.handleError(error, callback)
                 }
             },
 
-            GetPoster: async (call, callback) => {
-                const req = call.request;
-                if (req.movieId === undefined) {
-                    return callback({ message: "movie id is required", code: status.INVALID_ARGUMENT });
-                }
-                try {
-                    const moviePoster = await this.moviePosterManagementOperator.getPoster(
-                        req.movieId
-                    );
-                    callback(null, { moviePoster: moviePoster });
-                } catch (error) {
-                    this.handleError(error, callback)
-                }
-            },
 
             GetUpcomingMovieList: async (call, callback) => {
                 const req = call.request;
@@ -473,8 +376,6 @@ export class MovieServiceHandlerFactory {
 
 injected(MovieServiceHandlerFactory,
     MOVIE_GENRE_MANAGEMENT_OPERATOR,
-    MOVIE_IMAGE_MANAGEMENT_OPERATOR_TOKEN,
-    MOVIE_POSTER_MANAGEMENT_OPERATOR_TOKEN,
     MOVIE_MANAGEMENT_OPERATOR_TOKEN,
     SCREEN_TYPE_MANAGEMENT_OPERATOR_TOKEN,
     SCREEN_MANAGEMENT_OPERATOR_TOKEN,

@@ -61,7 +61,7 @@ export class ScreenManagementOperatorImpl implements ScreenManagementOperator {
             await this.screenCreatedProducer.createScreenCreatedMessage(new ScreenCreated(createdScreenId, screenTypeId));
 
             return {
-                screenId: createdScreenId,
+                id: createdScreenId,
                 ofTheaterId: theaterId,
                 ofScreenTypeId: screenTypeId,
                 displayName: displayName

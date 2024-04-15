@@ -4,7 +4,7 @@ import { Logger } from "winston";
 import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 import { KNEX_INSTANCE_TOKEN } from "./knex";
 import { status } from "@grpc/grpc-js";
-import { Movie } from "./models";
+import { Movie, MoviePoster, MovieTrailer } from "./models";
 
 export class MovieWithPoster {
     constructor(
@@ -57,6 +57,10 @@ const ColNameMovieServiceMoviePosterOfMovieId = "of_movie_id";
 const ColNameMovieServiceMoviePosterOriginalFileName = "original_filename";
 const ColNameMovieServiceMoviePosterOriginalImageFileName = "original_image_filename";
 const ColNameMovieServiceMoviePosterThumbnailImageFileName = "thumbnail_image_filename";
+
+const TabNameMovieServiceMovieTrailerTab = "movie_service_movie_trailer_tab";
+const ColNameMovieServiceMovieTrailerOfMovieId = "of_movie_id";
+const ColNameMovieServiceMovieTrailerYoutubeLinkUrl = "youtube_link_url";
 
 export class MovieDataAccessorImpl implements MovieDataAccessor {
     constructor(
@@ -127,9 +131,17 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
             rows = await this.knex
                 .select()
                 .from(TabNameMovieServiceMovieTab)
-                .where({
-                    [ColNameMovieServiceMovieId]: id
-                })
+                .leftOuterJoin(
+                    TabNameMovieServiceMoviePosterTab,
+                    `${TabNameMovieServiceMovieTab}.${ColNameMovieServiceMovieId}`,
+                    `${TabNameMovieServiceMoviePosterTab}.${ColNameMovieServiceMoviePosterOfMovieId} `
+                )
+                .leftOuterJoin(
+                    TabNameMovieServiceMovieTrailerTab,
+                    `${TabNameMovieServiceMovieTab}.${ColNameMovieServiceMovieId}`,
+                    `${TabNameMovieServiceMovieTrailerTab}.${ColNameMovieServiceMovieTrailerOfMovieId} `
+                )
+                .where(ColNameMovieServiceMovieId, "=", id);
         } catch (error) {
             this.logger.error("failed to get movie", { id, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
@@ -173,8 +185,8 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
                 .from(TabNameMovieServiceMovieTab)
                 .leftOuterJoin(
                     TabNameMovieServiceMoviePosterTab,
-                    `${TabNameMovieServiceMovieTab}.${ColNameMovieServiceMovieId}`,
-                    `${TabNameMovieServiceMoviePosterTab}.${ColNameMovieServiceMoviePosterOfMovieId}`,
+                    `${TabNameMovieServiceMovieTab}.${ColNameMovieServiceMovieId} `,
+                    `${TabNameMovieServiceMoviePosterTab}.${ColNameMovieServiceMoviePosterOfMovieId} `,
                 )
                 .where(ColNameMovieServiceMovieReleaseDate, "<=", requestTime);
 
@@ -192,8 +204,8 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
                 .from(TabNameMovieServiceMovieTab)
                 .leftOuterJoin(
                     TabNameMovieServiceMoviePosterTab,
-                    `${TabNameMovieServiceMovieTab}.${ColNameMovieServiceMovieId}`,
-                    `${TabNameMovieServiceMoviePosterTab}.${ColNameMovieServiceMoviePosterOfMovieId}`,
+                    `${TabNameMovieServiceMovieTab}.${ColNameMovieServiceMovieId} `,
+                    `${TabNameMovieServiceMoviePosterTab}.${ColNameMovieServiceMoviePosterOfMovieId} `,
                 )
                 .where(ColNameMovieServiceMovieReleaseDate, ">", requestTime);
 
@@ -243,25 +255,61 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
     }
 
     private getMovieFromRow(row: Record<string, any>): Movie {
+        let poster: MoviePoster | null = null;
+        if (row[ColNameMovieServiceMoviePosterOfMovieId]) {
+            poster = new MoviePoster(
+                +row[ColNameMovieServiceMoviePosterOfMovieId],
+                row[ColNameMovieServiceMoviePosterOriginalFileName],
+                row[ColNameMovieServiceMoviePosterOriginalImageFileName],
+            );
+        }
+
+        let trailer: MovieTrailer | null = null;
+        if (row[ColNameMovieServiceMovieTrailerOfMovieId]) {
+            trailer = new MovieTrailer(
+                +row[ColNameMovieServiceMovieTrailerOfMovieId],
+                row[ColNameMovieServiceMovieTrailerYoutubeLinkUrl],
+            );
+        }
+
         return new Movie(
             +row[ColNameMovieServiceMovieId],
             row[ColNameMovieServiceMovieTitle],
             row[ColNameMovieServiceMovieDescription],
             +row[ColNameMovieServiceMovieDuration],
-            +row[ColNameMovieServiceMovieReleaseDate]
+            +row[ColNameMovieServiceMovieReleaseDate],
+            trailer,
+            poster,
         );
+
     }
 
-    private getMovieFromJoinedRow(row: Record<string, any>): MovieWithPoster {
-        return new MovieWithPoster(
+    private getMovieFromJoinedRow(row: Record<string, any>): Movie {
+        let poster: MoviePoster | null = null;
+        if (row[ColNameMovieServiceMoviePosterOfMovieId]) {
+            poster = new MoviePoster(
+                +row[ColNameMovieServiceMoviePosterOfMovieId],
+                row[ColNameMovieServiceMoviePosterOriginalFileName],
+                row[ColNameMovieServiceMoviePosterOriginalImageFileName],
+            );
+        }
+
+        let trailer: MovieTrailer | null = null;
+        if (row[ColNameMovieServiceMovieTrailerOfMovieId]) {
+            trailer = new MovieTrailer(
+                +row[ColNameMovieServiceMovieTrailerOfMovieId],
+                row[ColNameMovieServiceMovieTrailerYoutubeLinkUrl],
+            );
+        }
+
+        return new Movie(
             +row[ColNameMovieServiceMovieId],
             row[ColNameMovieServiceMovieTitle],
             row[ColNameMovieServiceMovieDescription],
             +row[ColNameMovieServiceMovieDuration],
             +row[ColNameMovieServiceMovieReleaseDate],
-            row[ColNameMovieServiceMoviePosterOriginalFileName],
-            row[ColNameMovieServiceMoviePosterOriginalImageFileName],
-            row[ColNameMovieServiceMoviePosterThumbnailImageFileName]
+            trailer,
+            poster,
         );
     }
 }

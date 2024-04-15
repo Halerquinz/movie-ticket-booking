@@ -1,6 +1,6 @@
 export class ScreenType {
     constructor(
-        public screen_type_id: number,
+        public id: number,
         public display_name: string,
         public description: string,
         public seat_count: number,
@@ -11,7 +11,7 @@ export class ScreenType {
     public static fromProto(screenTypeProto: any): ScreenType {
         console.log()
         return new ScreenType(
-            screenTypeProto?.screenTypeId || 0,
+            screenTypeProto?.id || 0,
             screenTypeProto?.displayName || "",
             screenTypeProto?.description || "",
             screenTypeProto?.seatCount || 0,

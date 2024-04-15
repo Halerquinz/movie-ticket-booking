@@ -64,7 +64,7 @@ export class ScreenTypeManagementOperatorImpl implements ScreenTypeManagementOpe
             });
 
             return {
-                screenTypeId: createdScreenTypeId,
+                id: createdScreenTypeId,
                 description: description,
                 displayName: displayName,
                 seatCount: seatCount,

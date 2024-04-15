@@ -10,7 +10,6 @@ export interface CreateMoviePosterArguments {
     ofMovieId: number,
     originalFileName: string,
     originalImageFileName: string,
-    thumbnailImageFileName: string
 }
 
 export interface MoviePosterDataAccessor {
@@ -24,7 +23,6 @@ const TabNameMovieServiceMoviePosterTab = "movie_service_movie_poster_tab";
 const ColNameMovieServiceMoviePosterOfMovieId = "of_movie_id";
 const ColNameMovieServiceMoviePosterOriginalFileName = "original_filename";
 const ColNameMovieServiceMoviePosterOriginalImageFileName = "original_image_filename";
-const ColNameMovieServiceMoviePosterThumbnailImageFileName = "thumbnail_image_filename";
 
 
 export class MoviePosterDataAccessorImpl implements MoviePosterDataAccessor {
@@ -40,8 +38,6 @@ export class MoviePosterDataAccessorImpl implements MoviePosterDataAccessor {
                     [ColNameMovieServiceMoviePosterOfMovieId]: args.ofMovieId,
                     [ColNameMovieServiceMoviePosterOriginalFileName]: args.originalFileName,
                     [ColNameMovieServiceMoviePosterOriginalImageFileName]: args.originalImageFileName,
-                    [ColNameMovieServiceMoviePosterThumbnailImageFileName]: args.thumbnailImageFileName,
-
                 })
                 .returning(ColNameMovieServiceMoviePosterOfMovieId)
                 .into(TabNameMovieServiceMoviePosterTab);

@@ -7,13 +7,14 @@ import { status } from "@grpc/grpc-js";
 import { MovieTrailer } from "./models";
 
 export interface MovieTrailerDataAccessor {
-    createMovieTrailer(youtube_link_url: string): Promise<number>;
+    createMovieTrailer(ofMovieId: number, youtubeLinkUrl: string): Promise<number>;
     getMovieTrailerByMovieId(ofMovieId: number): Promise<MovieTrailer | null>;
+    getMovieTrailerByMovieIdWithXLock(ofMovieId: number): Promise<MovieTrailer | null>;
     deleteMovieTrailer(id: number): Promise<void>;
     withTransaction<T>(cb: (dataAccessor: MovieTrailerDataAccessor) => Promise<T>): Promise<T>;
 }
 
-const TabNameMovieServiceMovieTrailerTab = "movie_service_movie_genre_tab";
+const TabNameMovieServiceMovieTrailerTab = "movie_service_movie_trailer_tab";
 const ColNameMovieServiceMovieTrailerOfMovieId = "of_movie_id";
 const ColNameMovieServiceMovieTrailerYoutubeLinkUrl = "youtube_link_url";
 
@@ -23,10 +24,11 @@ export class MovieTrailerDataAccessorImpl implements MovieTrailerDataAccessor {
         private readonly logger: Logger
     ) { }
 
-    public async createMovieTrailer(youtubeLinkUrl: string): Promise<number> {
+    public async createMovieTrailer(ofMovieId: number, youtubeLinkUrl: string): Promise<number> {
         try {
             const rows = await this.knex
                 .insert({
+                    [ColNameMovieServiceMovieTrailerOfMovieId]: ofMovieId,
                     [ColNameMovieServiceMovieTrailerYoutubeLinkUrl]: youtubeLinkUrl
                 })
                 .returning(ColNameMovieServiceMovieTrailerYoutubeLinkUrl)
@@ -46,7 +48,30 @@ export class MovieTrailerDataAccessorImpl implements MovieTrailerDataAccessor {
                 .from(TabNameMovieServiceMovieTrailerTab)
                 .where({
                     [ColNameMovieServiceMovieTrailerOfMovieId]: ofMovieId
+                });
+        } catch (error) {
+            this.logger.error("failed to get movie trailer", { ofMovieId, error });
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+
+        if (rows.length === 0) {
+            this.logger.debug("no movie trailer of movie id  found", { ofMovieId });
+            return null;
+        }
+
+        return rows[0];
+    }
+
+    public async getMovieTrailerByMovieIdWithXLock(ofMovieId: number): Promise<MovieTrailer | null> {
+        let rows;
+        try {
+            rows = await this.knex
+                .select()
+                .from(TabNameMovieServiceMovieTrailerTab)
+                .where({
+                    [ColNameMovieServiceMovieTrailerOfMovieId]: ofMovieId
                 })
+                .forUpdate();
         } catch (error) {
             this.logger.error("failed to get movie trailer", { ofMovieId, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);

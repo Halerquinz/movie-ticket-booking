@@ -1,6 +1,6 @@
 export class Seat {
     constructor(
-        public seat_id: number,
+        public id: number,
         public of_screen_id: number,
         public row: number,
         public column: number,
@@ -9,7 +9,7 @@ export class Seat {
 
     public static fromProto(Seat: any | undefined): Seat {
         return new Seat(
-            Seat?.seatId || 0,
+            Seat?.id || 0,
             Seat?.ofScreenId || 0,
             Seat?.row || 0,
             Seat?.column || "",

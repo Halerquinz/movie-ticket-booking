@@ -1,9 +1,9 @@
 import { injected, token } from "brandi";
 import compression from "compression";
-import express from "express";
-import { GATEWAY_SERVER_CONFIG_TOKEN, GatewayServerConfig } from "../config/gateway_server";
 import cookieParser from "cookie-parser";
+import express from "express";
 import { Logger } from "winston";
+import { GATEWAY_SERVER_CONFIG_TOKEN, GatewayServerConfig } from "../config/gateway_server";
 import { LOGGER_TOKEN } from "../utils";
 import { ROUTES_TOKEN } from "./routes";
 import { ERROR_HANDLER_MIDDLEWARE_FACTORY_TOKEN, ErrorHandlerMiddlewareFactory } from "./utils";

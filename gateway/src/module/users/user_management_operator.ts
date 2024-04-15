@@ -1,9 +1,9 @@
+import { injected, token } from "brandi";
 import { Logger } from "winston";
+import { USER_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
 import { UserServiceClient } from "../../proto/gen/UserService";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGRPCCall } from "../../utils";
 import { User } from "../schemas";
-import { injected, token } from "brandi";
-import { USER_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
 
 export interface UserManagementOperator {
     createUser(username: string, displayName: string, password: string): Promise<User>;

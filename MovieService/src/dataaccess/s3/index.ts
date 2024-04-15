@@ -1,14 +1,14 @@
 import { Container } from "brandi";
+import { IMAGE_S3_DM_TOKEN, initializeImageS3DM } from "./image";
 import { MINIO_CLIENT_TOKEN, newMinioClient } from "./minio";
-import { initializeOriginalImageS3DM, ORIGINAL_IMAGE_S3_DM_TOKEN } from "./original_image";
-import { initializeThumbnailImageS3DM, THUMBNAIL_IMAGE_S3_DM_TOKEN } from "./thumbnail_image";
+import { POSTER_S3_DM_TOKEN, initializePosterS3DM } from "./poster";
 
 export * from "./bucket_dm";
-export * from "./original_image";
-export * from "./thumbnail_image";
+export * from "./image";
+export * from "./poster";
 
 export function bindToContainer(container: Container): void {
     container.bind(MINIO_CLIENT_TOKEN).toInstance(newMinioClient).inSingletonScope();
-    container.bind(ORIGINAL_IMAGE_S3_DM_TOKEN).toInstance(initializeOriginalImageS3DM).inSingletonScope();
-    container.bind(THUMBNAIL_IMAGE_S3_DM_TOKEN).toInstance(initializeThumbnailImageS3DM).inSingletonScope();
+    container.bind(IMAGE_S3_DM_TOKEN).toInstance(initializeImageS3DM).inSingletonScope();
+    container.bind(POSTER_S3_DM_TOKEN).toInstance(initializePosterS3DM).inSingletonScope();
 }
