@@ -188,8 +188,7 @@ export async function up(knex: Knex): Promise<void> {
             table.integer("of_theater_id");
             table.integer("of_screen_type_id");
 
-            table.string("display_name", 256).notNullable().unique();
-            table.integer("available_seat_count").notNullable();
+            table.string("display_name", 256).notNullable();
 
             table.foreign("of_theater_id")
                 .references("theater_id")
@@ -199,6 +198,8 @@ export async function up(knex: Knex): Promise<void> {
                 .references("screen_type_id")
                 .inTable(TabNameMovieServiceScreenType)
                 .onDelete("CASCADE");
+
+            table.unique(["of_theater_id", "display_name"]);
 
             table.index(["of_theater_id"], "movie_service_screen_of_theater_id_idx");
             table.index(["of_screen_type_id"], "movie_service_screen_of_screen_type__id_idx");
@@ -264,7 +265,6 @@ export async function up(knex: Knex): Promise<void> {
 
             table.bigInteger("time_start").notNullable();
             table.bigInteger("time_end").notNullable();
-            table.smallint("showtime_type").notNullable().defaultTo(0);
 
             table.foreign("of_movie_id")
                 .references("movie_id")

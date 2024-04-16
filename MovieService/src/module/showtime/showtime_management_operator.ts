@@ -12,14 +12,13 @@ import {
     ShowtimeDataAccessor,
 } from "../../dataaccess/db";
 import { _ShowtimeType_Values } from "../../proto/gen/ShowtimeType";
-import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
+import { ErrorWithStatus, LOGGER_TOKEN, TIMER_TOKEN, Timer } from "../../utils";
 
 export interface ShowtimeManagementOperator {
     createShowtime(
         movieId: number,
         screenId: number,
         timeStart: number,
-        showtimeType: _ShowtimeType_Values
     ): Promise<Showtime>;
     deleteShowtime(id: number): Promise<void>;
 }
@@ -29,16 +28,17 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
         private readonly logger: Logger,
         private readonly showtimeDM: ShowtimeDataAccessor,
         private readonly movieDM: MovieDataAccessor,
-        private readonly screenDM: ScreenDataAccessor
+        private readonly screenDM: ScreenDataAccessor,
+        private readonly timer: Timer
     ) { }
 
     public async createShowtime(
         movieId: number,
         screenId: number,
         timeStart: number,
-        showtimeType: _ShowtimeType_Values
     ): Promise<Showtime> {
-        if (!this.isValidReleaseDate(timeStart)) {
+        const requestTime = this.timer.getCurrentTime()
+        if (!this.isValidReleaseDate(timeStart) && timeStart < requestTime) {
             this.logger.error("invalid time start", { timeStart, });
             throw new ErrorWithStatus(`invalid time start${timeStart}`, status.INVALID_ARGUMENT);
         }
@@ -61,7 +61,6 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
             const createdShowtimeId = await showtimeDM.createShowtime({
                 ofMovieId: movieId,
                 ofScreenId: screenId,
-                showtimeType: showtimeType,
                 timeEnd: timeEnd,
                 timeStart: timeStart
             })
@@ -70,7 +69,6 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
                 id: createdShowtimeId,
                 ofScreenId: screenId,
                 ofMovieId: movieId,
-                showtimeType: showtimeType,
                 timeEnd: timeEnd,
                 timeStart: timeStart
             }
@@ -92,7 +90,8 @@ injected(
     LOGGER_TOKEN,
     SHOWTIME_DATA_ACCESSOR_TOKEN,
     MOVIE_DATA_ACCESSOR_TOKEN,
-    SCREEN_DATA_ACCESSOR_TOKEN
+    SCREEN_DATA_ACCESSOR_TOKEN,
+    TIMER_TOKEN
 );
 
 export const SHOWTIME_MANAGEMENT_OPERATOR_TOKEN = token<ShowtimeManagementOperator>("ShowtimeManagementOperator");

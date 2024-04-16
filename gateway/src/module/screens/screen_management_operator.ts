@@ -25,6 +25,7 @@ export class ScreenManagementOperatorImpl implements ScreenManagementOperator {
             this.movieServiceDM.createScreen.bind(this.movieServiceDM),
             { theaterId, screenTypeId, displayName }
         );
+        console.log(createScreenResponse);
 
         if (createScreenError !== null) {
             this.logger.error("failed to call movie_service.createScreen()", { error: createScreenError });

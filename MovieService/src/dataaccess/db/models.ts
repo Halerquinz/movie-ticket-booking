@@ -97,6 +97,5 @@ export class Showtime {
         public ofScreenId: number,
         public timeStart: number,
         public timeEnd: number,
-        public showtimeType: _ShowtimeType_Values
     ) { }
 }

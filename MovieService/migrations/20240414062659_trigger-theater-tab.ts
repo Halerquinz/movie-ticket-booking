@@ -31,6 +31,6 @@ export async function up(knex: Knex): Promise<void> {
 export async function down(knex: Knex): Promise<void> {
     await knex.schema.raw(`
         DROP FUNCTION theater_tab_update_trigger_function() CASCADE;
-`);
+    `);
 }
 

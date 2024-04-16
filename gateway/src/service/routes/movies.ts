@@ -80,7 +80,7 @@ export function getMoviesRouter(
     );
 
     router.get(
-        "/api/movies/:movieId",
+        "/api/movies/detail/:movieId",
         moviesManageAuthMiddleware,
         asyncHandler(async (req, res, next) => {
             errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {

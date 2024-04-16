@@ -9,6 +9,7 @@ import { MOVIES_ROUTER_TOKEN, getMoviesRouter } from "./movies";
 import { SCREEN_TYPES_ROUTER_TOKEN, getScreenTypesRouter } from "./screen-types";
 import { SCREENS_ROUTER_TOKEN, getScreensRouter } from "./screens";
 import { THEATERS_ROUTER_TOKEN, getTheatersRouter } from "./theaters";
+import { SHOWTIMES_ROUTER_TOKEN, getShowtimesRouter } from "./showtimes";
 
 export const ROUTES_TOKEN = token<express.Router[]>("Routes");
 
@@ -22,6 +23,7 @@ export function bindToContainer(container: Container): void {
     container.bind(SCREEN_TYPES_ROUTER_TOKEN).toInstance(getScreenTypesRouter).inSingletonScope();
     container.bind(SCREENS_ROUTER_TOKEN).toInstance(getScreensRouter).inSingletonScope();
     container.bind(THEATERS_ROUTER_TOKEN).toInstance(getTheatersRouter).inSingletonScope();
+    container.bind(SHOWTIMES_ROUTER_TOKEN).toInstance(getShowtimesRouter).inSingletonScope();
 
     container
         .bind(ROUTES_TOKEN)
@@ -35,6 +37,7 @@ export function bindToContainer(container: Container): void {
             container.get(SCREEN_TYPES_ROUTER_TOKEN),
             container.get(SCREENS_ROUTER_TOKEN),
             container.get(THEATERS_ROUTER_TOKEN),
+            container.get(SHOWTIMES_ROUTER_TOKEN),
         ])
         .inSingletonScope();
 }

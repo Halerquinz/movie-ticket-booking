@@ -64,11 +64,12 @@ message Movie {
     MovieTrailer trailer = 7;
 }
 
-message ShowtimeType {
-    enum Values {
-        SUBTITLE = 0;
-        DUBBING = 1;
-    }
+message Showtime {
+    uint32 id = 1;
+    uint32 of_movie_id = 2;
+    uint32 of_screen_id = 3;
+    uint64 time_start = 4;
+    uint64 time_end = 5;
 }
 
 message CreateMovieGenreRequest {
@@ -246,7 +247,7 @@ message CreateScreenRequest {
 }
 
 message CreateScreenResponse {
-    uint32 screen_id = 1;
+    uint32 id = 1;
     uint32 of_theater_id = 2;
     uint32 of_screen_type_id = 3;
     string display_name = 4;
@@ -269,15 +270,10 @@ message CreateShowtimeRequest {
     uint32 movie_id = 1;
     uint32 screen_id = 2;
     uint64 time_start = 3;
-    ShowtimeType.Values showtime_type = 4;
 }
 
 message CreateShowtimeResponse {
-    uint32 shotime_id = 1;
-    uint32 of_movie_id = 2;
-    uint32 of_screen_id = 3;
-    uint64 time_start = 4;
-    ShowtimeType.Values showtime_type = 5; 
+  Showtime showtime = 1; 
 }
 
 message DeleteShowtimeRequest {

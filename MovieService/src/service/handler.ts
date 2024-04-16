@@ -200,19 +200,13 @@ export class MovieServiceHandlerFactory {
                     return callback({ message: "time start is required", code: status.INVALID_ARGUMENT });
                 }
 
-                if (req.showtimeType === undefined) {
-                    return callback({ message: "showtime type is required", code: status.INVALID_ARGUMENT });
-                }
-
-
                 try {
-                    const createdShowtime = await this.showtimeManagementOperator.createShowtime(
+                    const showtime = await this.showtimeManagementOperator.createShowtime(
                         req.movieId,
                         req.screenId,
                         req.timeStart,
-                        req.showtimeType
                     );
-                    callback(null, createdShowtime);
+                    callback(null, { showtime });
                 } catch (error) {
                     this.handleError(error, callback);
                 }

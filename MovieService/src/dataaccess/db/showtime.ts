@@ -5,15 +5,12 @@ import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 import { KNEX_INSTANCE_TOKEN } from "./knex";
 import { status } from "@grpc/grpc-js";
 import { Showtime } from "./models";
-import { _ShowtimeType_Values } from "../../proto/gen/ShowtimeType";
-
 
 export interface CreateShowtimeArguments {
     ofMovieId: number,
     ofScreenId: number,
     timeStart: number,
     timeEnd: number,
-    showtimeType: _ShowtimeType_Values
 }
 
 export interface UpdateShowtimeArguments {
@@ -22,7 +19,6 @@ export interface UpdateShowtimeArguments {
     ofScreenId: number,
     timeStart: number,
     timeEnd: number,
-    showtimeType: _ShowtimeType_Values
 }
 
 export interface ShowtimeDataAccessor {
@@ -56,7 +52,6 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
                     [ColNameMovieServiceShowtimeOfScreenId]: args.ofScreenId,
                     [ColNameMovieServiceShowtimeTimeStart]: args.timeStart,
                     [ColNameMovieServiceShowtimeTimeEnd]: args.timeEnd,
-                    [ColNameMovieServiceShowtimeType]: args.showtimeType,
                 })
                 .returning(ColNameMovieServiceShowtimeId)
                 .into(TabNameMovieServiceShowtimeTab);
@@ -76,7 +71,6 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
                     [ColNameMovieServiceShowtimeOfScreenId]: args.ofScreenId,
                     [ColNameMovieServiceShowtimeTimeStart]: args.timeStart,
                     [ColNameMovieServiceShowtimeTimeEnd]: args.timeEnd,
-                    [ColNameMovieServiceShowtimeType]: args.showtimeType,
                 })
                 .where({
                     [ColNameMovieServiceShowtimeId]: args.showtimeId
@@ -140,7 +134,6 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
                 +row[ColNameMovieServiceShowtimeOfScreenId],
                 +row[ColNameMovieServiceShowtimeTimeStart],
                 +row[ColNameMovieServiceShowtimeTimeEnd],
-                +row[ColNameMovieServiceShowtimeType]
             )) || [];
         } catch (error) {
             this.logger.error("failed to get showtime list", { error });

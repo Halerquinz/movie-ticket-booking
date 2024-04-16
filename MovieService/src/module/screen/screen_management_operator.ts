@@ -44,14 +44,6 @@ export class ScreenManagementOperatorImpl implements ScreenManagementOperator {
         }
 
         return this.screenDM.withTransaction<Screen>(async (screenDM) => {
-            const screenRecord = await screenDM.getScreenByDisplayNameWithXLock(displayName);
-            if (screenRecord !== null) {
-                this.logger.error("display_name has already been taken", {
-                    displayName
-                });
-                throw new ErrorWithStatus(`display_name ${displayName} has already been taken`, status.ALREADY_EXISTS);
-            }
-
             const createdScreenId = await screenDM.createScreen(
                 theaterId,
                 screenTypeId,
