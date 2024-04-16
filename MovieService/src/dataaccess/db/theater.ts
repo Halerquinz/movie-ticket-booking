@@ -111,7 +111,7 @@ export class TheaterDataAccessorImpl implements TheaterDataAccessor {
             return null;
         }
 
-        return rows[0];
+        return this.getTheaterFromRow(rows[0]);
     }
 
     public async getTheaterByIdWithXLock(id: number): Promise<Theater | null> {
@@ -134,7 +134,7 @@ export class TheaterDataAccessorImpl implements TheaterDataAccessor {
             return null;
         }
 
-        return rows[0];
+        return this.getTheaterFromRow(rows[0]);
     }
 
     public async getTheaterList(): Promise<Theater[]> {
@@ -161,6 +161,16 @@ export class TheaterDataAccessorImpl implements TheaterDataAccessor {
             const txDataAccessor = new TheaterDataAccessorImpl(tx, this.logger);
             return cb(txDataAccessor);
         });
+    }
+
+    private getTheaterFromRow(row: Record<string, any>): Theater {
+        return new Theater(
+            +row[ColNameMovieServiceTheaterId],
+            row[ColNameMovieServiceTheaterDisplayName],
+            row[ColNameMovieServiceTheaterLocation],
+            +row[ColNameMovieServiceTheaterScreenCount],
+            +row[ColNameMovieServiceTheaterSeatCount]
+        )
     }
 }
 

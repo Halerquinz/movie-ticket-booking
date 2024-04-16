@@ -8,12 +8,13 @@ import {
     ErrorHandlerMiddlewareFactory,
     checkUserHasUserPermission
 } from "../utils";
-import { SHOWTIME_MANAGEMENT_OPERATOR_TOKEN, ShowtimeManagementOperator } from "../../module/showtimes";
+import { SHOWTIME_LIST_MANAGEMENT_OPERATOR_TOKEN, SHOWTIME_MANAGEMENT_OPERATOR_TOKEN, ShowtimeListManagementOperator, ShowtimeManagementOperator } from "../../module/showtimes";
 
 const SHOWTIMES_MANAGE_ALL_PERMISSION = "theaters.manage";
 
 export function getShowtimesRouter(
     showtimeManagementOperator: ShowtimeManagementOperator,
+    showtimeListManagementOperator: ShowtimeListManagementOperator,
     authMiddlewareFactory: AuthMiddlewareFactory,
     errorHandlerMiddlewareFactory: ErrorHandlerMiddlewareFactory
 ): express.Router {
@@ -42,8 +43,32 @@ export function getShowtimesRouter(
         })
     );
 
+    router.get(
+        "/api/showtimes/theater-id/:theaterId/movie-id/:movieId",
+        showtimesManageAuthMiddleware,
+        asyncHandler(async (req, res, next) => {
+            errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
+                const movieId = +req.params.movieId;
+                const theaterId = +req.params.theaterId;
+                const requestTime = +req.body.request_time;
+                const showtimeList = await showtimeListManagementOperator.getShowtimeListOfTheaterByMovieId(
+                    theaterId,
+                    movieId,
+                    requestTime
+                );
+                res.json(showtimeList);
+            }, next);
+        })
+    );
+
     return router;
 }
 
-injected(getShowtimesRouter, SHOWTIME_MANAGEMENT_OPERATOR_TOKEN, AUTH_MIDDLEWARE_FACTORY_TOKEN, ERROR_HANDLER_MIDDLEWARE_FACTORY_TOKEN);
+injected(
+    getShowtimesRouter,
+    SHOWTIME_MANAGEMENT_OPERATOR_TOKEN,
+    SHOWTIME_LIST_MANAGEMENT_OPERATOR_TOKEN,
+    AUTH_MIDDLEWARE_FACTORY_TOKEN,
+    ERROR_HANDLER_MIDDLEWARE_FACTORY_TOKEN,
+);
 export const SHOWTIMES_ROUTER_TOKEN = token<express.Router>("ShowtimesRouter");

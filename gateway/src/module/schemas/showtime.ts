@@ -10,10 +10,10 @@ export class Showtime {
     public static fromProto(ShowtimeProto: any | undefined): Showtime {
         return new Showtime(
             ShowtimeProto?.id || 0,
-            ShowtimeProto?.of_movie_id || 0,
-            ShowtimeProto?.of_screen_id || 0,
-            ShowtimeProto?.time_start || 0,
-            ShowtimeProto?.time_end || 0,
+            ShowtimeProto?.ofMovieId || 0,
+            ShowtimeProto?.ofScreenId || 0,
+            ShowtimeProto?.timeStart || 0,
+            ShowtimeProto?.timeEnd || 0,
         )
     }
 }

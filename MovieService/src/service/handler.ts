@@ -8,7 +8,8 @@ import { SCREEN_TYPE_MANAGEMENT_OPERATOR_TOKEN, ScreenTypeManagementOperator } f
 import { SCREEN_MANAGEMENT_OPERATOR_TOKEN, ScreenManagementOperator } from "../module/screen";
 import { THEATER_MANAGEMENT_OPERATOR_TOKEN, TheaterManagementOperator } from "../module/theater";
 import { SEAT_MANAGEMENT_OPERATOR_TOKEN, SeatManagementOperator } from "../module/seat";
-import { SHOWTIME_MANAGEMENT_OPERATOR_TOKEN, ShowtimeManagementOperator } from "../module/showtime";
+import { SHOWTIME_LIST_MANAGEMENT_OPERATOR_TOKEN, SHOWTIME_MANAGEMENT_OPERATOR_TOKEN, ShowtimeListManagementOperator, ShowtimeManagementOperator } from "../module/showtime";
+import { request } from "http";
 
 export class MovieServiceHandlerFactory {
     constructor(
@@ -19,6 +20,7 @@ export class MovieServiceHandlerFactory {
         private readonly theaterManagementOperator: TheaterManagementOperator,
         private readonly seatManagementOperator: SeatManagementOperator,
         private readonly showtimeManagementOperator: ShowtimeManagementOperator,
+        private readonly showtimeListManagementOperator: ShowtimeListManagementOperator,
     ) { }
 
     public getMovieServiceHandlers(): MovieServiceHandlers {
@@ -353,6 +355,30 @@ export class MovieServiceHandlerFactory {
                     this.handleError(error, callback)
                 }
             },
+
+            GetShowtimeListOfTheaterByMovieId: async (call, callback) => {
+                const req = call.request;
+                if (req.theaterId === undefined) {
+                    return callback({ message: "theater id is required", code: status.INVALID_ARGUMENT });
+                }
+
+                if (req.movieId === undefined) {
+                    return callback({ message: "movie id is required", code: status.INVALID_ARGUMENT });
+                }
+
+                const requestTime = req.requestTime || 0;
+
+                try {
+                    const { movie, showtimeList, theater } = await this.showtimeListManagementOperator.getShowtimeListOfTheaterByMovieId(
+                        req.theaterId,
+                        req.movieId,
+                        requestTime
+                    );
+                    callback(null, { movie, showtimeList, theater });
+                } catch (error) {
+                    this.handleError(error, callback)
+                }
+            }
         }
         return handler
     }
@@ -375,7 +401,8 @@ injected(MovieServiceHandlerFactory,
     SCREEN_MANAGEMENT_OPERATOR_TOKEN,
     THEATER_MANAGEMENT_OPERATOR_TOKEN,
     SEAT_MANAGEMENT_OPERATOR_TOKEN,
-    SHOWTIME_MANAGEMENT_OPERATOR_TOKEN
+    SHOWTIME_MANAGEMENT_OPERATOR_TOKEN,
+    SHOWTIME_LIST_MANAGEMENT_OPERATOR_TOKEN
 );
 
 export const MOVIE_SERVICE_HANDLERS_FACTORY_TOKEN = token<MovieServiceHandlerFactory>("MovieServiceHandlersFactory");

@@ -27,6 +27,12 @@ export interface ShowtimeDataAccessor {
     deleteShowtime(id: number): Promise<void>;
     getShowtime(id: number): Promise<Showtime | null>;
     getShowtimeList(): Promise<Showtime[]>;
+    getShowtimeListOfTheaterId(theaterId: number, timeStart: number): Promise<void>;
+    getShowtimeListOfTheaterByMovieIdInSameDay(
+        theaterId: number,
+        movieId: number,
+        requestTime: number,
+    ): Promise<Showtime[]>;
     withTransaction<T>(cb: (dataAccessor: ShowtimeDataAccessor) => Promise<T>): Promise<T>;
 }
 
@@ -36,7 +42,19 @@ const ColNameMovieServiceShowtimeOfMovieId = "of_movie_id";
 const ColNameMovieServiceShowtimeOfScreenId = "of_screen_id";
 const ColNameMovieServiceShowtimeTimeStart = "time_start";
 const ColNameMovieServiceShowtimeTimeEnd = "time_end";
-const ColNameMovieServiceShowtimeType = "showtime_type";
+
+const TabNameMovieServiceScreenTab = "movie_service_screen_tab";
+const ColNameMovieServiceScreenId = "screen_id";
+const ColNameMovieServiceScreenOfTheaterId = "of_theater_id";
+const ColNameMovieServiceScreenOfScreenTypeId = "of_screen_type_id";
+const ColNameMovieServiceScreenDisplayName = "display_name";
+
+const TabNameMovieServiceTheaterTab = "movie_service_theater_tab";
+const ColNameMovieServiceTheaterId = "theater_id";
+const ColNameMovieServiceTheaterDisplayName = "display_name";
+const ColNameMovieServiceTheaterLocation = "location";
+const ColNameMovieServiceTheaterScreenCount = "screen_count";
+const ColNameMovieServiceTheaterSeatCount = "seat_count";
 
 export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
     constructor(
@@ -141,11 +159,82 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
         }
     }
 
+    public async getShowtimeListOfTheaterId(theaterId: number, timeStart: number): Promise<void> {
+        try {
+            // const rows = await this.knex
+            //     .select([
+            //         `${TabNameMovieServiceShowtimeTab}.*`,
+            //         `screen.${ColNameMovieServiceScreenDisplayName} as screenName`,
+            //         `theater.${ColNameMovieServiceTheaterDisplayName} as theaterName`,
+            //     ])
+            //     .from(TabNameMovieServiceShowtimeTab)
+            //     .join(
+            //         { screen: TabNameMovieServiceScreenTab },
+            //         `${TabNameMovieServiceShowtimeTab}.${ColNameMovieServiceShowtimeOfScreenId}`,
+            //         `screen.${ColNameMovieServiceScreenId}`
+            //     )
+            //     .join(
+            //         { theater: TabNameMovieServiceTheaterTab },
+            //         `${TabNameMovieServiceScreenTab}.${ColNameMovieServiceScreenOfTheaterId}`,
+            //         `theater.${ColNameMovieServiceScreenOfTheaterId}`
+            //     )
+            //     .where(ColNameMovieServiceTheaterId, "=", theaterId)
+            //     .andWhere(ColNameMovieServiceShowtimeOfMovieId, "=", movieId)
+            //     .andWhere(ColNameMovieServiceShowtimeTimeStart, "<=", timeStart);
+        } catch (error) {
+            this.logger.error("failed to get showtime list", { error });
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+    }
+
+    public async getShowtimeListOfTheaterByMovieIdInSameDay(
+        theaterId: number,
+        movieId: number,
+        requestTime: number
+    ): Promise<Showtime[]> {
+        try {
+            const rows = await this.knex
+                .select([
+                    `showtime.*`
+                ])
+                .from({ showtime: TabNameMovieServiceShowtimeTab })
+                .join(
+                    { screen: TabNameMovieServiceScreenTab },
+                    `showtime.${ColNameMovieServiceShowtimeOfScreenId}`,
+                    `screen.${ColNameMovieServiceScreenId}`
+                )
+                .join(
+                    { theater: TabNameMovieServiceTheaterTab },
+                    `screen.${ColNameMovieServiceScreenOfTheaterId}`,
+                    `theater.${ColNameMovieServiceTheaterId}`
+                )
+                .where(`theater.${ColNameMovieServiceTheaterId}`, "=", theaterId)
+                .andWhere(`showtime.${ColNameMovieServiceShowtimeOfMovieId}`, "=", movieId)
+                .whereRaw(`?? - ?? <= ?`, [`showtime.${ColNameMovieServiceShowtimeTimeStart}`, requestTime, 86400000])
+                .orderBy(`showtime.${ColNameMovieServiceShowtimeTimeStart}`, "asc");
+
+            return rows.map((row) => this.getShowtimeFromRow(row));
+        } catch (error) {
+            this.logger.error("failed to get showtime list", { error });
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+    }
+
     public async withTransaction<T>(cb: (dataAccessor: ShowtimeDataAccessor) => Promise<T>): Promise<T> {
         return this.knex.transaction(async (tx) => {
             const txDataAccessor = new ShowtimeDataAccessorImpl(tx, this.logger);
             return cb(txDataAccessor);
         });
+    }
+
+    private getShowtimeFromRow(row: Record<string, any>): Showtime {
+        return new Showtime(
+            +row[ColNameMovieServiceShowtimeId],
+            +row[ColNameMovieServiceShowtimeOfMovieId],
+            +row[ColNameMovieServiceShowtimeOfScreenId],
+            +row[ColNameMovieServiceShowtimeTimeStart],
+            +row[ColNameMovieServiceShowtimeTimeEnd]
+        )
     }
 }
 
