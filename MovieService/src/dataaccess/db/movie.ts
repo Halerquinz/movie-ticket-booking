@@ -152,7 +152,7 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
             return null;
         }
 
-        return this.getMovieFromRow(rows[0]);
+        return this.getMovieFromJoinedRow(rows[0]);
     }
 
     public async getMovieByIdWithXLock(id: number): Promise<Movie | null> {
@@ -257,19 +257,12 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
     private getMovieFromRow(row: Record<string, any>): Movie {
         let poster: MoviePoster | null = null;
         if (row[ColNameMovieServiceMoviePosterOfMovieId]) {
-            poster = new MoviePoster(
-                +row[ColNameMovieServiceMoviePosterOfMovieId],
-                row[ColNameMovieServiceMoviePosterOriginalFileName],
-                row[ColNameMovieServiceMoviePosterOriginalImageFileName],
-            );
+            poster = new MoviePoster(+row[ColNameMovieServiceMoviePosterOfMovieId], "", "");
         }
 
         let trailer: MovieTrailer | null = null;
         if (row[ColNameMovieServiceMovieTrailerOfMovieId]) {
-            trailer = new MovieTrailer(
-                +row[ColNameMovieServiceMovieTrailerOfMovieId],
-                row[ColNameMovieServiceMovieTrailerYoutubeLinkUrl],
-            );
+            trailer = new MovieTrailer(+row[ColNameMovieServiceMovieTrailerOfMovieId], "");
         }
 
         return new Movie(

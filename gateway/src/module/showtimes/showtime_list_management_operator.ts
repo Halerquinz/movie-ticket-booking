@@ -3,18 +3,24 @@ import { Logger } from "winston";
 import { MOVIE_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
 import { MovieServiceClient } from "../../proto/gen/MovieService";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGRPCCall, } from "../../utils";
-import { Movie, Showtime, Theater } from "../schemas";
+import { ShowtimeMetadata, Theater } from "../schemas";
 
 export interface ShowtimeListManagementOperator {
+    getShowtimeListOfTheater(
+        theaterId: number,
+        requestTime: number
+    ): Promise<{
+        theater: Theater,
+        showtimeListOfTheater: ShowtimeMetadata[]
+    }>;
     getShowtimeListOfTheaterByMovieId(
         theaterId: number,
         movieId: number,
         requestTime: number
     ): Promise<{
         theater: Theater,
-        movie: Movie,
-        showtimeList: Showtime[] | undefined
-    }>
+        showtimeListOfTheater: ShowtimeMetadata[]
+    }>,
 }
 
 export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagementOperator {
@@ -23,33 +29,60 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
         private readonly logger: Logger,
     ) { }
 
+    public async getShowtimeListOfTheater(
+        theaterId: number,
+        requestTime: number
+    ): Promise<{
+        theater: Theater,
+        showtimeListOfTheater: ShowtimeMetadata[]
+    }> {
+        const { error: getShowtimeListOfTheaterError, response: getShowtimeListOfTheaterResponse } = await promisifyGRPCCall(
+            this.movieServiceDM.getShowtimeListOfTheater.bind(this.movieServiceDM),
+            { theaterId, requestTime }
+        );
+
+        if (getShowtimeListOfTheaterError !== null) {
+            this.logger.error("failed to call movie_service.getShowtimeListOfTheaterError()", { error: getShowtimeListOfTheaterError });
+            throw new ErrorWithHTTPCode("failed to get showtime list of theater", getHttpCodeFromGRPCStatus(getShowtimeListOfTheaterError.code));
+        }
+
+        const theater = Theater.fromProto(getShowtimeListOfTheaterResponse?.theater);
+        const showtimeListOfTheater = getShowtimeListOfTheaterResponse?.showtimeListOfTheater?.map(
+            (showtimeMetadata) => ShowtimeMetadata.fromProto(showtimeMetadata)
+        ) || [];
+
+        return {
+            theater,
+            showtimeListOfTheater
+        }
+    }
+
     public async getShowtimeListOfTheaterByMovieId(
         theaterId: number,
         movieId: number,
         requestTime: number
     ): Promise<{
         theater: Theater;
-        movie: Movie;
-        showtimeList: Showtime[] | undefined;
+        showtimeListOfTheater: ShowtimeMetadata[];
     }> {
-        const { error: getShowtimeListOfTheaterByMovieIdError, response: getShowtimeListOfTheaterByMovieIdResponse } = await promisifyGRPCCall(
+        const { error: getShowtimeListOfTheaterError, response: getShowtimeListOfTheaterResponse } = await promisifyGRPCCall(
             this.movieServiceDM.getShowtimeListOfTheaterByMovieId.bind(this.movieServiceDM),
-            { movieId, requestTime, theaterId }
+            { theaterId, movieId, requestTime }
         );
 
-        if (getShowtimeListOfTheaterByMovieIdError !== null) {
-            this.logger.error("failed to call movie_service.getShowtimeListOfTheaterByMovieId()", { error: getShowtimeListOfTheaterByMovieIdError });
-            throw new ErrorWithHTTPCode("failed to get showtime list of theater by movie id", getHttpCodeFromGRPCStatus(getShowtimeListOfTheaterByMovieIdError.code));
+        if (getShowtimeListOfTheaterError !== null) {
+            this.logger.error("failed to call movie_service.getShowtimeListOfTheaterError()", { error: getShowtimeListOfTheaterError });
+            throw new ErrorWithHTTPCode("failed to get showtime list of theater", getHttpCodeFromGRPCStatus(getShowtimeListOfTheaterError.code));
         }
 
-        const theater = Theater.fromProto(getShowtimeListOfTheaterByMovieIdResponse?.theater);
-        const movie = Movie.fromProto(getShowtimeListOfTheaterByMovieIdResponse?.movie);
-        const showtimeList = getShowtimeListOfTheaterByMovieIdResponse?.showtimeList?.map((showtime) => Showtime.fromProto(showtime));
+        const theater = Theater.fromProto(getShowtimeListOfTheaterResponse?.theater);
+        const showtimeListOfTheater = getShowtimeListOfTheaterResponse?.showtimeListOfTheater?.map(
+            (showtimeMetadata) => ShowtimeMetadata.fromProto(showtimeMetadata)
+        ) || [];
 
         return {
-            movie,
-            showtimeList,
-            theater
+            theater,
+            showtimeListOfTheater
         }
     }
 }

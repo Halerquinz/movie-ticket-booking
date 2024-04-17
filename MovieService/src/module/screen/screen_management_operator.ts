@@ -55,7 +55,7 @@ export class ScreenManagementOperatorImpl implements ScreenManagementOperator {
             return {
                 id: createdScreenId,
                 ofTheaterId: theaterId,
-                ofScreenTypeId: screenTypeId,
+                screenType: screenType,
                 displayName: displayName
             }
         })

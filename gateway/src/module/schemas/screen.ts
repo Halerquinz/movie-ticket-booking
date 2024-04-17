@@ -1,8 +1,10 @@
+import { ScreenType } from "../../proto/gen/ScreenType";
+
 export class Screen {
     constructor(
         public id: number,
         public of_theater_id: number,
-        public of_screen_type_id: number,
+        public screen_type: ScreenType,
         public display_name: string,
     ) { }
 
@@ -10,7 +12,7 @@ export class Screen {
         return new Screen(
             screenProto?.id || 0,
             screenProto?.ofTheaterId || 0,
-            screenProto?.ofScreenTypeId || 0,
+            screenProto?.screenType || null,
             screenProto?.displayName || "",
         )
     }

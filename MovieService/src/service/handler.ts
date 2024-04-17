@@ -369,12 +369,31 @@ export class MovieServiceHandlerFactory {
                 const requestTime = req.requestTime || 0;
 
                 try {
-                    const { movie, showtimeList, theater } = await this.showtimeListManagementOperator.getShowtimeListOfTheaterByMovieId(
+                    const { theater, showtimeListOfTheater } = await this.showtimeListManagementOperator.getShowtimeListOfTheaterByMovieId(
                         req.theaterId,
                         req.movieId,
                         requestTime
                     );
-                    callback(null, { movie, showtimeList, theater });
+                    callback(null, { theater: theater, showtimeListOfTheater: showtimeListOfTheater });
+                } catch (error) {
+                    this.handleError(error, callback)
+                }
+            },
+
+            GetShowtimeListOfTheater: async (call, callback) => {
+                const req = call.request;
+                if (req.theaterId === undefined) {
+                    return callback({ message: "theater id is required", code: status.INVALID_ARGUMENT });
+                }
+
+                const requestTime = req.requestTime || 0;
+
+                try {
+                    const { theater, showtimeListOfTheater } = await this.showtimeListManagementOperator.getShowtimeListOfTheater(
+                        req.theaterId,
+                        requestTime
+                    );
+                    callback(null, { theater: theater, showtimeListOfTheater: showtimeListOfTheater });
                 } catch (error) {
                     this.handleError(error, callback)
                 }

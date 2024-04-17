@@ -9,11 +9,13 @@ import {
     ErrorHandlerMiddlewareFactory,
     checkUserHasUserPermission
 } from "../utils";
+import { SHOWTIME_LIST_MANAGEMENT_OPERATOR_TOKEN, ShowtimeListManagementOperator } from "../../module/showtimes";
 
 const THEATERS_MANAGE_ALL_PERMISSION = "theaters.manage";
 
 export function getTheatersRouter(
     theaterManagementOperator: TheaterManagementOperator,
+    showtimeListManagementOperator: ShowtimeListManagementOperator,
     authMiddlewareFactory: AuthMiddlewareFactory,
     errorHandlerMiddlewareFactory: ErrorHandlerMiddlewareFactory
 ): express.Router {
@@ -51,8 +53,44 @@ export function getTheatersRouter(
             }, next)
         });
 
+    router.get(
+        "/api/theaters/:theaterId/showtimes",
+        asyncHandler(async (req, res, next) => {
+            errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
+                const theaterId = +req.params.theaterId;
+                const requestTime = +req.body.request_time;
+                const showtimeList = await showtimeListManagementOperator.getShowtimeListOfTheater(
+                    theaterId,
+                    requestTime
+                );
+                res.json(showtimeList);
+            }, next);
+        }));
+
+    router.get(
+        "/api/theaters/:theaterId/showtimes/movie/:movieId",
+        asyncHandler(async (req, res, next) => {
+            errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
+                const movieId = +req.params.movieId;
+                const theaterId = +req.params.theaterId;
+                const requestTime = +req.body.request_time;
+                const showtimeList = await showtimeListManagementOperator.getShowtimeListOfTheaterByMovieId(
+                    theaterId,
+                    movieId,
+                    requestTime
+                );
+                res.json(showtimeList);
+            }, next);
+        })
+    );
+
     return router;
 }
 
-injected(getTheatersRouter, THEATER_MANAGEMENT_OPERATOR_TOKEN, AUTH_MIDDLEWARE_FACTORY_TOKEN, ERROR_HANDLER_MIDDLEWARE_FACTORY_TOKEN);
+injected(
+    getTheatersRouter,
+    THEATER_MANAGEMENT_OPERATOR_TOKEN,
+    SHOWTIME_LIST_MANAGEMENT_OPERATOR_TOKEN,
+    AUTH_MIDDLEWARE_FACTORY_TOKEN,
+    ERROR_HANDLER_MIDDLEWARE_FACTORY_TOKEN);
 export const THEATERS_ROUTER_TOKEN = token<express.Router>("TheatersRouter");

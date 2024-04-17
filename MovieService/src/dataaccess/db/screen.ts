@@ -98,7 +98,14 @@ export class ScreenDataAccessorImpl implements ScreenDataAccessor {
         let rows: Record<string, any>;
         try {
             rows = await this.knex
-                .select()
+                .select([
+                    `${TabNameMovieServiceScreenTab}.*`,
+                    `${TabNameMovieServiceScreenTypeTab}.${ColNameMovieServiceScreenTypeDisplayName} as screen_type_name`,
+                    `${TabNameMovieServiceScreenTypeTab}.${ColNameMovieServiceScreenTypeDescription}`,
+                    `${TabNameMovieServiceScreenTypeTab}.${ColNameMovieServiceScreenTypeSeatCount}`,
+                    `${TabNameMovieServiceScreenTypeTab}.${ColNameMovieServiceScreenTypeSeatOfRowCount}`,
+                    `${TabNameMovieServiceScreenTypeTab}.${ColNameMovieServiceScreenTypeRowCount}`,
+                ])
                 .from(TabNameMovieServiceScreenTab)
                 .leftOuterJoin(
                     TabNameMovieServiceScreenTypeTab,
@@ -240,7 +247,7 @@ export class ScreenDataAccessorImpl implements ScreenDataAccessor {
         if (row[ColNameMovieServiceScreenOfScreenTypeId]) {
             screenType = new ScreenType(
                 +row[ColNameMovieServiceScreenOfScreenTypeId],
-                row[ColNameMovieServiceScreenTypeDisplayName],
+                row["screen_type_name"],
                 row[ColNameMovieServiceScreenTypeDescription],
                 +row[ColNameMovieServiceScreenTypeSeatCount],
                 +row[ColNameMovieServiceScreenTypeRowCount],

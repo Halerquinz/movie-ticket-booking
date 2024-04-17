@@ -4,7 +4,6 @@ import validator from "validator";
 import { Logger } from "winston";
 import {
     MOVIE_DATA_ACCESSOR_TOKEN,
-    Movie,
     MovieDataAccessor,
     SCREEN_DATA_ACCESSOR_TOKEN,
     SHOWTIME_DATA_ACCESSOR_TOKEN,
@@ -13,21 +12,26 @@ import {
     ShowtimeDataAccessor,
     THEATER_DATA_ACCESSOR_TOKEN,
     Theater,
-    TheaterDataAccessor,
+    TheaterDataAccessor
 } from "../../dataaccess/db";
-import { _ShowtimeType_Values } from "../../proto/gen/ShowtimeType";
+import { ShowtimeMetadata } from "../../proto/gen/ShowtimeMetadata";
 import { ErrorWithStatus, LOGGER_TOKEN, TIMER_TOKEN, Timer } from "../../utils";
 
 export interface ShowtimeListManagementOperator {
-    getShowtimeListOfTheater(theaterId: number, timeStart: number): Promise<any>;
+    getShowtimeListOfTheater(
+        theaterId: number,
+        requestTime: number
+    ): Promise<{
+        theater: Theater,
+        showtimeListOfTheater: ShowtimeMetadata[]
+    }>;
     getShowtimeListOfTheaterByMovieId(
         theaterId: number,
         movieId: number,
         requestTime: number
     ): Promise<{
         theater: Theater,
-        movie: Movie,
-        showtimeList: Showtime[] | undefined
+        showtimeListOfTheater: ShowtimeMetadata[]
     }>
 }
 
@@ -41,42 +45,132 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
         private readonly timer: Timer
     ) { }
 
-    public async getShowtimeListOfTheater(theaterId: number, timeStart: number): Promise<any> {
+    public async getShowtimeListOfTheater(theaterId: number, requestTime: number): Promise<{
+        theater: Theater;
+        showtimeListOfTheater: ShowtimeMetadata[];
+    }> {
+        if (!this.isValidDate(requestTime)) {
+            this.logger.error("invalid date", { requestTime });
+            requestTime = this.timer.getCurrentTime();
+        }
+        requestTime = this.convertTimeTo0AMInTheSameDay(requestTime);
 
+        const theaterRecord = await this.theaterDM.getTheaterById(theaterId);
+        if (theaterRecord === null) {
+            this.logger.error("no theater with theater id found", { theaterId: theaterId });
+            throw new ErrorWithStatus(`no movie with theater id ${theaterRecord} found`, status.NOT_FOUND);
+        }
+
+        const showtimeList = await this.showtimeDM.getShowtimeListOfTheaterId(theaterId, requestTime);
+
+        const showtimeListOfTheater = await this.getShowtimeListOfTheaterMetadata(showtimeList, theaterRecord);
+
+        return {
+            theater: theaterRecord,
+            showtimeListOfTheater
+        };
     }
-
 
     public async getShowtimeListOfTheaterByMovieId(
         theaterId: number,
         movieId: number,
         requestTime: number
     ): Promise<{
-        theater: Theater,
-        movie: Movie,
-        showtimeList: Showtime[] | undefined
+        theater: Theater;
+        showtimeListOfTheater: ShowtimeMetadata[];
     }> {
+        if (!this.isValidDate(requestTime)) {
+            this.logger.error("invalid date", { requestTime });
+            requestTime = this.timer.getCurrentTime();
+        }
         requestTime = this.convertTimeTo0AMInTheSameDay(requestTime);
 
-        const theater = await this.theaterDM.getTheaterById(theaterId);
-        if (theater === null) {
+        const theaterRecord = await this.theaterDM.getTheaterById(theaterId);
+        if (theaterRecord === null) {
             this.logger.error("no theater with theater id found", { theaterId: theaterId });
-            throw new ErrorWithStatus(`no movie with theater id ${theater} found`, status.NOT_FOUND);
+            throw new ErrorWithStatus(`no movie with theater id ${theaterRecord} found`, status.NOT_FOUND);
         }
 
-        const movie = await this.movieDM.getMovieById(movieId);
-        if (movie === null) {
-            this.logger.error("no movie with movie id found", { movieId: movieId });
-            throw new ErrorWithStatus(`no movie with movie id ${movieId} found`, status.NOT_FOUND);
-        }
-        const showtimeList = await this.showtimeDM.getShowtimeListOfTheaterByMovieIdInSameDay(theaterId, movieId, requestTime);
+        const showtimeList = await this.showtimeDM.getShowtimeListOfTheaterByMovieId(theaterId, movieId, requestTime);
+
+        const showtimeListOfTheater = await this.getShowtimeListOfTheaterMetadata(showtimeList, theaterRecord);
 
         return {
-            movie, theater, showtimeList
+            theater: theaterRecord,
+            showtimeListOfTheater
+        };
+    }
+
+    private async getShowtimeListOfTheaterMetadata(
+        showtimeList: Showtime[],
+        theaterRecord: Theater
+    ): Promise<ShowtimeMetadata[]> {
+        const movieIdList: number[] = [];
+        for (const showtime of showtimeList) {
+            if (!movieIdList.includes(showtime.ofMovieId)) {
+                movieIdList.push(showtime.ofMovieId);
+            }
         }
+
+        const movieListRecord = await Promise.all(
+            movieIdList.map((movieId) => this.movieDM.getMovieById(movieId))
+        );
+
+        const movieMap = new Map();
+        movieListRecord.forEach(movie => {
+            movieMap.set(
+                movie?.id,
+                movie?.title
+            )
+        })
+
+        const screenIdList: number[] = [];
+        for (const showtime of showtimeList) {
+            if (!screenIdList.includes(showtime.ofScreenId)) {
+                screenIdList.push(showtime.ofScreenId);
+            }
+        }
+
+        const screenListRecord = await Promise.all(
+            screenIdList.map((screenId) => this.screenDM.getScreenById(screenId))
+        );
+
+        const screenMap = new Map();
+        screenListRecord.forEach(screen => {
+            screenMap.set(
+                screen?.id,
+                {
+                    id: screen?.id,
+                    displayName: screen?.displayName,
+                    ofTheaterId: screen?.ofTheaterId,
+                    screenType: screen?.screenType
+                });
+        });
+
+        const showtimeListOfTheater: ShowtimeMetadata[] = [];
+        for (let i = 0; i < showtimeList.length; i++) {
+            const screen = screenMap.get(showtimeList[i].ofScreenId);
+            showtimeListOfTheater.push({
+                id: showtimeList[i].id,
+                movieName: movieMap.get(showtimeList[i].ofMovieId),
+                movieType: "",
+                screenName: screen.displayName,
+                seatCount: screen.screenType.seatCount,
+                theaterName: theaterRecord.displayName,
+                timeEnd: showtimeList[i].timeStart,
+                timeStart: showtimeList[i].timeStart
+            })
+        }
+        return showtimeListOfTheater;
     }
 
     private convertTimeTo0AMInTheSameDay(requestTime: number): number {
         return new Date(requestTime).setHours(0, 0, 0, 0);
+    }
+
+    private isValidDate(date: number): boolean {
+        const dateStr = new Date(date).toISOString();
+        return validator.isISO8601(dateStr);
     }
 }
 

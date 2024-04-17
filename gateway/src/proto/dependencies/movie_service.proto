@@ -26,6 +26,7 @@ service MovieService {
    rpc DeleteShowtime(DeleteShowtimeRequest) returns (DeleteShowtimeResponse) {}
 
    rpc GetShowtimeListOfTheaterByMovieId(GetShowtimeListOfTheaterByMovieIdRequest) returns (GetShowtimeListOfTheaterByMovieIdResponse) {}
+   rpc GetShowtimeListOfTheater(GetShowtimeListOfTheaterRequest) returns (GetShowtimeListOfTheaterResponse) {}
 }
 
 message MovieGenre {
@@ -80,6 +81,21 @@ message Theater {
     string location = 3;
     uint32 screen_count = 4;
     uint32 seat_count = 5;
+}
+
+message ScreenType {
+    uint32 id = 1 ;
+    string display_name = 2;
+    string description = 3;
+    uint32 seat_count = 4;
+    uint32 row_count = 5;
+    uint32 seat_of_row_count = 6;
+}
+message Screen {
+    uint32 id = 1;
+    uint32 of_theater_id = 2;
+    ScreenType screen_type = 3;
+    string display_name = 4;
 }
 
 message CreateMovieGenreRequest {
@@ -298,10 +314,28 @@ message GetShowtimeListOfTheaterByMovieIdRequest {
     uint64 request_time = 3;
 }
 
-message GetShowtimeListOfTheaterByMovieIdResponse {
-    Theater theater = 1;
-    Movie movie = 2;
-    repeated Showtime showtime_list = 3;
+message ShowtimeMetadata {
+    uint32 id = 1;
+    string theater_name = 2;
+    string movie_name = 3;
+    string movie_type = 4;
+    string screen_name = 5;
+    uint32 time_start = 6;
+    uint32 time_end = 7;
+    uint32 seat_count = 8;
 }
 
+message GetShowtimeListOfTheaterByMovieIdResponse {
+    Theater theater = 1;
+    repeated ShowtimeMetadata showtime_list_of_theater = 2;
+}
 
+message GetShowtimeListOfTheaterRequest {
+    uint32 theater_id = 1;
+    uint64 request_time = 2;
+}
+
+message GetShowtimeListOfTheaterResponse {
+    Theater theater = 1;
+    repeated ShowtimeMetadata showtime_list_of_theater = 2;
+}

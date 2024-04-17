@@ -15,6 +15,7 @@ export * from "./theater";
 export * from "./seat";
 export * from "./movie_type";
 export * from "./showtime";
+export * from "./showtime_metadata";
 
 export function bindToContainer(container: Container): void {
     converters.bindToContainer(container);

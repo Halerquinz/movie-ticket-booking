@@ -9,7 +9,6 @@ export class ScreenType {
     ) { }
 
     public static fromProto(screenTypeProto: any): ScreenType {
-        console.log()
         return new ScreenType(
             screenTypeProto?.id || 0,
             screenTypeProto?.displayName || "",
