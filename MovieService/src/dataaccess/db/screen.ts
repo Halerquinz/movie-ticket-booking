@@ -4,7 +4,7 @@ import { Logger } from "winston";
 import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 import { KNEX_INSTANCE_TOKEN } from "./knex";
 import { status } from "@grpc/grpc-js";
-import { Screen } from "../db";
+import { Screen, ScreenType } from "../db";
 
 export interface UpdateScreenArguments {
     screenId: number;
@@ -27,6 +27,14 @@ const ColNameMovieServiceScreenId = "screen_id";
 const ColNameMovieServiceScreenOfTheaterId = "of_theater_id";
 const ColNameMovieServiceScreenOfScreenTypeId = "of_screen_type_id";
 const ColNameMovieServiceScreenDisplayName = "display_name";
+
+const TabNameMovieServiceScreenTypeTab = "movie_service_screen_type_tab";
+const ColNameMovieServiceScreenTypeId = "screen_type_id";
+const ColNameMovieServiceScreenTypeDisplayName = "display_name";
+const ColNameMovieServiceScreenTypeDescription = "description";
+const ColNameMovieServiceScreenTypeSeatCount = "seat_count";
+const ColNameMovieServiceScreenTypeRowCount = "row_count";
+const ColNameMovieServiceScreenTypeSeatOfRowCount = "seat_of_row_count";
 
 export class ScreenDataAccessorImpl implements ScreenDataAccessor {
     constructor(
@@ -92,6 +100,11 @@ export class ScreenDataAccessorImpl implements ScreenDataAccessor {
             rows = await this.knex
                 .select()
                 .from(TabNameMovieServiceScreenTab)
+                .leftOuterJoin(
+                    TabNameMovieServiceScreenTypeTab,
+                    `${TabNameMovieServiceScreenTab}.${ColNameMovieServiceScreenOfScreenTypeId}`,
+                    `${TabNameMovieServiceScreenTypeTab}.${ColNameMovieServiceScreenTypeId}`
+                )
                 .where({
                     [ColNameMovieServiceScreenId]: id
                 });
@@ -110,7 +123,7 @@ export class ScreenDataAccessorImpl implements ScreenDataAccessor {
             throw ErrorWithStatus.wrapWithStatus("more than one screen with id", status.INTERNAL);
         }
 
-        return this.getScreenFromRow(rows[0]);
+        return this.getScreenFromJoinedRow(rows[0]);
     }
 
     public async getScreenByIdWithXLock(id: number): Promise<Screen | null> {
@@ -147,6 +160,11 @@ export class ScreenDataAccessorImpl implements ScreenDataAccessor {
             rows = await this.knex
                 .select()
                 .from(TabNameMovieServiceScreenTab)
+                .leftOuterJoin(
+                    TabNameMovieServiceScreenTypeTab,
+                    `${TabNameMovieServiceScreenTab}.${ColNameMovieServiceScreenOfScreenTypeId}`,
+                    `${TabNameMovieServiceScreenTypeTab}.${ColNameMovieServiceScreenTypeId}`
+                )
                 .where({
                     [ColNameMovieServiceScreenDisplayName]: displayName
                 });
@@ -165,7 +183,7 @@ export class ScreenDataAccessorImpl implements ScreenDataAccessor {
             throw ErrorWithStatus.wrapWithStatus("more than one screen with displayName", status.INTERNAL);
         }
 
-        return this.getScreenFromRow(rows[0]);
+        return this.getScreenFromJoinedRow(rows[0]);
     }
 
     public async getScreenByDisplayNameWithXLock(displayName: string): Promise<Screen | null> {
@@ -204,10 +222,36 @@ export class ScreenDataAccessorImpl implements ScreenDataAccessor {
     }
 
     private getScreenFromRow(row: Record<string, any>): Screen {
+        let screenType: ScreenType | null = null;
+        if (row[ColNameMovieServiceScreenOfScreenTypeId]) {
+            screenType = new ScreenType(
+                +row[ColNameMovieServiceScreenOfScreenTypeId], "", "", 0, 0, 0);
+        }
         return new Screen(
             +row[ColNameMovieServiceScreenId],
             +row[ColNameMovieServiceScreenOfTheaterId],
-            +row[ColNameMovieServiceScreenOfScreenTypeId],
+            screenType,
+            row[ColNameMovieServiceScreenDisplayName]
+        );
+    }
+
+    private getScreenFromJoinedRow(row: Record<string, any>): Screen {
+        let screenType: ScreenType | null = null;
+        if (row[ColNameMovieServiceScreenOfScreenTypeId]) {
+            screenType = new ScreenType(
+                +row[ColNameMovieServiceScreenOfScreenTypeId],
+                row[ColNameMovieServiceScreenTypeDisplayName],
+                row[ColNameMovieServiceScreenTypeDescription],
+                +row[ColNameMovieServiceScreenTypeSeatCount],
+                +row[ColNameMovieServiceScreenTypeRowCount],
+                +row[ColNameMovieServiceScreenTypeSeatOfRowCount]
+            );
+        }
+
+        return new Screen(
+            +row[ColNameMovieServiceScreenId],
+            +row[ColNameMovieServiceScreenOfTheaterId],
+            screenType,
             row[ColNameMovieServiceScreenDisplayName]
         );
     }

@@ -64,7 +64,7 @@ export class Screen {
     constructor(
         public id: number,
         public ofTheaterId: number,
-        public ofScreenTypeId: number,
+        public screenType: ScreenType | null,
         public displayName: string
     ) { }
 }
