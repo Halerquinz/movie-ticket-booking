@@ -1,4 +1,4 @@
-import { ScreenType } from "../../proto/gen/ScreenType";
+import { ScreenType } from "./screen_type";
 
 export class Screen {
     constructor(
@@ -9,10 +9,12 @@ export class Screen {
     ) { }
 
     public static fromProto(screenProto: any | undefined): Screen {
+        const screenTypeFromProto = ScreenType.fromProto(screenProto?.screenType);
+
         return new Screen(
             screenProto?.id || 0,
             screenProto?.ofTheaterId || 0,
-            screenProto?.screenType || null,
+            screenTypeFromProto || null,
             screenProto?.displayName || "",
         )
     }

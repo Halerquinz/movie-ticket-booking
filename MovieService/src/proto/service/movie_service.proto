@@ -289,7 +289,7 @@ message CreateScreenRequest {
 message CreateScreenResponse {
     uint32 id = 1;
     uint32 of_theater_id = 2;
-    uint32 of_screen_type_id = 3;
+    ScreenType screen_type = 3;
     string display_name = 4;
 }
 
