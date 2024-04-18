@@ -71,7 +71,7 @@ export class Screen {
 
 export class ScreenType {
     constructor(
-        public id: number,
+        public id: SeatType,
         public displayName: string,
         public description: string,
         public seatCount: number,
@@ -90,16 +90,24 @@ export class Seat {
     ) { }
 }
 
+export enum ShowtimeDayOfTheWeekType {
+    MONTOTHIRS = 1,
+    FRITOSUN = 2
+}
 export class ShowtimeDayOfTheWeek {
     constructor(
-        public id: number,
+        public id: ShowtimeDayOfTheWeekType,
         public displayName: string
     ) { }
 }
 
+export enum ShowtimeSlotType {
+    BEFORE5PM = 1,
+    AFTER5PM = 2
+}
 export class ShowtimeSlot {
     constructor(
-        public id: number,
+        public id: ShowtimeSlotType,
         public displayName: string
     ) { }
 }
@@ -113,5 +121,21 @@ export class Showtime {
         public timeEnd: number,
         public showtimeDayOfTheWeek: ShowtimeDayOfTheWeek | null,
         public showtimeSlot: ShowtimeSlot | null
+    ) { }
+}
+
+export enum SeatType {
+    NORMAL = 1,
+    VIP = 2,
+}
+
+export class Price {
+    constructor(
+        public priceId: number,
+        public ofMovieTypeId: number,
+        public ofSeatTypeId: number,
+        public ofShowtimeSlotId: number,
+        public ofShowtimeDayOfTheWeekId: number,
+        public price: number
     ) { }
 }

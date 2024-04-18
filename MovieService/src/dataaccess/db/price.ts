@@ -4,15 +4,22 @@ import { Logger } from "winston";
 import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 import { KNEX_INSTANCE_TOKEN } from "./knex";
 import { status } from "@grpc/grpc-js";
+import { Price } from "./models";
 
 export interface PriceDataAccessor {
     insertDefaultPrice(): Promise<void>;
+    getPrice(
+        ofMovieTypeId: number,
+        ofSeatTypeId: number,
+        ofShowtimeSlotId: number,
+        ofShowtimeDayOfTheWeekId: number,
+    ): Promise<Price | null>
     withTransaction<T>(cb: (dataAccessor: PriceDataAccessor) => Promise<T>): Promise<T>;
 }
 
 const TabNameMovieServicePrice = "movie_service_price_tab";
 const ColNameMovieServicePriceId = "price_id";
-const ColNameMovieServicePriceOfMovieId = "of_movie_id";
+const ColNameMovieServicePriceOfMovieTypeId = "of_movie_type_id";
 const ColNameMovieServicePriceOfSeatTypeId = "of_seat_type_id";
 const ColNameMovieServicePriceOfShowtimeSlotId = "of_showtime_slot_id";
 const ColNameMovieServicePriceOfShowtimeDayOfTheWeekId = "of_day_of_the_week_id";
@@ -24,6 +31,43 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
         private readonly knex: Knex<any, any[]>,
         private readonly logger: Logger
     ) { }
+
+    public async getPrice(
+        ofMovieTypeId: number,
+        ofSeatTypeId: number,
+        ofShowtimeSlotId: number,
+        ofShowtimeDayOfTheWeekId: number
+    ): Promise<Price | null> {
+        let rows;
+        try {
+            rows = await this.knex
+                .select()
+                .from(TabNameMovieServicePrice)
+                .where(ColNameMovieServicePriceOfMovieTypeId, "=", ofMovieTypeId)
+                .andWhere(ColNameMovieServicePriceOfSeatTypeId, "=", ofSeatTypeId)
+                .andWhere(ColNameMovieServicePriceOfShowtimeSlotId, "=", ofShowtimeSlotId)
+                .andWhere(ColNameMovieServicePriceOfShowtimeDayOfTheWeekId, "=", ofShowtimeDayOfTheWeekId)
+
+        } catch (error) {
+            this.logger.error("failed to get price", { error });
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+
+        if (rows.length === 0) {
+            this.logger.debug("no price with found");
+            return null;
+        }
+
+        const row = rows[0];
+        return new Price(
+            +row[ColNameMovieServicePriceId],
+            row[ColNameMovieServicePriceOfMovieTypeId],
+            row[ColNameMovieServicePriceOfSeatTypeId],
+            row[ColNameMovieServicePriceOfShowtimeDayOfTheWeekId],
+            row[ColNameMovieServicePriceOfShowtimeSlotId],
+            +row[ColNameMovieServicePrice]
+        )
+    }
 
     public async insertDefaultPrice(): Promise<void> {
         try {

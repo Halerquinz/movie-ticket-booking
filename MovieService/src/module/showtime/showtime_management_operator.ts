@@ -10,9 +10,13 @@ import {
     ScreenDataAccessor,
     Showtime,
     ShowtimeDataAccessor,
+    ShowtimeDayOfTheWeekType,
+    ShowtimeSlot,
+    ShowtimeSlotType,
 } from "../../dataaccess/db";
 import { _ShowtimeType_Values } from "../../proto/gen/ShowtimeType";
 import { ErrorWithStatus, LOGGER_TOKEN, TIMER_TOKEN, Timer } from "../../utils";
+import ms from "ms"
 
 export interface ShowtimeManagementOperator {
     createShowtime(
@@ -55,14 +59,18 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
             throw new ErrorWithStatus(`no screen with screen_id ${screenId} found`, status.NOT_FOUND);
         }
 
-        const timeEnd = timeStart + movie.duration * 60 * 1000; // minutes to ms
+        const timeEnd = timeStart + ms(`${movie.duration}m`);
+        const showtimeSlotId = this.getSlotId(timeStart);
+        const showtimeDayOfTheWeekId = this.getDayOfTheWeekId(timeStart);
 
         return this.showtimeDM.withTransaction<Showtime>(async (showtimeDM) => {
             const createdShowtimeId = await showtimeDM.createShowtime({
                 ofMovieId: movieId,
                 ofScreenId: screenId,
                 timeEnd: timeEnd,
-                timeStart: timeStart
+                timeStart: timeStart,
+                of_showtime_slot_id: showtimeSlotId,
+                of_showtime_day_of_the_week_id: showtimeDayOfTheWeekId
             })
 
             return {
@@ -70,7 +78,15 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
                 ofScreenId: screenId,
                 ofMovieId: movieId,
                 timeEnd: timeEnd,
-                timeStart: timeStart
+                timeStart: timeStart,
+                showtimeDayOfTheWeek: {
+                    id: showtimeDayOfTheWeekId,
+                    displayName: ""
+                },
+                showtimeSlot: {
+                    id: showtimeSlotId,
+                    displayName: ""
+                }
             }
         })
     }
@@ -82,6 +98,20 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
     private isValidReleaseDate(releaseDate: number): boolean {
         const dateStr = new Date(releaseDate).toISOString();
         return validator.isISO8601(dateStr);
+    }
+
+    private getDayOfTheWeekId(timestamp: number): ShowtimeDayOfTheWeekType {
+        const dayOfTheWeek = new Date(timestamp).getDay();
+
+        if (dayOfTheWeek > 0 && dayOfTheWeek < 5) return ShowtimeDayOfTheWeekType.MONTOTHIRS;
+        return ShowtimeDayOfTheWeekType.FRITOSUN;
+    }
+
+    private getSlotId(timestamp: number): ShowtimeSlotType {
+        const hours = new Date(timestamp).getHours();
+
+        if (hours < 17) return ShowtimeSlotType.BEFORE5PM;
+        return ShowtimeSlotType.AFTER5PM
     }
 }
 

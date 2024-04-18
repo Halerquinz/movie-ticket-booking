@@ -2,14 +2,19 @@ import { sendUnaryData, status } from "@grpc/grpc-js";
 import { injected, token } from "brandi";
 import { MOVIE_MANAGEMENT_OPERATOR_TOKEN, MovieManagementOperator } from "../module/movie";
 import { MOVIE_GENRE_MANAGEMENT_OPERATOR, MovieGenreManagementOperator } from "../module/movie_genre";
+import { PRICE_MANAGEMENT_OPERATOR_TOKEN, PriceManagementOperator } from "../module/price";
+import { SCREEN_MANAGEMENT_OPERATOR_TOKEN, ScreenManagementOperator } from "../module/screen";
+import { SCREEN_TYPE_MANAGEMENT_OPERATOR_TOKEN, ScreenTypeManagementOperator } from "../module/screen_type";
+import { SEAT_MANAGEMENT_OPERATOR_TOKEN, SeatManagementOperator } from "../module/seat";
+import {
+    SHOWTIME_LIST_MANAGEMENT_OPERATOR_TOKEN,
+    SHOWTIME_MANAGEMENT_OPERATOR_TOKEN,
+    ShowtimeListManagementOperator,
+    ShowtimeManagementOperator
+} from "../module/showtime";
+import { THEATER_MANAGEMENT_OPERATOR_TOKEN, TheaterManagementOperator } from "../module/theater";
 import { MovieServiceHandlers } from "../proto/gen/MovieService";
 import { ErrorWithStatus } from "../utils";
-import { SCREEN_TYPE_MANAGEMENT_OPERATOR_TOKEN, ScreenTypeManagementOperator } from "../module/screen_type";
-import { SCREEN_MANAGEMENT_OPERATOR_TOKEN, ScreenManagementOperator } from "../module/screen";
-import { THEATER_MANAGEMENT_OPERATOR_TOKEN, TheaterManagementOperator } from "../module/theater";
-import { SEAT_MANAGEMENT_OPERATOR_TOKEN, SeatManagementOperator } from "../module/seat";
-import { SHOWTIME_LIST_MANAGEMENT_OPERATOR_TOKEN, SHOWTIME_MANAGEMENT_OPERATOR_TOKEN, ShowtimeListManagementOperator, ShowtimeManagementOperator } from "../module/showtime";
-import { request } from "http";
 
 export class MovieServiceHandlerFactory {
     constructor(
@@ -21,6 +26,7 @@ export class MovieServiceHandlerFactory {
         private readonly seatManagementOperator: SeatManagementOperator,
         private readonly showtimeManagementOperator: ShowtimeManagementOperator,
         private readonly showtimeListManagementOperator: ShowtimeListManagementOperator,
+        private readonly priceManagementOperator: PriceManagementOperator,
     ) { }
 
     public getMovieServiceHandlers(): MovieServiceHandlers {
@@ -397,6 +403,35 @@ export class MovieServiceHandlerFactory {
                 } catch (error) {
                     this.handleError(error, callback)
                 }
+            },
+
+            GetPrice: async (call, callback) => {
+                const req = call.request;
+                if (req.ofMovieTypeId === undefined) {
+                    return callback({ message: "movie type id is required", code: status.INVALID_ARGUMENT });
+                }
+                if (req.ofSeatTypeId === undefined) {
+                    return callback({ message: "seat type id is required", code: status.INVALID_ARGUMENT });
+                }
+                if (req.ofShowtimeDayOfTheWeekId === undefined) {
+                    return callback({ message: "showtime day of the week id is required", code: status.INVALID_ARGUMENT });
+                }
+                if (req.ofShowtimeSlotId === undefined) {
+                    return callback({ message: "showtime slot id is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    const price = await this.priceManagementOperator.getPrice(
+                        req.ofMovieTypeId,
+                        req.ofSeatTypeId,
+                        req.ofShowtimeSlotId,
+                        req.ofShowtimeDayOfTheWeekId
+                    )
+
+                    callback(null, { price });
+                } catch (error) {
+                    this.handleError(error, callback)
+                }
             }
         }
         return handler
@@ -421,7 +456,8 @@ injected(MovieServiceHandlerFactory,
     THEATER_MANAGEMENT_OPERATOR_TOKEN,
     SEAT_MANAGEMENT_OPERATOR_TOKEN,
     SHOWTIME_MANAGEMENT_OPERATOR_TOKEN,
-    SHOWTIME_LIST_MANAGEMENT_OPERATOR_TOKEN
+    SHOWTIME_LIST_MANAGEMENT_OPERATOR_TOKEN,
+    PRICE_MANAGEMENT_OPERATOR_TOKEN
 );
 
 export const MOVIE_SERVICE_HANDLERS_FACTORY_TOKEN = token<MovieServiceHandlerFactory>("MovieServiceHandlersFactory");

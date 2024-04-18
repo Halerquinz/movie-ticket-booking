@@ -27,6 +27,8 @@ service MovieService {
 
    rpc GetShowtimeListOfTheaterByMovieId(GetShowtimeListOfTheaterByMovieIdRequest) returns (GetShowtimeListOfTheaterByMovieIdResponse) {}
    rpc GetShowtimeListOfTheater(GetShowtimeListOfTheaterRequest) returns (GetShowtimeListOfTheaterResponse) {}
+
+   rpc GetPrice(GetPriceRequest) returns (GetPriceResponse) {}
 }
 
 message MovieGenre {
@@ -67,12 +69,24 @@ message Movie {
     MovieTrailer trailer = 7;
 }
 
+message ShowtimeDayOfTheWeek {
+    uint32 id = 1;
+    string display_name = 2;
+}
+
+message ShowtimeSlot {
+    uint32 id = 1;
+    string display_name = 2;
+}
+
 message Showtime {
     uint32 id = 1;
     uint32 of_movie_id = 2;
     uint32 of_screen_id = 3;
     uint64 time_start = 4;
     uint64 time_end = 5;
+    ShowtimeSlot showtime_slot = 6;
+    ShowtimeDayOfTheWeek showtime_day_of_the_week = 7;
 }
 
 message Theater {
@@ -338,4 +352,23 @@ message GetShowtimeListOfTheaterRequest {
 message GetShowtimeListOfTheaterResponse {
     Theater theater = 1;
     repeated ShowtimeMetadata showtime_list_of_theater = 2;
+}
+
+message GetPriceRequest {
+    uint32 of_movie_type_id = 1;
+    uint32 of_seat_type_id = 2;
+    uint32 of_showtime_slot_id = 3;
+    uint32 of_showtime_day_of_the_week_id = 4;
+}
+
+message Price {
+    uint32 id = 1;
+    uint32 of_movie_type_id = 2;
+    uint32 of_seat_type_id = 3;
+    uint32 of_showtime_slot_id = 4;
+    uint32 of_showtime_day_of_the_week_id = 5;
+    uint32 price = 6;
+}
+message GetPriceResponse {
+    Price price = 1;
 }

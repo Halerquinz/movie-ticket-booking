@@ -4,13 +4,15 @@ import { Logger } from "winston";
 import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 import { KNEX_INSTANCE_TOKEN } from "./knex";
 import { status } from "@grpc/grpc-js";
-import { Showtime, ShowtimeDayOfTheWeek, ShowtimeSlot } from "./models";
+import { Showtime, ShowtimeDayOfTheWeek, ShowtimeDayOfTheWeekType, ShowtimeSlot, ShowtimeSlotType } from "./models";
 
 export interface CreateShowtimeArguments {
     ofMovieId: number,
     ofScreenId: number,
     timeStart: number,
     timeEnd: number,
+    of_showtime_slot_id: ShowtimeSlotType,
+    of_showtime_day_of_the_week_id: ShowtimeDayOfTheWeekType
 }
 
 export interface UpdateShowtimeArguments {
@@ -19,6 +21,8 @@ export interface UpdateShowtimeArguments {
     ofScreenId: number,
     timeStart: number,
     timeEnd: number,
+    of_showtime_slot_id: ShowtimeSlotType,
+    of_showtime_day_of_the_week_id: ShowtimeDayOfTheWeekType
 }
 
 export interface ShowtimeDataAccessor {
@@ -92,6 +96,8 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
                     [ColNameMovieServiceShowtimeOfScreenId]: args.ofScreenId,
                     [ColNameMovieServiceShowtimeTimeStart]: args.timeStart,
                     [ColNameMovieServiceShowtimeTimeEnd]: args.timeEnd,
+                    [ColNameMovieServiceShowtimeOfShowtimeSlotId]: args.of_showtime_slot_id,
+                    [ColNameMovieServiceShowtimeOfShowtimeDayOfTheWeekId]: args.of_showtime_day_of_the_week_id
                 })
                 .returning(ColNameMovieServiceShowtimeId)
                 .into(TabNameMovieServiceShowtimeTab);
@@ -111,6 +117,8 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
                     [ColNameMovieServiceShowtimeOfScreenId]: args.ofScreenId,
                     [ColNameMovieServiceShowtimeTimeStart]: args.timeStart,
                     [ColNameMovieServiceShowtimeTimeEnd]: args.timeEnd,
+                    [ColNameMovieServiceShowtimeOfShowtimeSlotId]: args.of_showtime_slot_id,
+                    [ColNameMovieServiceShowtimeOfShowtimeDayOfTheWeekId]: args.of_showtime_day_of_the_week_id
                 })
                 .where({
                     [ColNameMovieServiceShowtimeId]: args.showtimeId
