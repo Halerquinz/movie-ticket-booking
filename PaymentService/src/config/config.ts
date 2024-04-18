@@ -6,7 +6,7 @@ import { DistributedConfig } from "./distributed";
 import { ApplicationConfig } from "./application";
 import { ElasticsearchConfig } from "./elasticsearch";
 
-export class UserServiceConfig {
+export class PaymentServiceConfig {
     public databaseConfig = new DatabaseConfig();
     public grpcServerConfig = new GRPCServerConfig();
     public logConfig = new LogConfig();
@@ -14,8 +14,8 @@ export class UserServiceConfig {
     public applicationConfig = new ApplicationConfig();
     public elasticsearchConfig = new ElasticsearchConfig();
 
-    public static fromEnv(): UserServiceConfig {
-        const config = new UserServiceConfig();
+    public static fromEnv(): PaymentServiceConfig {
+        const config = new PaymentServiceConfig();
         config.databaseConfig = DatabaseConfig.fromEnv();
         config.grpcServerConfig = GRPCServerConfig.fromEnv();
         config.logConfig = LogConfig.fromEnv();
@@ -26,4 +26,4 @@ export class UserServiceConfig {
     }
 }
 
-export const USER_SERVICE_CONFIG_TOKEN = token<UserServiceConfig>("UserServiceConfig");
+export const PAYMENT_SERVICE_CONFIG_TOKEN = token<PaymentServiceConfig>("PaymentServiceConfig");

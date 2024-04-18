@@ -1,12 +1,12 @@
 import { token } from "brandi";
 
 export class GRPCServerConfig {
-    public port = 20000;
+    public port = 20003;
 
     public static fromEnv(): GRPCServerConfig {
         const config = new GRPCServerConfig();
-        if (process.env.USER_SERVICE_PORT !== undefined) {
-            config.port = +process.env.USER_SERVICE_PORT;
+        if (process.env.PAYMENT_SERVICE_PORT !== undefined) {
+            config.port = +process.env.PAYMENT_SERVICE_PORT;
         }
         return config;
     }

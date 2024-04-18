@@ -8,25 +8,31 @@
     "clean": "rm -r ./src/proto/gen && tsc --build --clean",
     "build": "npm run generate && tsc --build",
     "watch-grpc": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node -- --start_grpc_server\"",
+    "watch-kafka": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node -- --start_kafka_consumer\"",
     "watch-node": "nodemon --ignore \"logs/**\" --delay 1s --inspect dist/main.js",
     "debug-grpc": "npm run build && npm run watch-grpc",
+    "debug-kafka": "npm run build && npm run watch-kafka",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch-ts": "tsc -w",
     "lint": "npx eslint ./src --ext .js,.jsx,.ts,.tsx",
     "generate": "./node_modules/.bin/proto-loader-gen-types --longs=Number --enums=Number --oneofs --grpcLib=@grpc/grpc-js --outDir=src/proto/gen src/proto/**/*.proto",
     "migration": "knex migrate:latest",
-    "make": "knex migrate:make",
+    "make-migration": "knex migrate:make",
+    "seeding": "knex seed:run",
+    "make-seeding": "knex seed:make",
     "rollback": "knex migrate:rollback",
     "repair": "knex migrate:repair",
     "serve-grpc": "ts-node src/main.ts --start_grpc_server",
     "serve": "node dist/main.js",
     "start-initialize": "node dist/main.js --prod --initialize",
-    "start-grpc": "node dist/main.js --prod --start_grpc_server"
+    "start-grpc": "node dist/main.js --prod --start_grpc_server",
+    "insert-default-price": "node dist/main.js --prod --insert_default_price"
   },
   "keywords": [],
   "author": "halerquinz",
   "license": "ISC",
   "dependencies": {
+    "@elastic/elasticsearch": "^8.13.1",
     "@types/knex": "^0.16.1",
     "brandi": "^5.0.0",
     "concurrently": "^8.2.2",
@@ -42,7 +48,8 @@
     "typescript": "^5.4.2",
     "validator": "^13.11.0",
     "winston": "3.6.0",
-    "winston-daily-rotate-file": "^4.6.1"
+    "winston-daily-rotate-file": "^4.6.1",
+    "winston-elasticsearch": "^0.18.0"
   },
   "devDependencies": {
     "@grpc/grpc-js": "^1.5.5",
