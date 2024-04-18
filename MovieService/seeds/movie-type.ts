@@ -6,9 +6,9 @@ export async function seed(knex: Knex): Promise<void> {
     await knex(TabNameMovieServiceMovieType).del();
 
     await knex(TabNameMovieServiceMovieType).insert([
-        { display_name: "2D Subtile" },
-        { display_name: "2D Dubbing" },
-        { display_name: "3D Subtitle" },
-        { display_name: "3D Dubbing" }
+        { movie_type_id: 1, display_name: "2D Subtile" },
+        { movie_type_id: 2, display_name: "2D Dubbing" },
+        { movie_type_id: 3, display_name: "3D Subtitle" },
+        { movie_type_id: 4, display_name: "3D Dubbing" }
     ]);
 };

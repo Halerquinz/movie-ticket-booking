@@ -209,9 +209,10 @@ export async function up(knex: Knex): Promise<void> {
 
     if (!(await knex.schema.hasTable(TabNameMovieServiceSeatType))) {
         await knex.schema.createTable(TabNameMovieServiceSeatType, (table) => {
-            table.increments("seat_type_id", { primaryKey: true });
+            table.integer("seat_type_id");
 
             table.string("display_name", 256).notNullable();
+            table.primary(["seat_type_id"]);
         });
     }
 
@@ -240,18 +241,22 @@ export async function up(knex: Knex): Promise<void> {
 
     if (!(await knex.schema.hasTable(TabNameMovieServiceShowtimeSlot))) {
         await knex.schema.createTable(TabNameMovieServiceShowtimeSlot, (table) => {
-            table.increments("showtime_slot_id", { primaryKey: true });
+            table.integer("showtime_slot_id");
 
             table.string("display_name").notNullable();
+
+            table.primary(["showtime_slot_id"]);
         });
     }
 
 
     if (!(await knex.schema.hasTable(TabNameMovieServiceShowtimeDayOfTheWeek))) {
         await knex.schema.createTable(TabNameMovieServiceShowtimeDayOfTheWeek, (table) => {
-            table.increments("showtime_day_of_the_week_id", { primaryKey: true });
+            table.integer("showtime_day_of_the_week_id");
 
             table.string("display_name").notNullable();
+
+            table.primary(["showtime_day_of_the_week_id"]);
         });
     }
 

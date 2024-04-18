@@ -6,7 +6,7 @@ export async function seed(knex: Knex): Promise<void> {
     await knex(TabNameMovieServiceShowtimeSlot).del();
 
     await knex(TabNameMovieServiceShowtimeSlot).insert([
-        { display_name: "Before 5 pm" },
-        { display_name: "After 5 pm" },
+        { showtime_slot_id: 1, display_name: "Before 5 pm" },
+        { showtime_slot_id: 2, display_name: "After 5 pm" },
     ]);
 };
