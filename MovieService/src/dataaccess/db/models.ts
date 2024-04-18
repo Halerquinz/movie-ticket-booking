@@ -90,6 +90,20 @@ export class Seat {
     ) { }
 }
 
+export class ShowtimeDayOfTheWeek {
+    constructor(
+        public id: number,
+        public displayName: string
+    ) { }
+}
+
+export class ShowtimeSlot {
+    constructor(
+        public id: number,
+        public displayName: string
+    ) { }
+}
+
 export class Showtime {
     constructor(
         public id: number,
@@ -97,5 +111,7 @@ export class Showtime {
         public ofScreenId: number,
         public timeStart: number,
         public timeEnd: number,
+        public showtimeDayOfTheWeek: ShowtimeDayOfTheWeek | null,
+        public showtimeSlot: ShowtimeSlot | null
     ) { }
 }
