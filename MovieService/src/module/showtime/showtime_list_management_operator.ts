@@ -16,6 +16,7 @@ import {
 } from "../../dataaccess/db";
 import { ShowtimeMetadata } from "../../proto/gen/ShowtimeMetadata";
 import { ErrorWithStatus, LOGGER_TOKEN, TIMER_TOKEN, Timer } from "../../utils";
+import ms from "ms";
 
 export interface ShowtimeListManagementOperator {
     getShowtimeListOfTheater(
@@ -36,6 +37,8 @@ export interface ShowtimeListManagementOperator {
 }
 
 export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagementOperator {
+    private readonly showtimeRangeInMS: number;
+
     constructor(
         private readonly logger: Logger,
         private readonly showtimeDM: ShowtimeDataAccessor,
@@ -43,7 +46,9 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
         private readonly screenDM: ScreenDataAccessor,
         private readonly theaterDM: TheaterDataAccessor,
         private readonly timer: Timer
-    ) { }
+    ) {
+        this.showtimeRangeInMS = ms("1d");
+    }
 
     public async getShowtimeListOfTheater(theaterId: number, requestTime: number): Promise<{
         theater: Theater;
@@ -61,7 +66,7 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
             throw new ErrorWithStatus(`no movie with theater id ${theaterRecord} found`, status.NOT_FOUND);
         }
 
-        const showtimeList = await this.showtimeDM.getShowtimeListOfTheaterId(theaterId, requestTime);
+        const showtimeList = await this.showtimeDM.getShowtimeListOfTheaterId(theaterId, requestTime, this.showtimeRangeInMS);
 
         const showtimeListOfTheater = await this.getShowtimeListOfTheaterMetadata(showtimeList, theaterRecord);
 
@@ -91,7 +96,12 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
             throw new ErrorWithStatus(`no movie with theater id ${theaterRecord} found`, status.NOT_FOUND);
         }
 
-        const showtimeList = await this.showtimeDM.getShowtimeListOfTheaterByMovieId(theaterId, movieId, requestTime);
+        const showtimeList = await this.showtimeDM.getShowtimeListOfTheaterByMovieId(
+            theaterId,
+            movieId,
+            requestTime,
+            this.showtimeRangeInMS
+        );
 
         const showtimeListOfTheater = await this.getShowtimeListOfTheaterMetadata(showtimeList, theaterRecord);
 

@@ -29,12 +29,14 @@ export interface ShowtimeDataAccessor {
     getShowtimeList(): Promise<Showtime[]>;
     getShowtimeListOfTheaterId(
         theaterId: number,
-        requestTime: number
+        requestTime: number,
+        showtimeRange: number
     ): Promise<Showtime[]>;
     getShowtimeListOfTheaterByMovieId(
         theaterId: number,
         movieId: number,
         requestTime: number,
+        showtimeRange: number
     ): Promise<Showtime[]>;
     withTransaction<T>(cb: (dataAccessor: ShowtimeDataAccessor) => Promise<T>): Promise<T>;
 }
@@ -171,7 +173,8 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
 
     public async getShowtimeListOfTheaterId(
         theaterId: number,
-        requestTime: number
+        requestTime: number,
+        showtimeRange: number
     ): Promise<Showtime[]> {
         try {
             const rows = await this.knex
@@ -190,7 +193,7 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
                     `theater.${ColNameMovieServiceTheaterId}`
                 )
                 .where(`theater.${ColNameMovieServiceTheaterId}`, "=", theaterId)
-                .whereRaw(`?? - ?? <= ?`, [`showtime.${ColNameMovieServiceShowtimeTimeStart}`, requestTime, 86400000])
+                .whereRaw(`?? - ?? <= ?`, [`showtime.${ColNameMovieServiceShowtimeTimeStart}`, requestTime, showtimeRange])
                 .orderBy(`showtime.${ColNameMovieServiceShowtimeOfMovieId}`, "asc")
                 .orderBy(`showtime.${ColNameMovieServiceShowtimeTimeStart}`, "asc");
 
@@ -205,7 +208,8 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
     public async getShowtimeListOfTheaterByMovieId(
         theaterId: number,
         movieId: number,
-        requestTime: number
+        requestTime: number,
+        showtimeRange: number
     ): Promise<Showtime[]> {
         try {
             const rows = await this.knex
@@ -225,7 +229,7 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
                 )
                 .where(`theater.${ColNameMovieServiceTheaterId}`, "=", theaterId)
                 .andWhere(`showtime.${ColNameMovieServiceShowtimeOfMovieId}`, "=", movieId)
-                .whereRaw(`?? - ?? <= ?`, [`showtime.${ColNameMovieServiceShowtimeTimeStart}`, requestTime, 86400000])
+                .whereRaw(`?? - ?? <= ?`, [`showtime.${ColNameMovieServiceShowtimeTimeStart}`, requestTime, showtimeRange])
                 .orderBy(`showtime.${ColNameMovieServiceShowtimeOfMovieId}`, "asc")
                 .orderBy(`showtime.${ColNameMovieServiceShowtimeTimeStart}`, "asc");
 
@@ -251,10 +255,6 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
             +row[ColNameMovieServiceShowtimeTimeStart],
             +row[ColNameMovieServiceShowtimeTimeEnd]
         )
-    }
-
-    private getShowtimeFromJoinedRow(row: Record<string, any>) {
-
     }
 }
 

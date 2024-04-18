@@ -14,7 +14,7 @@ export interface TokenManagementOperator {
 }
 
 export class TokenManagementOperatorImpl implements TokenManagementOperator {
-    public renewTimeInMS: number;
+    private readonly renewTimeInMS: number;
 
     constructor(
         private readonly userDM: UserDataAccessor,
