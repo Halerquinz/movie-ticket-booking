@@ -9,10 +9,13 @@ export async function up(knex: Knex): Promise<void> {
             table.integer("of_booking_id").notNullable();
 
             table.integer("amount").notNullable();
-            table.bigInteger("payment_time").notNullable();
-            table.smallint("payment_status").notNullable();
+            table.smallint("status").notNullable();
+            table.bigInteger("request_time").notNullable();
+            table.bigInteger("update_time").notNullable().defaultTo(0);
 
-            table.index(["of_booking_id"], "booking_service_payment_of_booking_id_idx");
+            table.index(["of_booking_id", "status"], "payment_service_payment_transaction_of_booking_status_idx");
+            table.index(["request_time"], "payment_service_payment_transaction_request_time_idx");
+            table.index(["update_time"], "payment_service_payment_transaction_update_time_idx");
         });
     }
 }
