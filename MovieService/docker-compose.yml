@@ -7,6 +7,7 @@ services:
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
     restart: always
+
   kafka:
     image: 'bitnami/kafka:3.1-debian-10'
     ports:
@@ -20,6 +21,7 @@ services:
     depends_on:
       - zookeeper
     restart: always
+
   minio:
     image: minio/minio
     ports:
@@ -32,6 +34,13 @@ services:
     restart: always
     volumes:
       - ../minio-data:/data 
+
+  redis:
+    image: redis:7.2.4
+    restart: always
+    ports:
+    - "6379:6379"
+
   elk:
     image: sebp/elk:8.3.3
     ports:
