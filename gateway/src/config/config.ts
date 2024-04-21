@@ -5,12 +5,14 @@ import { UserServiceConfig } from "./user_service";
 import { ElasticsearchConfig } from "./elasticsearch";
 import { MovieServiceConfig } from "./movie_service";
 import { ApplicationConfig } from "./application";
+import { BookingServiceConfig } from "./booking_service";
 
 export class GatewayConfig {
     public gatewayServerConfig = new GatewayServerConfig();
     public logConfig = new LogConfig();
     public userServiceConfig = new UserServiceConfig();
     public movieServiceConfig = new MovieServiceConfig();
+    public bookingServiceConfig = new BookingServiceConfig();
     public elasticsearchConfig = new ElasticsearchConfig();
     public applicationConfig = new ApplicationConfig();
 
@@ -20,6 +22,7 @@ export class GatewayConfig {
         config.logConfig = LogConfig.fromEnv();
         config.userServiceConfig = UserServiceConfig.fromEnv();
         config.movieServiceConfig = MovieServiceConfig.fromEnv();
+        config.bookingServiceConfig = BookingServiceConfig.fromEnv();
         config.elasticsearchConfig = ElasticsearchConfig.fromEnv();
         config.applicationConfig = ApplicationConfig.fromEnv();
         return config;

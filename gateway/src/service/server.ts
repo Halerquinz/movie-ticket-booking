@@ -42,4 +42,3 @@ export class GatewayHTTPServer {
 injected(GatewayHTTPServer, ROUTES_TOKEN, ERROR_HANDLER_MIDDLEWARE_FACTORY_TOKEN, LOGGER_TOKEN, GATEWAY_SERVER_CONFIG_TOKEN);
 
 export const GATEWAY_HTTP_SERVER_TOKEN = token<GatewayHTTPServer>("GatewayHTTPServer");
-

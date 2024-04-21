@@ -18,6 +18,7 @@ export * from "./showtime";
 export * from "./showtime_metadata";
 export * from "./showtime_slot";
 export * from "./showtime_day_of_the_week";
+export * from "./booking";
 
 
 export function bindToContainer(container: Container): void {

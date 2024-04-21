@@ -8,7 +8,6 @@ export class GatewayServerConfig {
         if (process.env.GATEWAY_PORT !== undefined) {
             config.port = +process.env.GATEWAY_PORT;
         }
-
         return config;
     }
 }

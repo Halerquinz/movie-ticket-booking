@@ -6,6 +6,7 @@ import { USER_SERVICE_CONFIG_TOKEN } from "./user_service";
 import { ELASTICSEARCH_CONFIG_TOKEN } from "./elasticsearch";
 import { MOVIE_SERVICE_CONFIG_TOKEN } from "./movie_service";
 import { APPLICATION_CONFIG_TOKEN } from "./application";
+import { BOOKING_SERVICE_CONFIG_TOKEN } from "./booking_service";
 
 export * from "./config";
 export * from "./elasticsearch";
@@ -13,6 +14,7 @@ export * from "./gateway_server";
 export * from "./log";
 export * from "./user_service";
 export * from "./movie_service";
+export * from "./booking_service";
 export * from "./application";
 
 export function bindToContainer(container: Container): void {
@@ -32,6 +34,10 @@ export function bindToContainer(container: Container): void {
     container
         .bind(MOVIE_SERVICE_CONFIG_TOKEN)
         .toInstance(() => container.get(GATEWAY_CONFIG_TOKEN).movieServiceConfig)
+        .inSingletonScope();
+    container
+        .bind(BOOKING_SERVICE_CONFIG_TOKEN)
+        .toInstance(() => container.get(GATEWAY_CONFIG_TOKEN).bookingServiceConfig)
         .inSingletonScope();
     container
         .bind(ELASTICSEARCH_CONFIG_TOKEN)
