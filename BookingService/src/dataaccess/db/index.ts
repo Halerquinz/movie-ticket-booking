@@ -3,7 +3,6 @@ import { KNEX_INSTANCE_TOKEN, newKnexInstance } from "./knex";
 import { BOOKING_ACCESSOR_TOKEN, BookingDataAccessorImpl } from "./booking";
 
 export * from "./knex";
-export * from "./models";
 export * from "./booking";
 
 export function bindToContainer(container: Container): void {
