@@ -8,6 +8,7 @@ import { Seat } from "./models";
 
 export interface CreateSeatArguments {
     ofScreenId: number,
+    ofSeatTypeId: number,
     column: number,
     row: string,
     no: string,
@@ -23,6 +24,7 @@ export interface SeatDataAccessor {
 const TabNameMovieServiceSeatTab = "movie_service_seat_tab";
 const ColNameMovieServiceSeatId = "seat_id";
 const ColNameMovieServiceSeatOfScreenId = "of_screen_id";
+const ColNameMovieServiceSeatOfSeatTypeId = "of_seat_type_id";
 const ColNameMovieServiceSeatColumn = "column";
 const ColNameMovieServiceSeatRow = "row";
 const ColNameMovieServiceSeatNo = "no";
@@ -38,6 +40,7 @@ export class SeatDataAccessorImpl implements SeatDataAccessor {
             const rows = await this.knex
                 .insert({
                     [ColNameMovieServiceSeatOfScreenId]: args.ofScreenId,
+                    [ColNameMovieServiceSeatOfSeatTypeId]: args.ofSeatTypeId,
                     [ColNameMovieServiceSeatColumn]: args.column,
                     [ColNameMovieServiceSeatRow]: args.row,
                     [ColNameMovieServiceSeatNo]: args.no,

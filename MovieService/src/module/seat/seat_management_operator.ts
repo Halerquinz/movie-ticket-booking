@@ -7,7 +7,8 @@ import {
     SEAT_DATA_ACCESSOR_TOKEN,
     ScreenDataAccessor,
     ScreenTypeDataAccessor,
-    SeatDataAccessor
+    SeatDataAccessor,
+    SeatType
 } from "../../dataaccess/db";
 import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 
@@ -55,6 +56,7 @@ export class SeatManagementOperatorImpl implements SeatManagementOperator {
                     await seatDM.createSeat({
                         ofScreenId: screenId,
                         row: seatRowNameAlphaMap.get(i),
+                        ofSeatTypeId: SeatType.NORMAL,
                         column: j,
                         no: no
                     })
