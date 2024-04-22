@@ -24,7 +24,7 @@ export class Booking {
             BookingProto?.ofSeatId || 0,
             BookingProto?.bookingTime || 0,
             BookingProto?.expireAt || null,
-            BookingProto?.bookingStatus || null,
+            BookingProto?.bookingStatus,
             BookingProto?.amount || null
         )
     }
