@@ -56,6 +56,7 @@ export async function up(knex: Knex): Promise<void> {
 
     if (!(await knex.schema.hasTable(TabNameMovieServiceMovieHasMovieType))) {
         await knex.schema.createTable(TabNameMovieServiceMovieHasMovieType, (table) => {
+            table.increments("movie_has_movie_type_id", { primaryKey: true });
             table.integer("movie_id");
             table.integer("movie_type_id");
 
@@ -177,7 +178,10 @@ export async function up(knex: Knex): Promise<void> {
                 .inTable(TabNameMovieServiceScreenType)
                 .onDelete("CASCADE");
 
-            table.unique(["movie_type_id", "screen_type_id"]);
+            table.unique(["movie_type_id", "screen_type_id"], {
+                indexName:
+                    "movie_service_movie_type_has_screen_type_movie_type_id_screen_type_id_idx"
+            });
             table.index(["movie_type_id"], "movie_service_movie_type_has_screen_type_movie_type_id_idx");
         });
     }
@@ -263,7 +267,7 @@ export async function up(knex: Knex): Promise<void> {
     if (!(await knex.schema.hasTable(TabNameMovieServiceShowtime))) {
         await knex.schema.createTable(TabNameMovieServiceShowtime, (table) => {
             table.increments("showtime_id", { primaryKey: true });
-            table.integer("of_movie_id");
+            table.integer("of_movie_has_movie_type_id");
             table.integer("of_screen_id");
             table.integer("of_showtime_slot_id");
             table.integer("of_showtime_day_of_the_week_id");
@@ -271,9 +275,9 @@ export async function up(knex: Knex): Promise<void> {
             table.bigInteger("time_start").notNullable();
             table.bigInteger("time_end").notNullable();
 
-            table.foreign("of_movie_id")
-                .references("movie_id")
-                .inTable(TabNameMovieServiceMovie)
+            table.foreign("of_movie_has_movie_type_id")
+                .references("movie_has_movie_type_id")
+                .inTable(TabNameMovieServiceMovieHasMovieType)
                 .onDelete("CASCADE");
             table.foreign("of_screen_id")
                 .references("screen_id")
@@ -288,7 +292,7 @@ export async function up(knex: Knex): Promise<void> {
                 .inTable(TabNameMovieServiceShowtimeDayOfTheWeek)
                 .onDelete("CASCADE");
 
-            table.index(["of_movie_id"], "movie_service_showtime_of_movie_id_idx");
+            table.index(["of_movie_has_movie_type_id"], "movie_service_showtime_of_movie_has_movie_type_id_idx");
             table.index(["of_screen_id"], "movie_service_showtime_of_screen_id_idx");
             table.index(["time_start"], "movie_service_showtime_time_start_idx");
         });
