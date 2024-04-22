@@ -5,7 +5,7 @@ import * as elasticsearch from "../dataaccess/elasticsearch";
 import * as s3 from "../dataaccess/s3";
 import * as kafka from "../dataaccess/kafka";
 import * as modules from "../module";
-import * as service from "../service";
+import * as jobs from "../jobs";
 import * as utils from "../utils";
 import dotenv from "dotenv";
 
@@ -22,8 +22,11 @@ export async function initialize(dotenvPath: string): Promise<void> {
     kafka.bindToContainer(container);
     modules.bindToContainer(container);
     utils.bindToContainer(container);
-    service.bindToContainer(container);
 
-    const server = container.get(service.MOVIE_SERVICE_GRPC_SERVER_TOKEN);
-    server.loadProtoAndStartServer("./src/proto/service/movie_service.proto");
+    jobs.bindToContainer(container);
+
+    const initializationJob = container.get(jobs.INITIALIZATION_JOB_TOKEN);
+    initializationJob.execute().then(() => {
+        process.exit();
+    });
 }

@@ -25,8 +25,7 @@
     "serve-grpc": "ts-node src/main.ts --start_grpc_server",
     "serve": "node dist/main.js",
     "start-initialize": "node dist/main.js --prod --initialize",
-    "start-grpc": "node dist/main.js --prod --start_grpc_server",
-    "insert-default-price": "node dist/main.js --prod --insert_default_price"
+    "start-grpc": "node dist/main.js --prod --start_grpc_server"
   },
   "keywords": [],
   "author": "halerquinz",
