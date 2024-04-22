@@ -1,22 +1,22 @@
 import { status } from "@grpc/grpc-js";
 import { injected, token } from "brandi";
+import ms from "ms";
 import validator from "validator";
 import { Logger } from "winston";
 import {
     MOVIE_DATA_ACCESSOR_TOKEN,
+    MOVIE_TYPE_HAS_SCREEN_TYPE_DATA_ACCESSOR_TOKEN,
     MovieDataAccessor,
+    MovieTypeHasScreenTypeDataAccessor,
     SCREEN_DATA_ACCESSOR_TOKEN,
     SHOWTIME_DATA_ACCESSOR_TOKEN,
     ScreenDataAccessor,
     Showtime,
     ShowtimeDataAccessor,
     ShowtimeDayOfTheWeekType,
-    ShowtimeSlot,
-    ShowtimeSlotType,
+    ShowtimeSlotType
 } from "../../dataaccess/db";
-import { _ShowtimeType_Values } from "../../proto/gen/ShowtimeType";
 import { ErrorWithStatus, LOGGER_TOKEN, TIMER_TOKEN, Timer } from "../../utils";
-import ms from "ms"
 
 export interface ShowtimeManagementOperator {
     createShowtime(
@@ -33,6 +33,7 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
         private readonly showtimeDM: ShowtimeDataAccessor,
         private readonly movieDM: MovieDataAccessor,
         private readonly screenDM: ScreenDataAccessor,
+        private readonly movieTypeHasScreenTypeDM: MovieTypeHasScreenTypeDataAccessor,
         private readonly timer: Timer
     ) { }
 
@@ -41,8 +42,8 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
         screenId: number,
         timeStart: number,
     ): Promise<Showtime> {
-        const requestTime = this.timer.getCurrentTime()
-        if (!this.isValidReleaseDate(timeStart) && timeStart < requestTime) {
+        const requestTime = this.timer.getCurrentTime();
+        if (!this.isValidReleaseDate(timeStart) || timeStart < requestTime) {
             this.logger.error("invalid time start", { timeStart, });
             throw new ErrorWithStatus(`invalid time start${timeStart}`, status.INVALID_ARGUMENT);
         }
@@ -57,6 +58,13 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
         if (screen === null) {
             this.logger.error("no screen with screenId", { screenId });
             throw new ErrorWithStatus(`no screen with screen_id ${screenId} found`, status.NOT_FOUND);
+        }
+
+        const movieTypeHasScreenType =
+            await this.movieTypeHasScreenTypeDM.getMovieTypeHasScreenType(movie.movieType!.id, screen.screenType!.id);
+        if (movieTypeHasScreenType === null) {
+            this.logger.error("no movie has screen type", { movieTypeId: movie.movieType!.id });
+            throw new ErrorWithStatus(`no movie has screen type with movie_type_id ${movie.movieType!.id} found`, status.NOT_FOUND);
         }
 
         const timeEnd = timeStart + ms(`${movie.duration}m`);
@@ -95,8 +103,8 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
         return this.showtimeDM.deleteShowtime(id);
     }
 
-    private isValidReleaseDate(releaseDate: number): boolean {
-        const dateStr = new Date(releaseDate).toISOString();
+    private isValidReleaseDate(timestamp: number): boolean {
+        const dateStr = new Date(timestamp).toISOString();
         return validator.isISO8601(dateStr);
     }
 
@@ -121,6 +129,7 @@ injected(
     SHOWTIME_DATA_ACCESSOR_TOKEN,
     MOVIE_DATA_ACCESSOR_TOKEN,
     SCREEN_DATA_ACCESSOR_TOKEN,
+    MOVIE_TYPE_HAS_SCREEN_TYPE_DATA_ACCESSOR_TOKEN,
     TIMER_TOKEN
 );
 

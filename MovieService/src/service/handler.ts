@@ -49,10 +49,13 @@ export class MovieServiceHandlerFactory {
                     return callback({ message: "poster is required", code: status.INVALID_ARGUMENT });
                 }
 
+                if (req.typeId === undefined) {
+                    return callback({ message: "typeid is required", code: status.INVALID_ARGUMENT });
+                }
+
                 const description = req.description || "";
                 const duration = req.duration || 0;
                 const genreIdList = req.genreIdList || [];
-                const typeIdList = req.typeIdList || [];
                 const trailer = req.trailer || "";
                 const imageList = req.imageList || [];
 
@@ -63,7 +66,7 @@ export class MovieServiceHandlerFactory {
                         duration,
                         req.releaseDate,
                         genreIdList,
-                        typeIdList,
+                        req.typeId,
                         trailer,
                         imageList as any,
                         req.poster as any
@@ -319,12 +322,13 @@ export class MovieServiceHandlerFactory {
                 if (req.id === undefined) {
                     return callback({ message: "id is required", code: status.INVALID_ARGUMENT });
                 }
+
                 try {
-                    const { genreList, imageList, movie, movieTypeList } =
+                    const { genreList, imageList, movie } =
                         await this.movieManagementOperator.getMovie(
                             req.id
                         );
-                    callback(null, { genreList, imageList, movie, movieTypeList });
+                    callback(null, { genreList, imageList, movie });
                 } catch (error) {
                     this.handleError(error, callback)
                 }
@@ -407,25 +411,18 @@ export class MovieServiceHandlerFactory {
 
             GetPrice: async (call, callback) => {
                 const req = call.request;
-                if (req.ofMovieTypeId === undefined) {
-                    return callback({ message: "movie type id is required", code: status.INVALID_ARGUMENT });
+                if (req.ofShowtimeId === undefined) {
+                    return callback({ message: "showtime id  is required", code: status.INVALID_ARGUMENT });
                 }
+
                 if (req.ofSeatTypeId === undefined) {
                     return callback({ message: "seat type id is required", code: status.INVALID_ARGUMENT });
-                }
-                if (req.ofShowtimeDayOfTheWeekId === undefined) {
-                    return callback({ message: "showtime day of the week id is required", code: status.INVALID_ARGUMENT });
-                }
-                if (req.ofShowtimeSlotId === undefined) {
-                    return callback({ message: "showtime slot id is required", code: status.INVALID_ARGUMENT });
                 }
 
                 try {
                     const price = await this.priceManagementOperator.getPrice(
-                        req.ofMovieTypeId,
+                        req.ofShowtimeId,
                         req.ofSeatTypeId,
-                        req.ofShowtimeSlotId,
-                        req.ofShowtimeDayOfTheWeekId
                     )
 
                     callback(null, { price });

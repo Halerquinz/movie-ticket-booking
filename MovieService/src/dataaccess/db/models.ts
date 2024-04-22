@@ -21,6 +21,7 @@ export class Movie {
         public description: string,
         public duration: number,
         public releaseDate: number,
+        public movieType: MovieType | null,
         public trailer: MovieTrailer | null,
         public poster: MoviePoster | null,
     ) { }

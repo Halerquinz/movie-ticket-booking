@@ -4,7 +4,7 @@ import { Logger } from "winston";
 import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 import { KNEX_INSTANCE_TOKEN } from "./knex";
 import { status } from "@grpc/grpc-js";
-import { Movie, MoviePoster, MovieTrailer } from "./models";
+import { Movie, MoviePoster, MovieTrailer, MovieType } from "./models";
 
 export class MovieWithPoster {
     constructor(
@@ -19,6 +19,7 @@ export class MovieWithPoster {
     ) { }
 }
 export interface CreateMovieArguments {
+    of_movie_type_id: number,
     title: string;
     description: string;
     duration: number;
@@ -26,6 +27,7 @@ export interface CreateMovieArguments {
 }
 
 export interface UpdateMovieArguments {
+    of_movie_type_id: number,
     movieId: string;
     title: string;
     description: string;
@@ -47,6 +49,7 @@ export interface MovieDataAccessor {
 
 const TabNameMovieServiceMovieTab = "movie_service_movie_tab";
 const ColNameMovieServiceMovieId = "movie_id";
+const ColNameMovieServiceOfMovieTypeId = "of_movie_type_id";
 const ColNameMovieServiceMovieTitle = "title";
 const ColNameMovieServiceMovieDescription = "description";
 const ColNameMovieServiceMovieDuration = "duration";
@@ -62,6 +65,10 @@ const TabNameMovieServiceMovieTrailerTab = "movie_service_movie_trailer_tab";
 const ColNameMovieServiceMovieTrailerOfMovieId = "of_movie_id";
 const ColNameMovieServiceMovieTrailerYoutubeLinkUrl = "youtube_link_url";
 
+const TabNameMovieServiceMovieTypeTab = "movie_service_movie_type_tab";
+const ColNameMovieServiceMovieTypeId = "movie_type_id";
+const ColNameMovieServiceMovieTypeDisplayname = "display_name";
+
 export class MovieDataAccessorImpl implements MovieDataAccessor {
     constructor(
         private readonly knex: Knex<any, any[]>,
@@ -72,6 +79,7 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
         try {
             const rows = await this.knex
                 .insert({
+                    [ColNameMovieServiceOfMovieTypeId]: args.of_movie_type_id,
                     [ColNameMovieServiceMovieTitle]: args.title,
                     [ColNameMovieServiceMovieDescription]: args.description,
                     [ColNameMovieServiceMovieDuration]: args.duration,
@@ -91,6 +99,7 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
             await this.knex
                 .table(TabNameMovieServiceMovieTab)
                 .update({
+                    [ColNameMovieServiceOfMovieTypeId]: args.of_movie_type_id,
                     [ColNameMovieServiceMovieTitle]: args.title,
                     [ColNameMovieServiceMovieDescription]: args.description,
                     [ColNameMovieServiceMovieDuration]: args.duration,
@@ -131,6 +140,11 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
             rows = await this.knex
                 .select()
                 .from(TabNameMovieServiceMovieTab)
+                .leftOuterJoin(
+                    TabNameMovieServiceMovieTypeTab,
+                    `${TabNameMovieServiceMovieTab}.${ColNameMovieServiceOfMovieTypeId}`,
+                    `${TabNameMovieServiceMovieTypeTab}.${ColNameMovieServiceMovieTypeId} `
+                )
                 .leftOuterJoin(
                     TabNameMovieServiceMoviePosterTab,
                     `${TabNameMovieServiceMovieTab}.${ColNameMovieServiceMovieId}`,
@@ -265,12 +279,18 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
             trailer = new MovieTrailer(+row[ColNameMovieServiceMovieTrailerOfMovieId], "");
         }
 
+        let movieType: MovieType | null = null;
+        if (row[ColNameMovieServiceOfMovieTypeId]) {
+            movieType = new MovieType(+row[ColNameMovieServiceOfMovieTypeId], "");
+        }
+
         return new Movie(
             +row[ColNameMovieServiceMovieId],
             row[ColNameMovieServiceMovieTitle],
             row[ColNameMovieServiceMovieDescription],
             +row[ColNameMovieServiceMovieDuration],
             +row[ColNameMovieServiceMovieReleaseDate],
+            movieType,
             trailer,
             poster,
         );
@@ -295,12 +315,21 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
             );
         }
 
+        let movieType: MovieType | null = null;
+        if (row[ColNameMovieServiceOfMovieTypeId]) {
+            movieType = new MovieType(
+                +row[ColNameMovieServiceOfMovieTypeId],
+                row[ColNameMovieServiceMovieTypeDisplayname]
+            );
+        }
+
         return new Movie(
             +row[ColNameMovieServiceMovieId],
             row[ColNameMovieServiceMovieTitle],
             row[ColNameMovieServiceMovieDescription],
             +row[ColNameMovieServiceMovieDuration],
             +row[ColNameMovieServiceMovieReleaseDate],
+            movieType,
             trailer,
             poster,
         );

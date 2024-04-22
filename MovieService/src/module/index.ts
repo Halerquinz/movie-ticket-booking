@@ -7,6 +7,7 @@ import * as seat from "./seat";
 import * as showtime from "./showtime";
 import * as theater from "./theater";
 import * as price from "./price";
+import * as movieTypeHasScreenType from "./movie_type_has_screen_type";
 
 export function bindToContainer(container: Container): void {
     movie.bindToContainer(container);
@@ -17,4 +18,5 @@ export function bindToContainer(container: Container): void {
     showtime.bindToContainer(container);
     theater.bindToContainer(container);
     price.bindToContainer(container);
+    movieTypeHasScreenType.bindToContainer(container);
 }

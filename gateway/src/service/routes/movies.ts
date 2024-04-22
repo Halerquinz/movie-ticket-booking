@@ -62,14 +62,14 @@ export function getMoviesRouter(
                 const duration = +req.body.duration;
                 const releaseDate = +req.body.release_date;
                 const genreIdList = getCommaSeparatedIdList(req.body.genre_id_list as string);
-                const typeIdList = getCommaSeparatedIdList(req.body.type_id_list as string);
+                const movieType = +req.body.type_id;
                 const movie = await movieManagementOperator.createMovie(
                     title,
                     description,
                     duration,
                     releaseDate,
                     genreIdList,
-                    typeIdList,
+                    movieType,
                     trailer,
                     imageList,
                     poster

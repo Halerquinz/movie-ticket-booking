@@ -67,6 +67,7 @@ message Movie {
     uint64 release_date = 5;
     MoviePoster poster = 6;
     MovieTrailer trailer = 7;
+    MovieType movie_type = 8;
 }
 
 message ShowtimeDayOfTheWeek {
@@ -81,7 +82,7 @@ message ShowtimeSlot {
 
 message Showtime {
     uint32 id = 1;
-    uint32 of_movie_id = 2;
+    uint32 of_movie_has_movie_type_id = 2;
     uint32 of_screen_id = 3;
     uint64 time_start = 4;
     uint64 time_end = 5;
@@ -201,7 +202,7 @@ message CreateMovieRequest {
     repeated uint32 genre_id_list = 5;
     repeated ImageInfo image_list = 6;
     PosterInfo poster = 7;
-    repeated uint32 type_id_list = 8;
+    uint32 type_id = 8;
     string trailer = 9;
 }
 
@@ -216,8 +217,7 @@ message GetMovieRequest {
 message GetMovieResponse {
     Movie movie = 1;
     repeated MovieGenre genre_list = 2;
-    repeated MovieType movie_type_list = 3;
-    repeated MovieImage image_list = 4;
+    repeated MovieImage image_list = 3;
 }
 
 message GetCurrentShowingMovieListRequest {}
@@ -308,8 +308,8 @@ message CreateAllSeatOfScreenResponse {}
 
 message CreateShowtimeRequest {
     uint32 movie_id = 1;
-    uint32 screen_id = 2;
-    uint64 time_start = 3;
+    uint32 screen_id = 3;
+    uint64 time_start = 4;
 }
 
 message CreateShowtimeResponse {
@@ -332,7 +332,7 @@ message ShowtimeMetadata {
     uint32 id = 1;
     string theater_name = 2;
     string movie_name = 3;
-    string movie_type = 4;
+    MovieType movie_type = 4;
     string screen_name = 5;
     uint32 time_start = 6;
     uint32 time_end = 7;
@@ -355,10 +355,8 @@ message GetShowtimeListOfTheaterResponse {
 }
 
 message GetPriceRequest {
-    uint32 of_movie_type_id = 1;
+    uint32 of_showtime_id = 1;
     uint32 of_seat_type_id = 2;
-    uint32 of_showtime_slot_id = 3;
-    uint32 of_showtime_day_of_the_week_id = 4;
 }
 
 message Price {

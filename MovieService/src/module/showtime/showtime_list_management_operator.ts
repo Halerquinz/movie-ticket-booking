@@ -5,6 +5,7 @@ import { Logger } from "winston";
 import {
     MOVIE_DATA_ACCESSOR_TOKEN,
     MovieDataAccessor,
+    MovieTypeDataAccessor,
     SCREEN_DATA_ACCESSOR_TOKEN,
     SHOWTIME_DATA_ACCESSOR_TOKEN,
     ScreenDataAccessor,
@@ -130,7 +131,13 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
         movieListRecord.forEach(movie => {
             movieMap.set(
                 movie?.id,
-                movie?.title
+                {
+                    title: movie?.title,
+                    movieType: {
+                        id: movie?.movieType?.id,
+                        displayName: movie?.movieType?.displayName
+                    }
+                }
             )
         })
 
@@ -160,10 +167,14 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
         const showtimeListOfTheater: ShowtimeMetadata[] = [];
         for (let i = 0; i < showtimeList.length; i++) {
             const screen = screenMap.get(showtimeList[i].ofScreenId);
+            const movie = movieMap.get(showtimeList[i].ofMovieId);
             showtimeListOfTheater.push({
                 id: showtimeList[i].id,
-                movieName: movieMap.get(showtimeList[i].ofMovieId),
-                movieType: "",
+                movieName: movie.title,
+                movieType: {
+                    id: movie.movieType.id,
+                    displayName: movie.movieType.displayName
+                },
                 screenName: screen.displayName,
                 seatCount: screen.screenType.seatCount,
                 theaterName: theaterRecord.displayName,

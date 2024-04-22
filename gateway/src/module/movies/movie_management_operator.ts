@@ -5,7 +5,7 @@ import { ImageInfo } from "../../proto/gen/ImageInfo";
 import { MovieServiceClient } from "../../proto/gen/MovieService";
 import { PosterInfo } from "../../proto/gen/PosterInfo";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGRPCCall, } from "../../utils";
-import { Movie, MovieGenre, MovieImage, MovieType } from "../schemas";
+import { Movie, MovieGenre, MovieImage } from "../schemas";
 import { IMAGE_PROTO_TO_IMAGE_CONVERTER_TOKEN, ImageProtoToImageConverter, POSTER_PROTO_TO_POSTER_CONVERTER_TOKEN, PosterProtoToPosterConverter } from "../schemas/converters";
 
 export interface MovieManagementOperator {
@@ -15,7 +15,7 @@ export interface MovieManagementOperator {
         duration: number,
         releaseDate: number,
         genreIdList: number[],
-        movieTypeIdList: number[],
+        movieType: number,
         trailer: string,
         imageList: ImageInfo[],
         poster: PosterInfo
@@ -23,7 +23,6 @@ export interface MovieManagementOperator {
     getMovie(id: number): Promise<{
         movie: Movie,
         genreList: MovieGenre[] | undefined,
-        movieTypeList: MovieType[] | undefined,
         imageList: MovieImage[] | undefined
     }>;
     getCurrentShowingMovieList(): Promise<Movie[]>;
@@ -45,7 +44,7 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
         duration: number,
         releaseDate: number,
         genreIdList: number[],
-        movieTypeIdList: number[],
+        typeId: number,
         trailer: string,
         imageList: ImageInfo[],
         poster: PosterInfo
@@ -60,7 +59,7 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
             imageList,
             poster,
             trailer,
-            typeIdList: movieTypeIdList
+            typeId: typeId
         });
 
         if (createMovieError !== null) {
@@ -111,7 +110,6 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
     public async getMovie(id: number): Promise<{
         movie: Movie,
         genreList: MovieGenre[] | undefined,
-        movieTypeList: MovieType[] | undefined,
         imageList: MovieImage[] | undefined
     }> {
         const { error: getMovieError, response: getMovieResponse } = await promisifyGRPCCall(
@@ -137,7 +135,6 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
             movie: Movie.fromProto(movieProto),
             genreList: getMovieResponse?.genreList?.map((movieGenreProto) => MovieGenre.fromProto(movieGenreProto)) || [],
             imageList,
-            movieTypeList: getMovieResponse?.movieTypeList?.map((movieTypeProto) => MovieType.fromProto(movieTypeProto)) || [],
         };
     }
 

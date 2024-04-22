@@ -7,20 +7,20 @@ import {
     MOVIE_DATA_ACCESSOR_TOKEN,
     MOVIE_GENRE_DATA_ACCESSOR_TOKEN,
     MOVIE_HAS_MOVIE_GENRE_DATA_ACCESSOR_TOKEN,
-    MOVIE_HAS_MOVIE_TYPE_DATA_ACCESSOR_TOKEN,
     MOVIE_IMAGE_DATA_ACCESSOR_TOKEN,
     MOVIE_POSTER_DATA_ACCESSOR_TOKEN,
     MOVIE_TRAILER_DATA_ACCESSOR_TOKEN,
+    MOVIE_TYPE_DATA_ACCESSOR_TOKEN,
     MovieDataAccessor,
     MovieGenre,
     MovieGenreDataAccessor,
     MovieHasMovieGenreDataAccessor,
-    MovieHasMovieTypeDataAccessor,
     MovieImage,
     MovieImageDataAccessor,
     MoviePosterDataAccessor,
     MovieTrailerDataAccessor,
-    MovieType
+    MovieType,
+    MovieTypeDataAccessor
 } from "../../dataaccess/db";
 import { Movie } from "../../proto/gen/Movie";
 import { ErrorWithStatus, LOGGER_TOKEN, TIMER_TOKEN, Timer } from "../../utils";
@@ -44,7 +44,7 @@ export interface MovieManagementOperator {
         duration: number,
         releaseDate: number,
         genreIdList: number[],
-        movieTypeIdList: number[],
+        movieTypeId: number,
         trailer: string,
         imageList: ImageInfo[],
         poster: PosterInfo
@@ -52,7 +52,6 @@ export interface MovieManagementOperator {
     getMovie(id: number): Promise<{
         movie: Movie,
         genreList: MovieGenre[] | undefined,
-        movieTypeList: MovieType[] | undefined,
         imageList: MovieImage[] | undefined
     }>;
     getCurrentShowingMovieList(): Promise<Movie[]>;
@@ -68,7 +67,7 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
         private readonly movieImageDM: MovieImageDataAccessor,
         private readonly movieGenreDM: MovieGenreDataAccessor,
         private readonly movieHasMovieGenreDM: MovieHasMovieGenreDataAccessor,
-        private readonly movieHasMovieTypeDM: MovieHasMovieTypeDataAccessor,
+        private readonly movieTypeDM: MovieTypeDataAccessor,
         private readonly moviePosterDM: MoviePosterDataAccessor,
         private readonly timer: Timer,
         private readonly movieImageOperator: MovieImageOperator,
@@ -81,7 +80,7 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
         duration: number,
         releaseDate: number,
         genreIdList: number[],
-        movieTypeIdList: number[],
+        movieTypeId: number,
         trailer: string,
         imageList: ImageInfo[],
         poster: PosterInfo
@@ -114,6 +113,7 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
             }
 
             const createdMovieId = await movieDM.createMovie({
+                of_movie_type_id: movieTypeId,
                 title: title,
                 description: description,
                 duration: duration,
@@ -132,12 +132,6 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
         await this.movieHasMovieGenreDM.withTransaction(async (movieHasMovieGenreDM) => {
             for (const genreId of genreIdList) {
                 await movieHasMovieGenreDM.createMovieHasMovieGenre(createdMovie.movieId, genreId);
-            }
-        });
-
-        await this.movieHasMovieTypeDM.withTransaction(async (movieHasMovieTypeDM) => {
-            for (const typeId of movieTypeIdList) {
-                await movieHasMovieTypeDM.createMovieHasMovieType(createdMovie.movieId, typeId);
             }
         });
 
@@ -173,7 +167,6 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
     public async getMovie(id: number): Promise<{
         movie: Movie,
         genreList: MovieGenre[] | undefined,
-        movieTypeList: MovieType[] | undefined,
         imageList: MovieImage[] | undefined
     }> {
         const movie = await this.movieDM.getMovieById(id);
@@ -183,10 +176,9 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
         }
 
         const genreList = await this.movieHasMovieGenreDM.getMovieGenreListByMovieId(id);
-        const movieTypeList = await this.movieHasMovieTypeDM.getMovieTypeListByMovieId(id);
         const imageList = await this.movieImageDM.getMovieImageListByMovieId(id);
 
-        return { movie, genreList, imageList, movieTypeList };
+        return { movie, genreList, imageList };
     }
 
     private async isGenreIdListValid(genreIdList: number[]): Promise<boolean> {
@@ -242,7 +234,7 @@ injected(
     MOVIE_IMAGE_DATA_ACCESSOR_TOKEN,
     MOVIE_GENRE_DATA_ACCESSOR_TOKEN,
     MOVIE_HAS_MOVIE_GENRE_DATA_ACCESSOR_TOKEN,
-    MOVIE_HAS_MOVIE_TYPE_DATA_ACCESSOR_TOKEN,
+    MOVIE_TYPE_DATA_ACCESSOR_TOKEN,
     MOVIE_POSTER_DATA_ACCESSOR_TOKEN,
     TIMER_TOKEN,
     MOVIE_IMAGE_OPERATOR_TOKEN,

@@ -4,7 +4,6 @@ const TabNameMovieServiceMovieGenre = "movie_service_movie_genre_tab";
 const TabNameMovieServiceMovieType = "movie_service_movie_type_tab";
 const TabNameMovieServiceMovie = "movie_service_movie_tab";
 const TabNameMovieServiceMovieHasMovieGenre = "movie_service_movie_has_movie_genre_tab";
-const TabNameMovieServiceMovieHasMovieType = "movie_service_movie_has_movie_type_tab";
 const TabNameMovieServiceMovieTrailer = "movie_service_movie_trailer_tab";
 const TabNameMovieServiceMoviePoster = "movie_service_movie_poster_tab";
 const TabNameMovieServiceMovieImage = "movie_service_movie_image_tab";
@@ -48,28 +47,15 @@ export async function up(knex: Knex): Promise<void> {
             table.text("description").notNullable();
             table.integer("duration");
             table.bigInteger("release_date").notNullable();
+            table.integer("of_movie_type_id").notNullable();
+
+            table.foreign("of_movie_type_id")
+                .references("movie_type_id")
+                .inTable(TabNameMovieServiceMovieType)
+                .onDelete("SET NULL");
 
             table.index(["title"], "movie_service_movie_title_idx");
             table.index(["release_date"], "movie_service_movie_release_date_idx");
-        });
-    }
-
-    if (!(await knex.schema.hasTable(TabNameMovieServiceMovieHasMovieType))) {
-        await knex.schema.createTable(TabNameMovieServiceMovieHasMovieType, (table) => {
-            table.increments("movie_has_movie_type_id", { primaryKey: true });
-            table.integer("movie_id");
-            table.integer("movie_type_id");
-
-            table.foreign("movie_id")
-                .references("movie_id")
-                .inTable(TabNameMovieServiceMovie);
-            table.foreign("movie_type_id")
-                .references("movie_type_id")
-                .inTable(TabNameMovieServiceMovieType)
-                .onDelete("CASCADE");
-
-            table.unique(["movie_id", "movie_type_id"]);
-            table.index(["movie_id"], "movie_service_movie_has_movie_type_movie_id_idx");
         });
     }
 
@@ -151,13 +137,15 @@ export async function up(knex: Knex): Promise<void> {
 
     if (!(await knex.schema.hasTable(TabNameMovieServiceScreenType))) {
         await knex.schema.createTable(TabNameMovieServiceScreenType, (table) => {
-            table.increments("screen_type_id", { primaryKey: true });
+            table.integer("screen_type_id");
 
             table.string("display_name", 256).notNullable().unique();
             table.string("description", 256).notNullable();
             table.integer("seat_count").notNullable();
             table.integer("row_count").notNullable();
             table.integer("seat_of_row_count").notNullable();
+
+            table.primary(["screen_type_id"]);
 
             table.index(["display_name"], "movie_service_screen_type_display_name_idx");
             table.index(["description"], "movie_service_screen_type_description_idx");
@@ -213,10 +201,9 @@ export async function up(knex: Knex): Promise<void> {
 
     if (!(await knex.schema.hasTable(TabNameMovieServiceSeatType))) {
         await knex.schema.createTable(TabNameMovieServiceSeatType, (table) => {
-            table.integer("seat_type_id");
+            table.increments("seat_type_id", { primaryKey: true });
 
             table.string("display_name", 256).notNullable();
-            table.primary(["seat_type_id"]);
         });
     }
 
@@ -267,7 +254,7 @@ export async function up(knex: Knex): Promise<void> {
     if (!(await knex.schema.hasTable(TabNameMovieServiceShowtime))) {
         await knex.schema.createTable(TabNameMovieServiceShowtime, (table) => {
             table.increments("showtime_id", { primaryKey: true });
-            table.integer("of_movie_has_movie_type_id");
+            table.integer("of_movie_id");
             table.integer("of_screen_id");
             table.integer("of_showtime_slot_id");
             table.integer("of_showtime_day_of_the_week_id");
@@ -275,9 +262,9 @@ export async function up(knex: Knex): Promise<void> {
             table.bigInteger("time_start").notNullable();
             table.bigInteger("time_end").notNullable();
 
-            table.foreign("of_movie_has_movie_type_id")
-                .references("movie_has_movie_type_id")
-                .inTable(TabNameMovieServiceMovieHasMovieType)
+            table.foreign("of_movie_id")
+                .references("movie_id")
+                .inTable(TabNameMovieServiceMovie)
                 .onDelete("CASCADE");
             table.foreign("of_screen_id")
                 .references("screen_id")
@@ -292,7 +279,7 @@ export async function up(knex: Knex): Promise<void> {
                 .inTable(TabNameMovieServiceShowtimeDayOfTheWeek)
                 .onDelete("CASCADE");
 
-            table.index(["of_movie_has_movie_type_id"], "movie_service_showtime_of_movie_has_movie_type_id_idx");
+            table.index(["of_movie_id"], "movie_service_showtime_of_movie_has_movie_type_id_idx");
             table.index(["of_screen_id"], "movie_service_showtime_of_screen_id_idx");
             table.index(["time_start"], "movie_service_showtime_time_start_idx");
         });
@@ -348,6 +335,7 @@ export async function down(knex: Knex): Promise<void> {
     await knex.schema.dropTableIfExists(TabNameMovieServiceShowtimeDayOfTheWeek);
     await knex.schema.dropTableIfExists(TabNameMovieServiceShowtimeSlot);
     await knex.schema.dropTableIfExists(TabNameMovieServicePrice);
+    await knex.schema.dropTableIfExists(TabNameMovieServiceMovieTypeHasScreenType);
 }
 
 
