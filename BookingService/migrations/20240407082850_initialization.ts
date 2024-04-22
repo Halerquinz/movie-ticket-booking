@@ -12,6 +12,7 @@ export async function up(knex: Knex): Promise<void> {
             table.integer("of_seat_id").notNullable();
 
             table.bigInteger("booking_time").notNullable();
+            table.bigInteger("expire_at").notNullable();
             table.smallint("booking_status").notNullable().defaultTo(0);
             table.integer("amount").notNullable();
 
@@ -20,6 +21,7 @@ export async function up(knex: Knex): Promise<void> {
                     "booking_service_booking_seat_idx",
             });
 
+            table.index(["expire_at"], "booking_service_booking_expire_idx");
             table.index(["booking_status"], "booking_service_booking_status_idx");
         });
     }
