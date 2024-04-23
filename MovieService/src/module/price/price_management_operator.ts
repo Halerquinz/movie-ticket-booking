@@ -32,17 +32,17 @@ export class PriceManagementOperatorImpl implements PriceManagementOperator {
         return await this.priceDM.insertDefaultPrice();
     }
 
-    public async getPrice(showTimeId: number, seatId: number): Promise<Price | null> {
-        const showtime = await this.showtimeDM.getShowtime(showTimeId);
+    public async getPrice(showtimeId: number, seatId: number): Promise<Price | null> {
+        const showtime = await this.showtimeDM.getShowtime(showtimeId);
         if (showtime === null) {
-            this.logger.error("no showtime with showtime_id found", { showTimeId });
-            throw new ErrorWithStatus(`no showtime with showtime_id ${showTimeId} found`, status.NOT_FOUND);
+            this.logger.error("no showtime with showtime_id found", { showtimeId });
+            throw new ErrorWithStatus(`no showtime with showtime_id ${showtimeId} found`, status.NOT_FOUND);
         }
 
         const movie = await this.movieDM.getMovieById(showtime.ofMovieId);
         if (movie === null) {
-            this.logger.error("no movie with showtime_id found", { showTimeId });
-            throw new ErrorWithStatus(`no movie with showtime_id ${showTimeId} found`, status.NOT_FOUND);
+            this.logger.error("no movie with showtime_id found", { showtimeId });
+            throw new ErrorWithStatus(`no movie with showtime_id ${showtimeId} found`, status.NOT_FOUND);
         }
 
         const seat = await this.seatDM.getSeat(seatId);

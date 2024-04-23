@@ -424,12 +424,9 @@ export class MovieServiceHandlerFactory {
                         req.showtimeId,
                         req.seatId,
                     );
-
-                    console.log(price);
-
                     callback(null, { price });
                 } catch (error) {
-                    this.handleError(error, callback)
+                    this.handleError(error, callback);
                 }
             }
         }

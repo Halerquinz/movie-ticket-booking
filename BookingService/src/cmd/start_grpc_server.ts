@@ -2,6 +2,7 @@ import { Container } from "brandi";
 import * as config from "../config";
 import * as elasticsearch from "../dataaccess/elasticsearch";
 import * as db from "../dataaccess/db";
+import * as grpc from "../dataaccess/grpc";
 import * as utils from "../utils";
 import * as booking from "../module/booking";
 import * as service from "../service";
@@ -17,6 +18,7 @@ export async function startGRPCServer(dotenvPath: string): Promise<void> {
     elasticsearch.bindToContainer(container);
     utils.bindToContainer(container);
     db.bindToContainer(container);
+    grpc.bindToContainer(container);
     booking.bindToContainer(container);
     service.bindToContainer(container);
 

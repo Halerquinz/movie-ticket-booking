@@ -3,13 +3,15 @@ import ms from "ms";
 import { Logger } from "winston";
 import { APPLICATION_CONFIG_TOKEN, ApplicationConfig } from "../../config";
 import { BOOKING_ACCESSOR_TOKEN, Booking, BookingDataAccessor, BookingStatus } from "../../dataaccess/db";
-import { LOGGER_TOKEN, TIMER_TOKEN, Timer } from "../../utils";
+import { ErrorWithStatus, LOGGER_TOKEN, TIMER_TOKEN, Timer, promisifyGRPCCall } from "../../utils";
 import { MovieServiceClient } from "../../proto/gen/MovieService";
+import { MOVIE_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
+import { status } from "@grpc/grpc-js";
 
 export interface BookingManagementOperator {
     createBooking(
         userId: number,
-        showTimeId: number,
+        showtimeId: number,
         seatId: number,
         amount: number
     ): Promise<Booking>
@@ -28,12 +30,28 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
         this.bookingTimeInMS = ms(this.applicationConfig.bookingTime);
     }
 
-    public async createBooking(userId: number, showTimeId: number, seatId: number, amount: number): Promise<Booking> {
+    public async createBooking(userId: number, showtimeId: number, seatId: number, amount: number): Promise<Booking> {
         const requestTime = this.timer.getCurrentTime();
-        const expireAt = requestTime + this.bookingTimeInMS
+        const expireAt = requestTime + this.bookingTimeInMS;
+        const { error: getPriceError, response: getPriceResponse } = await promisifyGRPCCall(
+            this.movieServiceDM.getPrice.bind(this.movieServiceDM),
+            {
+                seatId, showtimeId
+            });
+
+        if (getPriceError != null) {
+            this.logger.error("failed to call price.getPrice()", { error: getPriceError });
+            throw getPriceError;
+        }
+
+        if (amount !== getPriceResponse?.price?.price) {
+            this.logger.error("invalid amount", { amount });
+            throw new ErrorWithStatus(`invalid amount ${amount}`, status.INVALID_ARGUMENT);
+        }
+
         const bookingId = await this.bookingDM.createBooking({
             ofUserId: userId,
-            ofShowtimeId: showTimeId,
+            ofShowtimeId: showtimeId,
             ofSeatId: seatId,
             amount: amount,
             bookingStatus: BookingStatus.PENDING,
@@ -44,7 +62,7 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
         return {
             id: bookingId,
             ofSeatId: seatId,
-            ofShowtimeId: showTimeId,
+            ofShowtimeId: showtimeId,
             ofUserId: userId,
             bookingStatus: BookingStatus.PENDING,
             amount: amount,
@@ -54,7 +72,14 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
     }
 }
 
-injected(BookingManagementOperatorImpl, LOGGER_TOKEN, BOOKING_ACCESSOR_TOKEN, TIMER_TOKEN, APPLICATION_CONFIG_TOKEN);
+injected(
+    BookingManagementOperatorImpl,
+    LOGGER_TOKEN,
+    BOOKING_ACCESSOR_TOKEN,
+    TIMER_TOKEN,
+    APPLICATION_CONFIG_TOKEN,
+    MOVIE_SERVICE_DM_TOKEN
+);
 
 export const BOOKING_MANAGEMENT_OPERATOR_TOKEN = token<BookingManagementOperator>("BookingManagementOperator");
 
