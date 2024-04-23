@@ -4,6 +4,7 @@ import { Logger } from "winston";
 import { APPLICATION_CONFIG_TOKEN, ApplicationConfig } from "../../config";
 import { BOOKING_ACCESSOR_TOKEN, Booking, BookingDataAccessor, BookingStatus } from "../../dataaccess/db";
 import { LOGGER_TOKEN, TIMER_TOKEN, Timer } from "../../utils";
+import { MovieServiceClient } from "../../proto/gen/MovieService";
 
 export interface BookingManagementOperator {
     createBooking(
@@ -21,7 +22,8 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
         private readonly logger: Logger,
         private readonly bookingDM: BookingDataAccessor,
         private readonly timer: Timer,
-        private readonly applicationConfig: ApplicationConfig
+        private readonly applicationConfig: ApplicationConfig,
+        private readonly movieServiceDM: MovieServiceClient
     ) {
         this.bookingTimeInMS = ms(this.applicationConfig.bookingTime);
     }

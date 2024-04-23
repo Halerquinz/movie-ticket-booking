@@ -4,7 +4,7 @@ import { Logger } from "winston";
 import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 import { KNEX_INSTANCE_TOKEN } from "./knex";
 import { status } from "@grpc/grpc-js";
-import { Seat } from "./models";
+import { Seat, SeatType } from "./models";
 
 export interface CreateSeatArguments {
     ofScreenId: number,
@@ -28,6 +28,10 @@ const ColNameMovieServiceSeatOfSeatTypeId = "of_seat_type_id";
 const ColNameMovieServiceSeatColumn = "column";
 const ColNameMovieServiceSeatRow = "row";
 const ColNameMovieServiceSeatNo = "no";
+
+const TabNameMovieServiceSeatTypeTab = "movie_service_seat_type_tab";
+const ColNameMovieServiceSeatTypeId = "seat_type_id";
+const ColNameMovieServiceSeatTypeDisplayName = "display_name";
 
 export class SeatDataAccessorImpl implements SeatDataAccessor {
     constructor(
@@ -60,6 +64,11 @@ export class SeatDataAccessorImpl implements SeatDataAccessor {
             rows = await this.knex
                 .select()
                 .from(TabNameMovieServiceSeatTab)
+                .leftOuterJoin(
+                    TabNameMovieServiceSeatTypeTab,
+                    `${TabNameMovieServiceSeatTab}.${ColNameMovieServiceSeatOfSeatTypeId}`,
+                    `${TabNameMovieServiceSeatTypeTab}.${ColNameMovieServiceSeatTypeId}`
+                )
                 .where({
                     [ColNameMovieServiceSeatId]: id
                 })
@@ -73,7 +82,7 @@ export class SeatDataAccessorImpl implements SeatDataAccessor {
             return null;
         }
 
-        return rows[0];
+        return this.getSeatFromJoinedRow(rows[0]);
     }
 
     public async deleteSeat(id: number): Promise<void> {
@@ -93,7 +102,42 @@ export class SeatDataAccessorImpl implements SeatDataAccessor {
             this.logger.debug("no seat with id found", { id });
             throw new ErrorWithStatus(`no seat with id ${id} found`, status.NOT_FOUND);
         }
+    }
 
+    private getSeatFromRow(row: Record<string, any>): Seat {
+        let seatType: SeatType | null = null;
+        if (row[ColNameMovieServiceSeatOfSeatTypeId]) {
+            seatType = new SeatType(
+                +row[ColNameMovieServiceSeatOfSeatTypeId], "");
+        }
+
+        return new Seat(
+            +row[ColNameMovieServiceSeatId],
+            seatType,
+            +row[ColNameMovieServiceSeatOfScreenId],
+            +row[ColNameMovieServiceSeatColumn],
+            row[ColNameMovieServiceSeatRow],
+            row[ColNameMovieServiceSeatNo]
+        );
+    }
+
+    private getSeatFromJoinedRow(row: Record<string, any>): Seat {
+        let seatType: SeatType | null = null;
+        if (row[ColNameMovieServiceSeatOfSeatTypeId]) {
+            seatType = new SeatType(
+                +row[ColNameMovieServiceSeatOfSeatTypeId],
+                row[ColNameMovieServiceSeatTypeDisplayName]
+            );
+        }
+
+        return new Seat(
+            +row[ColNameMovieServiceSeatId],
+            seatType,
+            +row[ColNameMovieServiceSeatOfScreenId],
+            +row[ColNameMovieServiceSeatColumn],
+            row[ColNameMovieServiceSeatRow],
+            row[ColNameMovieServiceSeatNo]
+        );
     }
 
     public async withTransaction<T>(cb: (dataAccessor: SeatDataAccessor) => Promise<T>): Promise<T> {

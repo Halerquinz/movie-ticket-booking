@@ -13,7 +13,8 @@ export interface PriceDataAccessor {
         ofSeatTypeId: number,
         ofShowtimeSlotId: number,
         ofShowtimeDayOfTheWeekId: number,
-    ): Promise<Price | null>
+    ): Promise<Price | null>;
+    getPriceCount(): Promise<number>;
     withTransaction<T>(cb: (dataAccessor: PriceDataAccessor) => Promise<T>): Promise<T>;
 }
 
@@ -22,7 +23,7 @@ const ColNameMovieServicePriceId = "price_id";
 const ColNameMovieServicePriceOfMovieTypeId = "of_movie_type_id";
 const ColNameMovieServicePriceOfSeatTypeId = "of_seat_type_id";
 const ColNameMovieServicePriceOfShowtimeSlotId = "of_showtime_slot_id";
-const ColNameMovieServicePriceOfShowtimeDayOfTheWeekId = "of_day_of_the_week_id";
+const ColNameMovieServicePriceOfShowtimeDayOfTheWeekId = "of_showtime_day_of_the_week_id";
 const ColNameMovieServicePrice = "price";
 
 
@@ -47,7 +48,6 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                 .andWhere(ColNameMovieServicePriceOfSeatTypeId, "=", ofSeatTypeId)
                 .andWhere(ColNameMovieServicePriceOfShowtimeSlotId, "=", ofShowtimeSlotId)
                 .andWhere(ColNameMovieServicePriceOfShowtimeDayOfTheWeekId, "=", ofShowtimeDayOfTheWeekId)
-
         } catch (error) {
             this.logger.error("failed to get price", { error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
@@ -61,12 +61,27 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
         const row = rows[0];
         return new Price(
             +row[ColNameMovieServicePriceId],
-            row[ColNameMovieServicePriceOfMovieTypeId],
-            row[ColNameMovieServicePriceOfSeatTypeId],
-            row[ColNameMovieServicePriceOfShowtimeDayOfTheWeekId],
-            row[ColNameMovieServicePriceOfShowtimeSlotId],
+            +row[ColNameMovieServicePriceOfMovieTypeId],
+            +row[ColNameMovieServicePriceOfSeatTypeId],
+            +row[ColNameMovieServicePriceOfShowtimeDayOfTheWeekId],
+            +row[ColNameMovieServicePriceOfShowtimeSlotId],
             +row[ColNameMovieServicePrice]
         )
+    }
+
+    public async getPriceCount(): Promise<number> {
+        let rows: Record<string, any>[];
+        try {
+            rows = await this.knex
+                .count()
+                .from(TabNameMovieServicePrice);
+        } catch (error) {
+            this.logger.error("get price count fail", {
+                error
+            });
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+        return +rows[0]["count"];
     }
 
     public async insertDefaultPrice(): Promise<void> {

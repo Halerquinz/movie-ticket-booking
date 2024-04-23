@@ -169,7 +169,7 @@ export class MovieServiceHandlerFactory {
                         req.screenTypeId,
                         req.displayName,
                     )
-                    callback(null, createdScreen);
+                    callback(null, { screen: createdScreen as any });
                 } catch (error) {
                     this.handleError(error, callback);
                 }
@@ -411,19 +411,21 @@ export class MovieServiceHandlerFactory {
 
             GetPrice: async (call, callback) => {
                 const req = call.request;
-                if (req.ofShowtimeId === undefined) {
+                if (req.showtimeId === undefined) {
                     return callback({ message: "showtime id  is required", code: status.INVALID_ARGUMENT });
                 }
 
-                if (req.ofSeatTypeId === undefined) {
-                    return callback({ message: "seat type id is required", code: status.INVALID_ARGUMENT });
+                if (req.seatId === undefined) {
+                    return callback({ message: "seat id is required", code: status.INVALID_ARGUMENT });
                 }
 
                 try {
                     const price = await this.priceManagementOperator.getPrice(
-                        req.ofShowtimeId,
-                        req.ofSeatTypeId,
-                    )
+                        req.showtimeId,
+                        req.seatId,
+                    );
+
+                    console.log(price);
 
                     callback(null, { price });
                 } catch (error) {

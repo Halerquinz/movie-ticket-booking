@@ -72,7 +72,7 @@ export class Screen {
 
 export class ScreenType {
     constructor(
-        public id: SeatType,
+        public id: number,
         public displayName: string,
         public description: string,
         public seatCount: number,
@@ -84,6 +84,7 @@ export class ScreenType {
 export class Seat {
     constructor(
         public id: number,
+        public seatType: SeatType | null,
         public ofScreenId: number,
         public column: number,
         public row: string,
@@ -125,14 +126,20 @@ export class Showtime {
     ) { }
 }
 
-export enum SeatType {
+export class SeatType {
+    constructor(
+        public id: SeatTypeId,
+        public displayName: String
+    ) { }
+}
+export enum SeatTypeId {
     NORMAL = 1,
     VIP = 2,
 }
 
 export class Price {
     constructor(
-        public priceId: number,
+        public id: number,
         public ofMovieTypeId: number,
         public ofSeatTypeId: number,
         public ofShowtimeSlotId: number,
