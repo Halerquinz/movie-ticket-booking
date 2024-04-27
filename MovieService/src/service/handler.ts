@@ -457,6 +457,34 @@ export class MovieServiceHandlerFactory {
                     this.handleError(error, callback);
                 }
             },
+
+            GetScreen: async (call, callback) => {
+                const req = call.request;
+                if (req.screenId === undefined) {
+                    return callback({ message: "screen id  is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    const screen = await this.screenManagementOperator.getScreen(req.screenId);
+                    callback(null, { screen });
+                } catch (error) {
+                    this.handleError(error, callback);
+                }
+            },
+
+            GetTheater: async (call, callback) => {
+                const req = call.request;
+                if (req.theaterId === undefined) {
+                    return callback({ message: "theater id  is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    const theater = await this.theaterManagementOperator.getTheater(req.theaterId);
+                    callback(null, { theater });
+                } catch (error) {
+                    this.handleError(error, callback);
+                }
+            },
         }
         return handler;
     }

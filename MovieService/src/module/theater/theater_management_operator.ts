@@ -8,6 +8,7 @@ import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 export interface TheaterManagementOperator {
     createTheater(displayName: string, location: string): Promise<Theater>;
     updateTheater(id: number, displayName: string, location: string): Promise<Theater>;
+    getTheater(id: number): Promise<Theater>;
     deleteTheater(id: number): Promise<void>;
 }
 
@@ -50,6 +51,16 @@ export class TheaterManagementOperatorImpl implements TheaterManagementOperator 
 
             return theaterRecord;
         })
+    }
+
+    public async getTheater(id: number): Promise<Theater> {
+        const theater = await this.theaterDM.getTheaterById(id);
+        if (theater === null) {
+            this.logger.error("no theater with theater_id found", { theaterId: id });
+            throw new ErrorWithStatus(`no theater with theater_id ${id} found`, status.NOT_FOUND);
+        }
+
+        return theater;
     }
 
     public async deleteTheater(id: number): Promise<void> {

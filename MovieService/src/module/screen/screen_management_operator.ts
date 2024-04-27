@@ -16,6 +16,7 @@ export interface ScreenManagementOperator {
         screenId: number,
         displayName: string,
     ): Promise<Screen>;
+    getScreen(id: number): Promise<Screen>;
     deleteScreen(id: number): Promise<void>;
 }
 
@@ -97,7 +98,16 @@ export class ScreenManagementOperatorImpl implements ScreenManagementOperator {
 
             return screenRecord;
         })
+    }
 
+    public async getScreen(id: number): Promise<Screen> {
+        const screen = await this.screenDM.getScreenById(id);
+        if (screen === null) {
+            this.logger.error("no screen with screen_id found", { screenId: id });
+            throw new ErrorWithStatus(`no screen with screen_id ${id} found`, status.NOT_FOUND);
+        }
+
+        return screen;
     }
 
     public async deleteScreen(id: number): Promise<void> {

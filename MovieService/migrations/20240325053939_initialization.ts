@@ -310,7 +310,7 @@ export async function up(knex: Knex): Promise<void> {
                 .inTable(TabNameMovieServiceShowtimeDayOfTheWeek)
                 .onDelete("CASCADE");
 
-            table.integer("price").notNullable();
+            table.bigInteger("price").notNullable();
 
             table.unique(["of_movie_type_id", "of_seat_type_id", "of_showtime_slot_id", "of_showtime_day_of_the_week_id"]);
         });

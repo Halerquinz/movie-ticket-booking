@@ -132,6 +132,7 @@ export class SeatType {
         public displayName: String
     ) { }
 }
+
 export enum SeatTypeId {
     NORMAL = 1,
     VIP = 2,
