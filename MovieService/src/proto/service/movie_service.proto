@@ -20,10 +20,13 @@ service MovieService {
    rpc CreateScreen(CreateScreenRequest) returns (CreateScreenResponse) {}
    rpc DeleteScreen(DeleteScreenRequest) returns (DeleteScreenResponse) {}
 
+   rpc GetSeat(GetSeatRequest) returns (GetSeatResponse) {}
+
    rpc CreateAllSeatOfScreen(CreateAllSeatOfScreenRequest) returns (CreateAllSeatOfScreenResponse) {}
 
    rpc CreateShowtime(CreateShowtimeRequest) returns (CreateShowtimeResponse) {}
    rpc DeleteShowtime(DeleteShowtimeRequest) returns (DeleteShowtimeResponse) {}
+   rpc GetShowtime(GetShowtimeRequest) returns (GetShowtimeResponse) {}
 
    rpc GetShowtimeListOfTheaterByMovieId(GetShowtimeListOfTheaterByMovieIdRequest) returns (GetShowtimeListOfTheaterByMovieIdResponse) {}
    rpc GetShowtimeListOfTheater(GetShowtimeListOfTheaterRequest) returns (GetShowtimeListOfTheaterResponse) {}
@@ -113,6 +116,20 @@ message Screen {
     string display_name = 4;
 }
 
+message SeatType {
+    uint32 id = 1;
+    string display_name = 2;
+}
+
+message Seat {
+    uint32 id = 1;
+    SeatType seat_type = 2;
+    uint32 of_screen_id = 3;
+    uint32 column = 4;
+    string row = 5;
+    string no = 6;
+}
+
 message CreateMovieGenreRequest {
     string display_name = 1;
 }
@@ -135,6 +152,14 @@ message DeleteMovieGenreRequest {
 }
 
 message DeleteMovieGenreResponse {}
+
+message GetShowtimeRequest {
+    uint32 showtime_id = 1;
+}
+
+message GetShowtimeResponse {
+    Showtime showtime = 1;
+}
 
 message CreateImageRequest {
     uint32 of_movie_id = 1; 
@@ -295,6 +320,14 @@ message DeleteScreenRequest {
 }
 
 message DeleteScreenResponse {}
+
+message GetSeatRequest {
+    uint32 seat_id = 1;
+}
+
+message GetSeatResponse {
+    Seat seat = 1;
+}
 
 message CreateAllSeatOfScreenRequest {
     uint32 screen_id = 1;

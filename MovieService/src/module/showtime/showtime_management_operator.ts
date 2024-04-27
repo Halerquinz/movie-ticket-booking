@@ -25,6 +25,7 @@ export interface ShowtimeManagementOperator {
         timeStart: number,
     ): Promise<Showtime>;
     deleteShowtime(id: number): Promise<void>;
+    getShowtime(id: number): Promise<Showtime>;
 }
 
 export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperator {
@@ -101,6 +102,16 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
 
     public async deleteShowtime(id: number): Promise<void> {
         return this.showtimeDM.deleteShowtime(id);
+    }
+
+    public async getShowtime(id: number): Promise<Showtime> {
+        const showtime = await this.showtimeDM.getShowtime(id);
+        if (showtime === null) {
+            this.logger.error("no showtime with showtime_id found", { showtimeId: id });
+            throw new ErrorWithStatus(`no showtime with showtime_id ${id} found`, status.NOT_FOUND);
+        }
+
+        return showtime;
     }
 
     private isValidReleaseDate(timestamp: number): boolean {

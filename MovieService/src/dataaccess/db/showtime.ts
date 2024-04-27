@@ -166,7 +166,7 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
                 )
                 .where({
                     [ColNameMovieServiceShowtimeId]: id
-                })
+                });
         } catch (error) {
             this.logger.error("failed to get showtime", { id, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);

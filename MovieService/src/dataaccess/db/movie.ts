@@ -294,7 +294,6 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
             trailer,
             poster,
         );
-
     }
 
     private getMovieFromJoinedRow(row: Record<string, any>): Movie {

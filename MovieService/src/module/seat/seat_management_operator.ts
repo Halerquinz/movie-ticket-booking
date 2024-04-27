@@ -7,6 +7,7 @@ import {
     SEAT_DATA_ACCESSOR_TOKEN,
     ScreenDataAccessor,
     ScreenTypeDataAccessor,
+    Seat,
     SeatDataAccessor,
     SeatTypeId
 } from "../../dataaccess/db";
@@ -14,6 +15,7 @@ import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 
 export interface SeatManagementOperator {
     createAllSeatOfScreen(screenId: number, screenTypeId: number): Promise<void>;
+    getSeat(id: number): Promise<Seat>;
 }
 
 export class SeatManagementOperatorImpl implements SeatManagementOperator {
@@ -23,6 +25,16 @@ export class SeatManagementOperatorImpl implements SeatManagementOperator {
         private readonly screenDM: ScreenDataAccessor,
         private readonly screenTypeDM: ScreenTypeDataAccessor
     ) { }
+
+    public async getSeat(id: number): Promise<Seat> {
+        const seat = await this.seatDM.getSeat(id);
+        if (seat === null) {
+            this.logger.error("no seat with seat_id found", { seatId: id });
+            throw new ErrorWithStatus(`no seat with seat_id ${id} found`, status.NOT_FOUND);
+        }
+
+        return seat;
+    }
 
     public async createAllSeatOfScreen(screenId: number, screenTypeId: number): Promise<void> {
         const screenTypeRecord = await this.screenTypeDM.getScreenTypeById(screenTypeId);

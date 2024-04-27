@@ -428,9 +428,37 @@ export class MovieServiceHandlerFactory {
                 } catch (error) {
                     this.handleError(error, callback);
                 }
-            }
+            },
+
+            GetSeat: async (call, callback) => {
+                const req = call.request;
+                if (req.seatId === undefined) {
+                    return callback({ message: "seatId id  is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    const seat = await this.seatManagementOperator.getSeat(req.seatId);
+                    callback(null, { seat: seat as any });
+                } catch (error) {
+                    this.handleError(error, callback);
+                }
+            },
+
+            GetShowtime: async (call, callback) => {
+                const req = call.request;
+                if (req.showtimeId === undefined) {
+                    return callback({ message: "showtime id  is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    const showtime = await this.showtimeManagementOperator.getShowtime(req.showtimeId);
+                    callback(null, { showtime: showtime });
+                } catch (error) {
+                    this.handleError(error, callback);
+                }
+            },
         }
-        return handler
+        return handler;
     }
 
     private handleError(error: unknown, callback: sendUnaryData<any>) {
