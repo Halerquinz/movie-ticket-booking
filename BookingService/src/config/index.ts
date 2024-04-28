@@ -10,6 +10,7 @@ import { USER_SERVICE_CONFIG_TOKEN } from "./user_service";
 import { MOVIE_SERVICE_CONFIG_TOKEN } from "./movie_service";
 import { CACHE_CONFIG_TOKEN } from "./cache";
 import { KAFKA_CONFIG_TOKEN } from "./kafka";
+import { REDIS_CONFIG_TOKEN, RedisConfig } from "./redis";
 
 export * from "./config";
 export * from "./database";
@@ -22,6 +23,7 @@ export * from "./user_service";
 export * from "./movie_service";
 export * from "./cache";
 export * from "./kafka";
+export * from "./redis";
 
 export function bindToContainer(container: Container): void {
     container.bind(BOOKING_SERVICE_CONFIG_TOKEN).toInstance(BookingServiceConfig.fromEnv).inSingletonScope();
@@ -64,5 +66,9 @@ export function bindToContainer(container: Container): void {
     container
         .bind(KAFKA_CONFIG_TOKEN)
         .toInstance(() => BookingServiceConfig.fromEnv().kafkaConfig)
+        .inSingletonScope();
+    container
+        .bind(REDIS_CONFIG_TOKEN)
+        .toInstance(() => BookingServiceConfig.fromEnv().redisConfig)
         .inSingletonScope();
 }

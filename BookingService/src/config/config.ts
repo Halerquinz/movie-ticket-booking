@@ -9,6 +9,7 @@ import { UserServiceConfig } from "./user_service";
 import { MovieServiceConfig } from "./movie_service";
 import { CacheConfig } from "./cache";
 import { KafkaConfig } from "./kafka";
+import { RedisConfig } from "./redis";
 
 export class BookingServiceConfig {
     public userServiceConfig = new UserServiceConfig();
@@ -21,6 +22,7 @@ export class BookingServiceConfig {
     public elasticsearchConfig = new ElasticsearchConfig();
     public cacheConfig = new CacheConfig();
     public kafkaConfig = new KafkaConfig();
+    public redisConfig = new RedisConfig();
 
     public static fromEnv(): BookingServiceConfig {
         const config = new BookingServiceConfig();
@@ -34,6 +36,7 @@ export class BookingServiceConfig {
         config.elasticsearchConfig = ElasticsearchConfig.fromEnv();
         config.cacheConfig = CacheConfig.fromEnv();
         config.kafkaConfig = KafkaConfig.fromEnv();
+        config.redisConfig = RedisConfig.fromEnv();
         return config;
     }
 }
