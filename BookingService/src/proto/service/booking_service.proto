@@ -2,6 +2,8 @@ syntax = "proto3";
 
 service BookingService {
     rpc CreateBooking(CreateBookingRequest) returns (CreateBookingResponse) {}
+    rpc GetBooking(GetBookingRequest) returns (GetBookingResponse) {}
+    rpc UpdateBookingStatusFromInitializingToPending(UpdateBookingStatusFromInitializingToPendingRequest) returns (UpdateBookingStatusFromInitializingToPendingResponse) {}
 }
 
 message BookingStatus {
@@ -32,4 +34,19 @@ message CreateBookingRequest {
 
 message CreateBookingResponse {
     Booking booking = 1;
+}
+
+message GetBookingRequest {
+    uint32 booking_id = 1;
+}
+
+message GetBookingResponse {
+    Booking booking = 1;
+}
+
+message UpdateBookingStatusFromInitializingToPendingRequest {
+    uint32 booking_id = 1;
+}
+
+message UpdateBookingStatusFromInitializingToPendingResponse {
 }

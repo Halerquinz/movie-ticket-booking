@@ -4,7 +4,6 @@ import { ErrorWithStatus } from "../utils";
 import { sendUnaryData, status } from "@grpc/grpc-js";
 import { BOOKING_MANAGEMENT_OPERATOR_TOKEN, BookingManagementOperator } from "../module/booking";
 
-
 export class BookingServiceHandlersFactory {
     constructor(
         private readonly bookingManagementOperator: BookingManagementOperator
@@ -39,6 +38,34 @@ export class BookingServiceHandlersFactory {
                     this.handleError(error, callback);
                 }
             },
+
+            GetBooking: async (call, callback) => {
+                const req = call.request;
+                if (req.bookingId === undefined) {
+                    return callback({ message: "booking id is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    const booking = await this.bookingManagementOperator.getBooking(req.bookingId);
+                    callback(null, { booking: booking as any })
+                } catch (error) {
+                    this.handleError(error, callback);
+                }
+            },
+
+            UpdateBookingStatusFromInitializingToPending: async (call, callback) => {
+                const req = call.request;
+                if (req.bookingId === undefined) {
+                    return callback({ message: "booking id is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    await this.bookingManagementOperator.updateBookingStatusFromInitializingToPending(req.bookingId);
+                    callback(null, {})
+                } catch (error) {
+                    this.handleError(error, callback);
+                }
+            }
         }
 
         return handler;
