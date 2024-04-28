@@ -1,12 +1,13 @@
 import { token } from "brandi";
 
 export class ApplicationConfig {
-    public bookingTime = "10m";
+    public expireTimeAfterInitializeBooking = "1m";
+    public bookingTimeBeforeShowtimeStart = "1h";
 
     public static fromEnv(): ApplicationConfig {
         const config = new ApplicationConfig();
         if (process.env.BOOKING_TIME !== undefined) {
-            config.bookingTime = process.env.BOOKING_TIME
+            config.expireTimeAfterInitializeBooking = process.env.BOOKING_TIME
         }
         return config;
     }
