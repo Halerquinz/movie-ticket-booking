@@ -1,30 +1,31 @@
 import { injected, token } from "brandi";
 import { Logger } from "winston";
-import { BOOKING_ACCESSOR_TOKEN, BookingDataAccessor, BookingStatus } from "../../dataaccess/db";
+import { BOOKING_DATA_ACCESSOR_TOKEN, Booking, BookingDataAccessor, BookingStatus } from "../../dataaccess/db";
 import { USER_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
 import { UserServiceClient } from "../../proto/gen/UserService";
 import { LOGGER_TOKEN } from "../../utils";
-import { USER_INFO_PROVIDER_TOKEN, UserInfoProvider } from "../info_providers";
+
+export enum PaymentTransactionStatus {
+    PENDING = 0,
+    SUCCESS = 1,
+    CANCEL = 2
+}
 
 export interface BookingOperator {
-    processAfterPaymentTransactionCompleted(bookingId: number, userId: number): Promise<void>;
+    updateBookingStatusAfterPaymentTransactionCompleted(bookingId: number, status: any): Promise<void>;
+    checkBookingStatusAfterInitialize(bookingId: number): Promise<void>;
 }
 
 export class BookingOperatorImpl implements BookingOperator {
     constructor(
         private readonly logger: Logger,
         private readonly userServiceDM: UserServiceClient,
-        private readonly userInfoProvider: UserInfoProvider,
         private readonly bookingDM: BookingDataAccessor
     ) { }
 
-    public async processAfterPaymentTransactionCompleted(bookingId: number, userId: number): Promise<void> {
-        await this.updateBookingStatus(bookingId);
-    }
-
-    private async updateBookingStatus(bookingId: number): Promise<void> {
+    public async updateBookingStatusAfterPaymentTransactionCompleted(bookingId: number, paymentTransactionStatus: PaymentTransactionStatus): Promise<void> {
         await this.bookingDM.withTransaction(async (bookingDM) => {
-            const booking = await this.bookingDM.getBookingWithXLock(bookingId);
+            const booking = await bookingDM.getBookingWithXLock(bookingId);
             if (booking === null) {
                 this.logger.error("no booking with booking id found", { bookingId: bookingId });
                 return;
@@ -35,9 +36,33 @@ export class BookingOperatorImpl implements BookingOperator {
                 return;
             }
 
-            booking.bookingStatus = BookingStatus.CONFIRMED;
+            switch (paymentTransactionStatus) {
+                case PaymentTransactionStatus.CANCEL:
+                    booking.bookingStatus = BookingStatus.CANCEL
+                case PaymentTransactionStatus.SUCCESS:
+                    booking.bookingStatus = BookingStatus.CONFIRMED
+            }
+
             await bookingDM.updateBooking(booking);
+            this.logger.info("successfully updated booking status", { bookingId: bookingId, status: paymentTransactionStatus });
         });
+    }
+
+    public async checkBookingStatusAfterInitialize(bookingId: number): Promise<void> {
+        await this.bookingDM.withTransaction(async (bookingDM) => {
+            const booking = await bookingDM.getBookingWithXLock(bookingId);
+            if (booking === null) {
+                this.logger.error("no booking with booking id found", { bookingId: bookingId });
+                return;
+            }
+
+            if (booking.bookingStatus === BookingStatus.INITIALIZING) {
+                booking.bookingStatus = BookingStatus.CANCEL;
+                await bookingDM.updateBooking(booking);
+            }
+        })
+
+        this.logger.info("successfully canceled booking", { bookingId: bookingId });
     }
 }
 
@@ -45,8 +70,7 @@ injected(
     BookingOperatorImpl,
     LOGGER_TOKEN,
     USER_SERVICE_DM_TOKEN,
-    USER_INFO_PROVIDER_TOKEN,
-    BOOKING_ACCESSOR_TOKEN
+    BOOKING_DATA_ACCESSOR_TOKEN
 );
 
 export const BOOKING_OPERATOR_TOKEN = token<BookingOperator>("BookingOperator");
