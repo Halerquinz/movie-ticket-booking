@@ -11,9 +11,11 @@ import {
     MOVIE_TICKET_BOOKING_AUTH_COOKIE_NAME,
     getCookieOptions
 } from "../utils";
+import { PAYMENT_TRANSACTION_MANAGEMENT_OPERATOR_TOKEN, PaymentTransactionManagementOperator } from "../../module/payment_transactions";
 
 export function getSessionsRouter(
     sessionManagementOperator: SessionManagementOperator,
+    paymentTransactionManagementOperator: PaymentTransactionManagementOperator,
     authMiddlewareFactory: AuthMiddlewareFactory,
     errorHandlerMiddlewareFactory: ErrorHandlerMiddlewareFactory
 ): express.Router {
@@ -38,7 +40,7 @@ export function getSessionsRouter(
                 });
             }, next);
         })
-    )
+    );
 
     router.get(
         "/api/sessions/user",
@@ -56,6 +58,21 @@ export function getSessionsRouter(
         })
     );
 
+    router.post("/api/sessions/user/bookings/:bookingId/payment-transaction",
+        userLoggedInAuthMiddleware,
+        asyncHandler(async (req, res, next) => {
+            errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
+                const bookingId = +req.params.bookingId;
+                const authenticatedUserInformation = res.locals.authenticatedUserInformation as AuthenticatedUserInformation;
+                const paymentTransactionUrl = await paymentTransactionManagementOperator.createPaymentTransaction(
+                    authenticatedUserInformation,
+                    bookingId
+                );
+                res.json({ url: paymentTransactionUrl });
+            }, next);
+        })
+    )
+
     router.delete(
         "/api/sessions",
         userLoggedInAuthMiddlewareWithoutTokenRefresh,
@@ -72,6 +89,12 @@ export function getSessionsRouter(
     return router;
 }
 
-injected(getSessionsRouter, SESSION_MANAGEMENT_OPERATOR_TOKEN, AUTH_MIDDLEWARE_FACTORY_TOKEN, ERROR_HANDLER_MIDDLEWARE_FACTORY_TOKEN);
+injected(
+    getSessionsRouter,
+    SESSION_MANAGEMENT_OPERATOR_TOKEN,
+    PAYMENT_TRANSACTION_MANAGEMENT_OPERATOR_TOKEN,
+    AUTH_MIDDLEWARE_FACTORY_TOKEN,
+    ERROR_HANDLER_MIDDLEWARE_FACTORY_TOKEN
+);
 
 export const SESSIONS_ROUTER_TOKEN = token<express.Router>("SessionsRouter");
