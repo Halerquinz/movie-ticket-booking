@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+service BookingService {
+    rpc CreateBooking(CreateBookingRequest) returns (CreateBookingResponse) {}
+    rpc GetBookingWithStatus(GetBookingWithStatusRequest) returns (GetBookingWithStatusResponse) {}
+    rpc UpdateBookingStatusFromInitializingToPending(UpdateBookingStatusFromInitializingToPendingRequest) returns (UpdateBookingStatusFromInitializingToPendingResponse) {}
+}
+
+message BookingStatus {
+    enum Values {
+        PENDING = 0;
+        CONFIRMED = 1;
+        CANCEL = 2;
+    }
+}
+
+message Booking {
+    uint32 id = 1;
+    uint32 of_user_id = 2;
+    uint32 ofShowtimeId = 3;
+    uint32 ofSeatId = 4;
+    uint64 bookingTime = 5;
+    uint64 expireAt = 6;
+    BookingStatus.Values bookingStatus = 7;
+    uint32 amount = 8;
+}
+
+message CreateBookingRequest {
+    uint32 user_id = 1;
+    uint32 showtime_id = 2;
+    uint32 seat_id = 3;
+    uint32 amount = 4;
+}
+
+message CreateBookingResponse {
+    Booking booking = 1;
+}
+
+message GetBookingWithStatusRequest {
+    uint32 booking_id = 1;
+    uint32 user_id = 2;
+    BookingStatus.Values bookingStatus = 3;
+}
+
+message GetBookingWithStatusResponse {
+    Booking booking = 1;
+}
+
+message UpdateBookingStatusFromInitializingToPendingRequest {
+    uint32 booking_id = 1;
+}
+
+message UpdateBookingStatusFromInitializingToPendingResponse {
+}
