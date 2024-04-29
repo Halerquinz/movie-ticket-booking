@@ -3,7 +3,7 @@ import { Logger } from "winston";
 import { MOVIE_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
 import { MovieServiceClient } from "../../proto/gen/MovieService";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGRPCCall, } from "../../utils";
-import { Showtime } from "../schemas";
+import { Showtime, ShowtimeMetadata } from "../schemas";
 
 export interface ShowtimeManagementOperator {
     createShowtime(
@@ -11,6 +11,7 @@ export interface ShowtimeManagementOperator {
         screenId: number,
         timeStart: number,
     ): Promise<Showtime>;
+    getShowtimeMetadata(showtimeId: number): Promise<ShowtimeMetadata>;
 }
 
 export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperator {
@@ -35,6 +36,20 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
         }
 
         return Showtime.fromProto(createShowtimeResponse?.showtime);
+    }
+
+    public async getShowtimeMetadata(showtimeId: number): Promise<ShowtimeMetadata> {
+        const { error: getShowtimeMetadataError, response: getShowtimeMetadataResponse } = await promisifyGRPCCall(
+            this.movieServiceDM.getShowtimeMetadata.bind(this.movieServiceDM),
+            { showtimeId }
+        );
+
+        if (getShowtimeMetadataError !== null) {
+            this.logger.error("failed to call movie_service.getShowtimeMetadata()", { error: getShowtimeMetadataError });
+            throw new ErrorWithHTTPCode("failed to get showtime metadata", getHttpCodeFromGRPCStatus(getShowtimeMetadataError.code));
+        }
+
+        return ShowtimeMetadata.fromProto(getShowtimeMetadataResponse?.showtimeMetadata);
     }
 }
 

@@ -46,6 +46,20 @@ export function getShowtimesRouter(
         })
     );
 
+    router.get(
+        "/api/showtimes/:showtimeId",
+        userLoggedInAuthMiddleware,
+        asyncHandler(async (req, res, next) => {
+            errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
+                const showtimeId = +req.params.showtimeId;
+                const showtimeMetadata = await showtimeManagementOperator.getShowtimeMetadata(
+                    showtimeId,
+                );
+                res.json(showtimeMetadata);
+            }, next);
+        })
+    );
+
     router.post(
         "/api/showtimes/:showtimeId/bookings",
         userLoggedInAuthMiddleware,
