@@ -485,6 +485,19 @@ export class MovieServiceHandlerFactory {
                     this.handleError(error, callback);
                 }
             },
+            GetShowtimeMetadata: async (call, callback) => {
+                const req = call.request;
+                if (req.showtimeId === undefined) {
+                    return callback({ message: "showtime id  is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    const showtimeMetadata = await this.showtimeManagementOperator.getShowtimeMetadata(req.showtimeId);
+                    callback(null, { showtimeMetadata });
+                } catch (error) {
+                    this.handleError(error, callback);
+                }
+            }
         }
         return handler;
     }

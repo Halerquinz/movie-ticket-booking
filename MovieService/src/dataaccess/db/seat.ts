@@ -17,6 +17,7 @@ export interface CreateSeatArguments {
 export interface SeatDataAccessor {
     createSeat(args: CreateSeatArguments): Promise<number>;
     getSeat(id: number): Promise<Seat | null>;
+    getSeatsOfScreen(screenId: number): Promise<Seat[]>;
     deleteSeat(id: number): Promise<void>;
     withTransaction<T>(cb: (dataAccessor: SeatDataAccessor) => Promise<T>): Promise<T>;
 }
@@ -83,6 +84,26 @@ export class SeatDataAccessorImpl implements SeatDataAccessor {
         }
 
         return this.getSeatFromJoinedRow(rows[0]);
+    }
+
+    public async getSeatsOfScreen(screenId: number): Promise<Seat[]> {
+        console.log(screenId);
+        try {
+            const rows = await this.knex
+                .select()
+                .from(TabNameMovieServiceSeatTab)
+                .leftOuterJoin(
+                    TabNameMovieServiceSeatTypeTab,
+                    `${TabNameMovieServiceSeatTab}.${ColNameMovieServiceSeatOfSeatTypeId}`,
+                    `${TabNameMovieServiceSeatTypeTab}.${ColNameMovieServiceSeatTypeId}`
+                )
+                .where(ColNameMovieServiceSeatOfScreenId, "=", screenId);
+
+            return rows.map((row) => this.getSeatFromJoinedRow(row));
+        } catch (error) {
+            this.logger.error("failed to get seats of screen", { screenId, error });
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
     }
 
     public async deleteSeat(id: number): Promise<void> {

@@ -33,6 +33,8 @@ service MovieService {
    rpc GetShowtimeListOfTheaterByMovieId(GetShowtimeListOfTheaterByMovieIdRequest) returns (GetShowtimeListOfTheaterByMovieIdResponse) {}
    rpc GetShowtimeListOfTheater(GetShowtimeListOfTheaterRequest) returns (GetShowtimeListOfTheaterResponse) {}
 
+   rpc GetShowtimeMetadata(GetShowtimeMetadataRequest) returns (GetShowtimeMetadataResponse) {}
+
    rpc GetPrice(GetPriceRequest) returns (GetPriceResponse) {}
 }
 
@@ -418,4 +420,38 @@ message Price {
 }
 message GetPriceResponse {
     Price price = 1;
+}
+
+message SeatStatus {
+    enum Values {
+        AVAILABLE = 0;
+        UNAVAILABLE = 1;
+    }
+}
+
+message SeatMetadata {
+    uint32 id = 1;
+    SeatType seat_type = 2;
+    uint32 of_screen_id = 3;
+    uint32 column = 4;
+    string row = 5;
+    string no = 6;
+    SeatStatus.Values status = 7;
+    uint32 price = 8;
+}
+
+message ShowtimeMetadata {
+    Theater theater = 1;
+    Showtime showtime = 2;
+    Movie movie = 3;
+    Screen screen = 4;
+    repeated SeatMetadata seats = 5;
+}
+
+message GetShowtimeMetadataRequest {
+    uint32 showtime_id = 1;
+}
+
+message GetShowtimeMetadataResponse {
+    ShowtimeMetadata showtime_metadata = 1;
 }
