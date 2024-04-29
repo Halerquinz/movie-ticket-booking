@@ -2,7 +2,7 @@ syntax = "proto3";
 
 service BookingService {
     rpc CreateBooking(CreateBookingRequest) returns (CreateBookingResponse) {}
-    rpc GetBooking(GetBookingRequest) returns (GetBookingResponse) {}
+    rpc GetBookingWithStatus(GetBookingWithStatusRequest) returns (GetBookingWithStatusResponse) {}
     rpc UpdateBookingStatusFromInitializingToPending(UpdateBookingStatusFromInitializingToPendingRequest) returns (UpdateBookingStatusFromInitializingToPendingResponse) {}
 }
 
@@ -36,11 +36,13 @@ message CreateBookingResponse {
     Booking booking = 1;
 }
 
-message GetBookingRequest {
+message GetBookingWithStatusRequest {
     uint32 booking_id = 1;
+    uint32 user_id = 2;
+    BookingStatus.Values bookingStatus = 3;
 }
 
-message GetBookingResponse {
+message GetBookingWithStatusResponse {
     Booking booking = 1;
 }
 

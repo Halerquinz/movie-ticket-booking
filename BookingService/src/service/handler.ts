@@ -39,14 +39,24 @@ export class BookingServiceHandlersFactory {
                 }
             },
 
-            GetBooking: async (call, callback) => {
+            GetBookingWithStatus: async (call, callback) => {
                 const req = call.request;
                 if (req.bookingId === undefined) {
                     return callback({ message: "booking id is required", code: status.INVALID_ARGUMENT });
                 }
+                if (req.userId === undefined) {
+                    return callback({ message: "user id status is required", code: status.INVALID_ARGUMENT });
+                }
+                if (req.bookingStatus === undefined) {
+                    return callback({ message: "booking status is required", code: status.INVALID_ARGUMENT });
+                }
 
                 try {
-                    const booking = await this.bookingManagementOperator.getBooking(req.bookingId);
+                    const booking = await this.bookingManagementOperator.getBookingWithStatus(
+                        req.bookingId,
+                        req.userId,
+                        req.bookingStatus as any
+                    );
                     callback(null, { booking: booking as any })
                 } catch (error) {
                     this.handleError(error, callback);

@@ -7,8 +7,8 @@ import { ErrorWithStatus, LOGGER_TOKEN, TIMER_TOKEN, Timer, promisifyGRPCCall } 
 import { MovieServiceClient } from "../../proto/gen/MovieService";
 import { MOVIE_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
 import { status } from "@grpc/grpc-js";
-import { Showtime } from "./showtime_model";
-import { CHECK_BOOKING_STATUS_AFTER_INITIALIZE_QUEUE_TOKEN, CheckBookingStatusAfterInitializeQueue } from "../../dataaccess/bull/jobqueue/check_booking_status_after_initialize";
+import { Price, Seat, Showtime } from "./booking_metadata_model";
+import { CheckBookingStatusAfterInitializeQueue, CHECK_BOOKING_STATUS_AFTER_INITIALIZE_QUEUE_TOKEN } from "../../dataaccess/bull";
 
 export interface BookingManagementOperator {
     createBooking(
@@ -17,7 +17,7 @@ export interface BookingManagementOperator {
         seatId: number,
         amount: number
     ): Promise<Booking>;
-    getBooking(bookingId: number): Promise<Booking>;
+    getBookingWithStatus(bookingId: number, userId: number, bookingStatus: BookingStatus): Promise<Booking>;
     updateBookingStatusFromInitializingToPending(bookingId: number): Promise<void>;
 }
 
@@ -38,33 +38,35 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
     }
 
     public async createBooking(userId: number, showtimeId: number, seatId: number, amount: number): Promise<Booking> {
+        await this.checkBookingProcessingAndConfirmed(showtimeId, seatId);
+
         const showtime = await this.getShowtime(showtimeId);
         if (showtime === null) {
             this.logger.error("no showtime with showtime_id found", { showtimeId: showtimeId });
             throw new ErrorWithStatus(`no showtime with showtime_id=${showtimeId}`, status.NOT_FOUND);
         }
 
+        const seat = await this.getSeat(seatId);
+        if (seat === null) {
+            this.logger.error("no seat with seat_id found", { seatId: seatId });
+            throw new ErrorWithStatus(`no seat with seat_id=${seatId}`, status.NOT_FOUND);
+        }
+
+        const price = await this.getPrice(seatId, showtimeId);
+        if (price === null) {
+            this.logger.error("no price with seat_id and showtime_id found", { seatId: seatId, showtimeId: showtimeId });
+            throw new ErrorWithStatus(`no price with seat_id=${seatId} and showtime_id=${showtimeId}`, status.NOT_FOUND);
+        }
+
+        if (amount !== price.price) {
+            this.logger.error("invalid amount", { amount });
+            throw new ErrorWithStatus(`invalid amount ${amount}`, status.INVALID_ARGUMENT);
+        }
+
         const requestTime = this.timer.getCurrentTime();
         if (requestTime < showtime.timeStart - this.bookingTimeBeforeShowtimeStartInMs) {
             this.logger.error("expired time to create booking of showtime_id found", { showtimeId: showtimeId });
             throw new ErrorWithStatus(`expired time to create booking of showtime_id=${showtimeId}`, status.DEADLINE_EXCEEDED);
-        }
-
-        const expireAt = requestTime + this.bookingTimeInMS;
-        const { error: getPriceError, response: getPriceResponse } = await promisifyGRPCCall(
-            this.movieServiceDM.getPrice.bind(this.movieServiceDM),
-            {
-                seatId, showtimeId
-            });
-
-        if (getPriceError !== null) {
-            this.logger.error("failed to call price.getPrice()", { error: getPriceError });
-            throw getPriceError;
-        }
-
-        if (amount !== getPriceResponse?.price?.price) {
-            this.logger.error("invalid amount", { amount });
-            throw new ErrorWithStatus(`invalid amount ${amount}`, status.INVALID_ARGUMENT);
         }
 
         const bookingId = await this.bookingDM.createBooking({
@@ -89,8 +91,8 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
         }
     }
 
-    public async getBooking(bookingId: number): Promise<Booking> {
-        const booking = await this.bookingDM.getBooking(bookingId);
+    public async getBookingWithStatus(bookingId: number, userId: number, bookingStatus: BookingStatus): Promise<Booking> {
+        const booking = await this.bookingDM.getBookingWithStatus(bookingId, userId, bookingStatus);
         if (booking === null) {
             this.logger.error("no booking with booking_id found", { bookingId });
             throw new ErrorWithStatus(`no booking with booking_id ${bookingId} found`, status.NOT_FOUND);
@@ -117,6 +119,38 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
         });
     }
 
+    private async checkBookingProcessingAndConfirmed(showtimeId: number, seatId: number): Promise<void> {
+        const bookingProcessingAndConfirmedCount = await Promise.all([
+            await this.bookingDM.getBookingProcessingCount(showtimeId, seatId),
+            await this.bookingDM.getBookingConfirmedCount(showtimeId, seatId),
+        ]);
+
+        const bookingProcessingCount = bookingProcessingAndConfirmedCount[0];
+        const bookingConfirmedCount = bookingProcessingAndConfirmedCount[1];
+
+        if (bookingProcessingCount > 0) {
+            this.logger.error(
+                "booking with showtime_id and seat_id already has status of pending or initializing",
+                { showtimeId: showtimeId, seatId: seatId }
+            );
+            throw new ErrorWithStatus(
+                `booking with showtime_id=${showtimeId} and seat_id=${seatId} already has status of pending or initializing`,
+                status.ALREADY_EXISTS
+            );
+        }
+
+        if (bookingConfirmedCount > 0) {
+            this.logger.error(
+                "booking with showtime_id and seat_id already has status of confirmed",
+                { showtimeId: showtimeId, seatId: seatId }
+            );
+            throw new ErrorWithStatus(
+                `booking with showtime_id=${showtimeId} and seat_id=${seatId} already has status of confirmed`,
+                status.ALREADY_EXISTS
+            );
+        }
+    }
+
     private async getShowtime(showtimeId: number): Promise<Showtime | null> {
         const { error: getShowtimeError, response: getShowtimeResponse } = await promisifyGRPCCall(
             this.movieServiceDM.getShowtime.bind(this.movieServiceDM), { showtimeId });
@@ -130,6 +164,36 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
         }
 
         return Showtime.fromProto(getShowtimeResponse?.showtime);
+    }
+
+    private async getSeat(seatId: number): Promise<Seat | null> {
+        const { error: getSeatError, response: getSeatResponse } = await promisifyGRPCCall(
+            this.movieServiceDM.getSeat.bind(this.movieServiceDM), { seatId });
+        if (getSeatError !== null) {
+            if (getSeatError.code === status.NOT_FOUND) {
+                return null;
+            }
+
+            this.logger.error("failed to call movie.getSeat()", { error: getSeatError });
+            throw new ErrorWithStatus("failed to get Seat", status.INTERNAL);
+        }
+
+        return Seat.fromProto(getSeatResponse?.seat);
+    }
+
+    private async getPrice(seatId: number, showtimeId: number): Promise<Price | null> {
+        const { error: getPriceError, response: getPriceResponse } = await promisifyGRPCCall(
+            this.movieServiceDM.getPrice.bind(this.movieServiceDM), { seatId, showtimeId });
+        if (getPriceError !== null) {
+            if (getPriceError.code === status.NOT_FOUND) {
+                return null;
+            }
+
+            this.logger.error("failed to call movie.getPrice()", { error: getPriceError });
+            throw new ErrorWithStatus("failed to get Price", status.INTERNAL);
+        }
+
+        return Price.fromProto(getPriceResponse?.price);
     }
 }
 
