@@ -4,6 +4,7 @@ service BookingService {
     rpc CreateBooking(CreateBookingRequest) returns (CreateBookingResponse) {}
     rpc GetBookingWithStatus(GetBookingWithStatusRequest) returns (GetBookingWithStatusResponse) {}
     rpc UpdateBookingStatusFromInitializingToPending(UpdateBookingStatusFromInitializingToPendingRequest) returns (UpdateBookingStatusFromInitializingToPendingResponse) {}
+    rpc GetBookingListProcessingAndConfirmedByShowtimeId(GetBookingListProcessingAndConfirmedByShowtimeIdRequest) returns (GetBookingListProcessingAndConfirmedByShowtimeIdResponse) {}
 }
 
 message BookingStatus {
@@ -51,4 +52,12 @@ message UpdateBookingStatusFromInitializingToPendingRequest {
 }
 
 message UpdateBookingStatusFromInitializingToPendingResponse {
+}
+
+message GetBookingListProcessingAndConfirmedByShowtimeIdRequest {
+    uint32 showtime_id = 1;
+}
+
+message GetBookingListProcessingAndConfirmedByShowtimeIdResponse {
+    repeated Booking booking_list = 1;
 }

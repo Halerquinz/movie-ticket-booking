@@ -75,6 +75,20 @@ export class BookingServiceHandlersFactory {
                 } catch (error) {
                     this.handleError(error, callback);
                 }
+            },
+
+            GetBookingListProcessingAndConfirmedByShowtimeId: async (call, callback) => {
+                const req = call.request;
+                if (req.showtimeId === undefined) {
+                    return callback({ message: "showtime id is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    const bookingList = await this.bookingManagementOperator.getBookingListProcessingAndConfirmedByShowtimeId(req.showtimeId);
+                    callback(null, { bookingList: bookingList as any });
+                } catch (error) {
+                    this.handleError(error, callback);
+                }
             }
         }
 

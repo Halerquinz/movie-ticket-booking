@@ -19,7 +19,7 @@ export interface BookingManagementOperator {
     ): Promise<Booking>;
     getBookingWithStatus(bookingId: number, userId: number, bookingStatus: BookingStatus): Promise<Booking>;
     updateBookingStatusFromInitializingToPending(bookingId: number): Promise<void>;
-    getBookingListProcessingAndConfirmed(bookingId: number): Promise<Booking[]>;
+    getBookingListProcessingAndConfirmedByShowtimeId(showtimeId: number): Promise<Booking[]>;
 }
 
 export class BookingManagementOperatorImpl implements BookingManagementOperator {
@@ -120,8 +120,8 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
         });
     }
 
-    public async getBookingListProcessingAndConfirmed(bookingId: number): Promise<Booking[]> {
-        return this.bookingDM.getBookingListProcessingAndConfirmed(bookingId);
+    public async getBookingListProcessingAndConfirmedByShowtimeId(showtimeId: number): Promise<Booking[]> {
+        return this.bookingDM.getBookingListProcessingAndConfirmedByShowtimeId(showtimeId);
     }
 
     private async checkBookingProcessingAndConfirmed(showtimeId: number, seatId: number): Promise<void> {
