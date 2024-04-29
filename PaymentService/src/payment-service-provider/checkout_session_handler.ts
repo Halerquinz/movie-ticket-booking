@@ -46,7 +46,7 @@ export class CheckoutSessionHandlerImpl implements CheckoutSessionHandler {
                         product_data: {
                             name: 'Đặt vé xem phim',
                             images: ["https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/1/image/c5f0a1eff4c394a251036189ccddaacd/p/o/poster_dune_2_bb_3_no_qr_1_.jpg"],
-                            description: `Tên phim: ${paymentTransactionDetail.movieTitle} || Ghế: ${paymentTransactionDetail.seatNo} || Ngày: ${this.unixTimeToDateTime(paymentTransactionDetail.showtimeStartDate)} || Rạp: ${paymentTransactionDetail.theaterName} || Phòng: ${paymentTransactionDetail.screenName} `,
+                            description: `Tên phim: ${paymentTransactionDetail.movieTitle} || Ghế: ${paymentTransactionDetail.seatNo} || Ngày: ${this.unixTimeToVNDateTime(paymentTransactionDetail.showtimeStartDate)} || Rạp: ${paymentTransactionDetail.theaterName} || Phòng: ${paymentTransactionDetail.screenName} `,
                         },
                         unit_amount: paymentTransactionDetail.amount,
                     },
@@ -104,8 +104,17 @@ export class CheckoutSessionHandlerImpl implements CheckoutSessionHandler {
         return Math.round(timestamp / 1000);
     }
 
-    private unixTimeToDateTime(timestamp: number): string {
-        return new Date(timestamp).toString();
+    private unixTimeToVNDateTime(timestamp: number): string {
+        return new Date(timestamp).toLocaleString("vi-VN", {
+            weekday: 'long',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        });
     }
 }
 
