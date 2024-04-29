@@ -3,7 +3,7 @@ import { Logger } from "winston";
 import { MOVIE_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
 import { MovieServiceClient } from "../../proto/gen/MovieService";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGRPCCall, } from "../../utils";
-import { ShowtimeMetadata, Theater } from "../schemas";
+import { ShowtimeDetail, Theater } from "../schemas";
 
 export interface ShowtimeListManagementOperator {
     getShowtimeListOfTheater(
@@ -11,7 +11,7 @@ export interface ShowtimeListManagementOperator {
         requestTime: number
     ): Promise<{
         theater: Theater,
-        showtimeListOfTheater: ShowtimeMetadata[]
+        showtimeListOfTheater: ShowtimeDetail[]
     }>;
     getShowtimeListOfTheaterByMovieId(
         theaterId: number,
@@ -19,7 +19,7 @@ export interface ShowtimeListManagementOperator {
         requestTime: number
     ): Promise<{
         theater: Theater,
-        showtimeListOfTheater: ShowtimeMetadata[]
+        showtimeListOfTheater: ShowtimeDetail[]
     }>,
 }
 
@@ -34,7 +34,7 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
         requestTime: number
     ): Promise<{
         theater: Theater,
-        showtimeListOfTheater: ShowtimeMetadata[]
+        showtimeListOfTheater: ShowtimeDetail[]
     }> {
         const { error: getShowtimeListOfTheaterError, response: getShowtimeListOfTheaterResponse } = await promisifyGRPCCall(
             this.movieServiceDM.getShowtimeListOfTheater.bind(this.movieServiceDM),
@@ -48,7 +48,7 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
 
         const theater = Theater.fromProto(getShowtimeListOfTheaterResponse?.theater);
         const showtimeListOfTheater = getShowtimeListOfTheaterResponse?.showtimeListOfTheater?.map(
-            (showtimeMetadata) => ShowtimeMetadata.fromProto(showtimeMetadata)
+            (showtimeDetail) => ShowtimeDetail.fromProto(showtimeDetail)
         ) || [];
 
         return {
@@ -63,7 +63,7 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
         requestTime: number
     ): Promise<{
         theater: Theater;
-        showtimeListOfTheater: ShowtimeMetadata[];
+        showtimeListOfTheater: ShowtimeDetail[];
     }> {
         const { error: getShowtimeListOfTheaterError, response: getShowtimeListOfTheaterResponse } = await promisifyGRPCCall(
             this.movieServiceDM.getShowtimeListOfTheaterByMovieId.bind(this.movieServiceDM),
@@ -77,7 +77,7 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
 
         const theater = Theater.fromProto(getShowtimeListOfTheaterResponse?.theater);
         const showtimeListOfTheater = getShowtimeListOfTheaterResponse?.showtimeListOfTheater?.map(
-            (showtimeMetadata) => ShowtimeMetadata.fromProto(showtimeMetadata)
+            (showtimeDetail) => ShowtimeDetail.fromProto(showtimeDetail)
         ) || [];
 
         return {

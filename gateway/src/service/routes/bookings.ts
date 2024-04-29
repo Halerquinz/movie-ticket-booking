@@ -11,6 +11,7 @@
 //     MOVIE_TICKET_BOOKING_AUTH_COOKIE_NAME,
 //     getCookieOptions
 // } from "../utils";
+// import { BookingManagementOperator } from "../../module/bookings";
 
 // export function getBookingsRouter(
 //     bookingManagementOperator: BookingManagementOperator,
@@ -22,6 +23,7 @@
 //     const userLoggedInAuthMiddleware = authMiddlewareFactory.getAuthMiddleware(() => true, true);
 
 //     router.post("/api/bookings/",
+//         userLoggedInAuthMiddleware,
 //         asyncHandler(async (req, res, next) => {
 //             errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
 //                 const username = req.body.username as string;
@@ -30,11 +32,6 @@
 //                     username,
 //                     password
 //                 );
-//                 res.cookie(MOVIE_TICKET_BOOKING_AUTH_COOKIE_NAME, token, getCookieOptions()).json({
-//                     user,
-//                     userRoleList,
-//                     userPermissionList
-//                 });
 //             }, next);
 //         })
 //     )

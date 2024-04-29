@@ -15,9 +15,9 @@ import {
     Theater,
     TheaterDataAccessor
 } from "../../dataaccess/db";
-import { ShowtimeMetadata } from "../../proto/gen/ShowtimeMetadata";
 import { ErrorWithStatus, LOGGER_TOKEN, TIMER_TOKEN, Timer } from "../../utils";
 import ms from "ms";
+import { ShowtimeDetail } from "../../proto/gen/ShowtimeDetail";
 
 export interface ShowtimeListManagementOperator {
     getShowtimeListOfTheater(
@@ -25,7 +25,7 @@ export interface ShowtimeListManagementOperator {
         requestTime: number
     ): Promise<{
         theater: Theater,
-        showtimeListOfTheater: ShowtimeMetadata[]
+        showtimeListOfTheater: ShowtimeDetail[]
     }>;
     getShowtimeListOfTheaterByMovieId(
         theaterId: number,
@@ -33,7 +33,7 @@ export interface ShowtimeListManagementOperator {
         requestTime: number
     ): Promise<{
         theater: Theater,
-        showtimeListOfTheater: ShowtimeMetadata[]
+        showtimeListOfTheater: ShowtimeDetail[]
     }>
 }
 
@@ -53,7 +53,7 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
 
     public async getShowtimeListOfTheater(theaterId: number, requestTime: number): Promise<{
         theater: Theater;
-        showtimeListOfTheater: ShowtimeMetadata[];
+        showtimeListOfTheater: ShowtimeDetail[];
     }> {
         if (!this.isValidDate(requestTime)) {
             this.logger.error("invalid date", { requestTime });
@@ -83,7 +83,7 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
         requestTime: number
     ): Promise<{
         theater: Theater;
-        showtimeListOfTheater: ShowtimeMetadata[];
+        showtimeListOfTheater: ShowtimeDetail[];
     }> {
         if (!this.isValidDate(requestTime)) {
             this.logger.error("invalid date", { requestTime });
@@ -115,7 +115,7 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
     private async getShowtimeListOfTheaterMetadata(
         showtimeList: Showtime[],
         theaterRecord: Theater
-    ): Promise<ShowtimeMetadata[]> {
+    ): Promise<ShowtimeDetail[]> {
         const movieIdList: number[] = [];
         for (const showtime of showtimeList) {
             if (!movieIdList.includes(showtime.ofMovieId)) {
@@ -164,7 +164,7 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
                 });
         });
 
-        const showtimeListOfTheater: ShowtimeMetadata[] = [];
+        const showtimeListOfTheater: ShowtimeDetail[] = [];
         for (let i = 0; i < showtimeList.length; i++) {
             const screen = screenMap.get(showtimeList[i].ofScreenId);
             const movie = movieMap.get(showtimeList[i].ofMovieId);

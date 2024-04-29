@@ -1,6 +1,7 @@
 import { MovieType } from "./movie_type";
+import { ShowtimeDetail as ShowtimeDetailProto } from "../../proto/gen/ShowtimeDetail"
 
-export class ShowtimeMetadata {
+export class ShowtimeDetail {
     constructor(
         public id: number,
         public movie_name: string,
@@ -12,17 +13,17 @@ export class ShowtimeMetadata {
         public time_end: number,
     ) { }
 
-    public static fromProto(ShowtimeMetadataProto: any | undefined): ShowtimeMetadata {
-        const movieType = MovieType.fromProto(ShowtimeMetadataProto?.movieType);
-        return new ShowtimeMetadata(
-            ShowtimeMetadataProto?.id || 0,
-            ShowtimeMetadataProto?.movieName || "",
+    public static fromProto(showtimeDetailProto: ShowtimeDetailProto | undefined): ShowtimeDetail {
+        const movieType = MovieType.fromProto(showtimeDetailProto?.movieType);
+        return new ShowtimeDetail(
+            showtimeDetailProto?.id || 0,
+            showtimeDetailProto?.movieName || "",
             movieType,
-            ShowtimeMetadataProto?.theaterName || "",
-            ShowtimeMetadataProto?.screenName || "",
-            ShowtimeMetadataProto?.seatCount || 0,
-            ShowtimeMetadataProto?.timeStart || 0,
-            ShowtimeMetadataProto?.timeEnd || 0
+            showtimeDetailProto?.theaterName || "",
+            showtimeDetailProto?.screenName || "",
+            showtimeDetailProto?.seatCount || 0,
+            showtimeDetailProto?.timeStart || 0,
+            showtimeDetailProto?.timeEnd || 0
         );
     }
 }

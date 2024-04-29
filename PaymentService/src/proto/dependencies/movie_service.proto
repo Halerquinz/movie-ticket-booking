@@ -377,7 +377,7 @@ message GetShowtimeListOfTheaterByMovieIdRequest {
     uint64 request_time = 3;
 }
 
-message ShowtimeMetadata {
+message ShowtimeDetail {
     uint32 id = 1;
     string theater_name = 2;
     string movie_name = 3;
@@ -390,7 +390,7 @@ message ShowtimeMetadata {
 
 message GetShowtimeListOfTheaterByMovieIdResponse {
     Theater theater = 1;
-    repeated ShowtimeMetadata showtime_list_of_theater = 2;
+    repeated ShowtimeDetail showtime_list_of_theater = 2;
 }
 
 message GetShowtimeListOfTheaterRequest {
@@ -400,7 +400,7 @@ message GetShowtimeListOfTheaterRequest {
 
 message GetShowtimeListOfTheaterResponse {
     Theater theater = 1;
-    repeated ShowtimeMetadata showtime_list_of_theater = 2;
+    repeated ShowtimeDetail showtime_list_of_theater = 2;
 }
 
 message GetPriceRequest {
