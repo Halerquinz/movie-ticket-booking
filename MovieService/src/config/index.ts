@@ -8,6 +8,7 @@ import { APPLICATION_CONFIG_TOKEN } from "./application";
 import { ELASTICSEARCH_CONFIG_TOKEN } from "./elasticsearch";
 import { S3_CONFIG_TOKEN } from "./s3";
 import { KAFKA_CONFIG_TOKEN } from "./kafka";
+import { BOOKING_SERVICE_CONFIG_TOKEN } from "./booking_service";
 
 export * from "./config";
 export * from "./database";
@@ -18,6 +19,7 @@ export * from "./application";
 export * from "./elasticsearch";
 export * from "./s3";
 export * from "./kafka";
+export * from "./booking_service";
 
 export function bindToContainer(container: Container): void {
     container.bind(MOVIE_SERVICE_CONFIG_TOKEN).toInstance(MovieServiceConfig.fromEnv).inSingletonScope();
@@ -53,5 +55,10 @@ export function bindToContainer(container: Container): void {
     container
         .bind(KAFKA_CONFIG_TOKEN)
         .toInstance(() => MovieServiceConfig.fromEnv().kafkaConfig)
+        .inSingletonScope();
+
+    container
+        .bind(BOOKING_SERVICE_CONFIG_TOKEN)
+        .toInstance(() => MovieServiceConfig.fromEnv().bookingServiceConfig)
         .inSingletonScope();
 }

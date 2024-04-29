@@ -4,6 +4,7 @@ import * as db from "../dataaccess/db";
 import * as elasticsearch from "../dataaccess/elasticsearch";
 import * as s3 from "../dataaccess/s3";
 import * as kafka from "../dataaccess/kafka";
+import * as grpc from "../dataaccess/grpc";
 import * as modules from "../module";
 import * as service from "../service";
 import * as utils from "../utils";
@@ -21,6 +22,7 @@ export async function startKafkaConsumer(dotenvPath: string): Promise<void> {
     elasticsearch.bindToContainer(container);
     s3.bindToContainer(container);
     kafka.bindToContainer(container);
+    grpc.bindToContainer(container);
     modules.bindToContainer(container);
     utils.bindToContainer(container);
     service.bindToContainer(container);
