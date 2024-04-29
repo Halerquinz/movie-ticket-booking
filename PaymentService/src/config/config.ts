@@ -5,6 +5,11 @@ import { LogConfig } from "./log";
 import { DistributedConfig } from "./distributed";
 import { ApplicationConfig } from "./application";
 import { ElasticsearchConfig } from "./elasticsearch";
+import { StripeConfig } from "./stripe";
+import { RedisConfig } from "./redis";
+import { KafkaConfig } from "./kafka";
+import { MovieServiceConfig } from "./movie_service";
+import { BookingServiceConfig } from "./booking_service";
 
 export class PaymentServiceConfig {
     public databaseConfig = new DatabaseConfig();
@@ -13,6 +18,11 @@ export class PaymentServiceConfig {
     public distributedConfig = new DistributedConfig();
     public applicationConfig = new ApplicationConfig();
     public elasticsearchConfig = new ElasticsearchConfig();
+    public stripeConfig = new StripeConfig();
+    public redisConfig = new RedisConfig();
+    public kafkaConfig = new KafkaConfig();
+    public movieService = new MovieServiceConfig();
+    public bookingService = new BookingServiceConfig();
 
     public static fromEnv(): PaymentServiceConfig {
         const config = new PaymentServiceConfig();
@@ -22,6 +32,11 @@ export class PaymentServiceConfig {
         config.distributedConfig = DistributedConfig.fromEnv();
         config.applicationConfig = ApplicationConfig.fromEnv();
         config.elasticsearchConfig = ElasticsearchConfig.fromEnv();
+        config.stripeConfig = StripeConfig.fromEnv();
+        config.redisConfig = RedisConfig.fromEnv();
+        config.kafkaConfig = KafkaConfig.fromEnv();
+        config.movieService = MovieServiceConfig.fromEnv();
+        config.bookingService = BookingServiceConfig.fromEnv();
         return config;
     }
 }
