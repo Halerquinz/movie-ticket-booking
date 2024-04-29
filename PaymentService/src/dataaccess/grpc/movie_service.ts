@@ -22,7 +22,8 @@ function loadMovieServiceProtoGrpc(protoPath: string): ProtoGrpcType {
         enums: Number,
         keepCase: false,
         defaults: false,
-        oneofs: true
+        oneofs: true,
+        longs: Number
     });
     const packageObject = loadPackageDefinition(packageDefinition) as unknown;
     return packageObject as ProtoGrpcType;

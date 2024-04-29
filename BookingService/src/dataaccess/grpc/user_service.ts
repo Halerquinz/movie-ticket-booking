@@ -20,9 +20,10 @@ export function getUserServiceDM(
 function loadUserServiceProtoGrpc(protoPath: string): ProtoGrpcType {
     const packageDefinition = loadSync(protoPath, {
         keepCase: false,
-        enums: String,
+        enums: Number,
         defaults: false,
         oneofs: true,
+        longs: Number
     });
     const userServicePackageDefinition = loadPackageDefinition(
         packageDefinition
