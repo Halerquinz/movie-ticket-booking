@@ -4,13 +4,12 @@ import * as elasticsearch from "../dataaccess/elasticsearch";
 import * as utils from "../utils";
 import * as db from "../dataaccess/db";
 import * as kafka from "../dataaccess/kafka";
-import * as grpc from "../dataaccess/grpc";
 import * as service from "../service";
 import * as payment from "../module/payment";
 import * as paymentServiceProvider from "../payment-service-provider";
 import dotenv from "dotenv";
 
-export async function startGRPCServer(dotenvPath: string): Promise<void> {
+export async function startWebhookServer(dotenvPath: string): Promise<void> {
     dotenv.config({
         path: dotenvPath
     });
@@ -21,11 +20,10 @@ export async function startGRPCServer(dotenvPath: string): Promise<void> {
     utils.bindToContainer(container);
     db.bindToContainer(container);
     kafka.bindToContainer(container);
-    grpc.bindToContainer(container);
     payment.bindToContainer(container);
     paymentServiceProvider.bindToContainer(container);
     service.bindToContainer(container);
 
-    const server = container.get(service.PAYMENT_SERVICE_GRPC_SERVER_TOKEN);
-    server.loadProtoAndStartServer("./src/proto/service/payment_service.proto");
+    const webhookServer = container.get(service.WEBHOOK_HTTP_SERVER_TOKEN);
+    webhookServer.start();
 }
