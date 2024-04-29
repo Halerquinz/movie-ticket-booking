@@ -5,7 +5,7 @@ service PaymentService {
     rpc CancelPaymentTransaction(CancelPaymentTransactionRequest) returns (CancelPaymentTransactionResponse) {}
 }
 
-message PaymenTransactionStatus {
+message PaymentTransactionStatus {
     enum Values {
         PENDING = 0;
         SUCCESS = 1;
@@ -19,7 +19,7 @@ message PaymentTransaction {
     uint32 amount = 3;
     uint64 request_time = 4;
     uint64 update_time = 5;
-    PaymenTransactionStatus.Values status = 6;
+    PaymentTransactionStatus.Values status = 6;
 }
 
 message CreatePaymentTransactionRequest {

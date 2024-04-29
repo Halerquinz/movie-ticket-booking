@@ -16,7 +16,6 @@ export class UserInfoProviderImpl implements UserInfoProvider {
         private readonly userServiceDM: UserServiceClient,
         private readonly logger: Logger
     ) { }
-
     public async getUser(userId: number): Promise<User | null> {
         const { error: getUserError, response: getUserResponse } = await promisifyGRPCCall(
             this.userServiceDM.getUser.bind(this.userServiceDM),

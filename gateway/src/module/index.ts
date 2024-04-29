@@ -14,6 +14,7 @@ import * as theaters from "./theaters";
 import * as seats from "./seats";
 import * as showtimes from "./showtimes";
 import * as bookings from "./bookings";
+import * as paymentTransactions from "./payment_transactions";
 
 export function bindToContainer(container: Container): void {
     schemas.bindToContainer(container);
@@ -30,4 +31,5 @@ export function bindToContainer(container: Container): void {
     seats.bindToContainer(container);
     showtimes.bindToContainer(container);
     bookings.bindToContainer(container);
+    paymentTransactions.bindToContainer(container);
 }

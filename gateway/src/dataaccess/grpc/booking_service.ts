@@ -5,7 +5,6 @@ import { BOOKING_SERVICE_CONFIG_TOKEN, BookingServiceConfig } from "../../config
 import { BookingServiceClient } from "../../proto/gen/BookingService";
 import { ProtoGrpcType } from "../../proto/gen/booking_service";
 
-
 export function getBookingServiceDM(bookingServiceConfig: BookingServiceConfig): BookingServiceClient {
     const bookingServiceProtoGrpc = loadBookingServiceProtoGrpc(bookingServiceConfig.protoPath);
     return new bookingServiceProtoGrpc.BookingService(
