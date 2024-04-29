@@ -1,12 +1,9 @@
-import { Knex } from "knex";
-import { Logger } from "winston";
-import { _BookingStatus_Values } from "../../proto/gen/BookingStatus";
-import { ErrorWithStatus, LOGGER_TOKEN, Timer } from "../../utils";
 import { status } from "@grpc/grpc-js";
 import { injected, token } from "brandi";
+import { Knex } from "knex";
+import { Logger } from "winston";
+import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 import { KNEX_INSTANCE_TOKEN } from "./knex";
-import { ApplicationConfig } from "../../config";
-import ms from "ms";
 
 export interface CreateBookingArguments {
     ofUserId: number,
@@ -14,14 +11,14 @@ export interface CreateBookingArguments {
     ofSeatId: number,
     bookingTime: number,
     bookingStatus: BookingStatus,
-    expireAt: number,
     amount: number
 }
 
 export enum BookingStatus {
-    PENDING = 0,
-    CONFIRMED = 1,
-    CANCEL = 2
+    INITIALIZING = 0,
+    PENDING = 1,
+    CONFIRMED = 2,
+    CANCEL = 3
 }
 
 export class Booking {
@@ -31,14 +28,17 @@ export class Booking {
         public ofShowtimeId: number,
         public ofSeatId: number,
         public bookingTime: number,
-        public expireAt: number,
         public bookingStatus: BookingStatus,
         public amount: number
     ) { }
 }
+
 export interface BookingDataAccessor {
     createBooking(args: CreateBookingArguments): Promise<number>;
     updateBooking(booking: Booking): Promise<void>;
+    getBookingWithStatus(id: number, userId: number, bookingStatus: BookingStatus): Promise<Booking | null>;
+    getBookingProcessingCount(showtimeId: number, seatId: number): Promise<number>;
+    getBookingConfirmedCount(showtimeId: number, seatId: number): Promise<number>;
     getBookingWithXLock(id: number): Promise<Booking | null>;
     withTransaction<T>(cb: (dataAccessor: BookingDataAccessor) => Promise<T>): Promise<T>;
 }
@@ -51,7 +51,6 @@ const ColNameMBookingServiceOfSeatId = "of_seat_id";
 const ColNameMBookingServiceBookingTime = "booking_time";
 const ColNameMBookingServiceBookingStatus = "booking_status";
 const ColNameMBookingServiceBookingAmount = "amount";
-const ColNameMBookingServiceBookingExpireAt = "expire_at";
 
 export class BookingDataAccessorImpl implements BookingDataAccessor {
     constructor(
@@ -68,7 +67,6 @@ export class BookingDataAccessorImpl implements BookingDataAccessor {
                     [ColNameMBookingServiceOfSeatId]: args.ofSeatId,
                     [ColNameMBookingServiceBookingTime]: args.bookingTime,
                     [ColNameMBookingServiceBookingStatus]: args.bookingStatus,
-                    [ColNameMBookingServiceBookingExpireAt]: args.expireAt,
                     [ColNameMBookingServiceBookingAmount]: args.amount
                 })
                 .returning(ColNameMBookingServiceBookingId)
@@ -101,12 +99,74 @@ export class BookingDataAccessorImpl implements BookingDataAccessor {
         }
     }
 
-    public async getBookingWithXLock(id: number): Promise<Booking | null> {
+
+    public async getBookingProcessingCount(showtimeId: number, seatId: number): Promise<number> {
+        try {
+            const rows = await this.knex
+                .count()
+                .from(TabNameBookingServiceBooking)
+                .where(ColNameMBookingServiceOfShowtimeId, "=", showtimeId)
+                .andWhere(ColNameMBookingServiceOfSeatId, "=", seatId)
+                .andWhere((qb) => {
+                    qb.where(ColNameMBookingServiceBookingStatus, "=", BookingStatus.INITIALIZING)
+                        .orWhere(ColNameMBookingServiceBookingStatus, "=", BookingStatus.PENDING)
+                });
+            return (rows[0] as any)["count"];
+        } catch (error) {
+            this.logger.error("failed to get booking processing count", { error });
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+    }
+
+    public async getBookingConfirmedCount(showtimeId: number, seatId: number): Promise<number> {
+        try {
+            const rows = await this.knex
+                .count()
+                .from(TabNameBookingServiceBooking)
+                .where(ColNameMBookingServiceOfShowtimeId, "=", showtimeId)
+                .andWhere(ColNameMBookingServiceOfSeatId, "=", seatId)
+                .andWhere(ColNameMBookingServiceBookingStatus, "=", BookingStatus.CONFIRMED);
+            return (rows[0] as any)["count"];
+        } catch (error) {
+            this.logger.error("failed to get booking confirmed count", { error });
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+    }
+
+    public async getBookingWithStatus(id: number, userId: number, bookingStatus: BookingStatus): Promise<Booking | null> {
         try {
             const rows = await this.knex
                 .select()
                 .from(TabNameBookingServiceBooking)
                 .where(ColNameMBookingServiceBookingId, "=", id)
+                .andWhere(ColNameMBookingServiceOfUserId, "=", userId)
+                .andWhere(ColNameMBookingServiceBookingStatus, "=", bookingStatus);
+            if (rows.length === 0) {
+                this.logger.debug("no booking with booking_id found", { bookingId: id });
+                return null;
+            }
+            if (rows.length > 1) {
+                this.logger.debug("more than one booking with booking_id found", { bookingId: id });
+                throw new ErrorWithStatus(
+                    `more than one booking with booking_id ${id} found`,
+                    status.INTERNAL
+                );
+            }
+            return this.getBookingFromRow(rows[0]);
+        } catch (error) {
+            this.logger.error("failed to get booking", { error });
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+    }
+
+    public async getBookingWithXLock(id: number): Promise<Booking | null> {
+        try {
+            const rows = await this.knex
+                .select()
+                .from(TabNameBookingServiceBooking)
+                .where({
+                    [ColNameMBookingServiceBookingId]: id
+                })
                 .forUpdate();
             if (rows.length === 0) {
                 this.logger.debug("no booking with booking_id found", { bookingId: id });
@@ -121,6 +181,7 @@ export class BookingDataAccessorImpl implements BookingDataAccessor {
             }
             return this.getBookingFromRow(rows[0]);
         } catch (error) {
+            console.log(error);
             this.logger.error("failed to get booking", { error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
@@ -140,7 +201,6 @@ export class BookingDataAccessorImpl implements BookingDataAccessor {
             +row[ColNameMBookingServiceOfShowtimeId],
             +row[ColNameMBookingServiceOfSeatId],
             +row[ColNameMBookingServiceBookingTime],
-            +row[ColNameMBookingServiceBookingExpireAt],
             +row[ColNameMBookingServiceBookingStatus],
             +row[ColNameMBookingServiceBookingAmount]
         );
@@ -149,4 +209,4 @@ export class BookingDataAccessorImpl implements BookingDataAccessor {
 
 injected(BookingDataAccessorImpl, KNEX_INSTANCE_TOKEN, LOGGER_TOKEN);
 
-export const BOOKING_ACCESSOR_TOKEN = token<BookingDataAccessor>("BookingDataAccessor"); 
+export const BOOKING_DATA_ACCESSOR_TOKEN = token<BookingDataAccessor>("BookingDataAccessor"); 
