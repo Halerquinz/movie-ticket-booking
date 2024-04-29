@@ -152,7 +152,13 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
         let rows;
         try {
             rows = await this.knex
-                .select()
+                .select([
+                    `${TabNameMovieServiceShowtimeTab}.*`,
+                    `${TabNameMovieServiceShowtimeDayOfTheWeek}.${ColNameMovieServiceShowtimeDayOfTheWeekDisplayName} as day_of_the_week_displayname`,
+                    `${TabNameMovieServiceShowtimeDayOfTheWeek}.${ColNameMovieServiceShowtimeDayOfTheWeekId}`,
+                    `${TabNameMovieServiceShowtimeSlot}.${ColNameMovieServiceShowtimeSlotDisplayName} as slot_displayname`,
+                    `${TabNameMovieServiceShowtimeSlot}.${ColNameMovieServiceShowtimeSlotId}`,
+                ])
                 .from(TabNameMovieServiceShowtimeTab)
                 .leftOuterJoin(
                     TabNameMovieServiceShowtimeDayOfTheWeek,
@@ -296,7 +302,7 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
         if (row[ColNameMovieServiceShowtimeOfShowtimeSlotId]) {
             showtimeSlot = new ShowtimeSlot(
                 +row[ColNameMovieServiceShowtimeOfShowtimeSlotId],
-                row[ColNameMovieServiceShowtimeSlotDisplayName]
+                row["slot_displayname"]
             )
         }
 
@@ -304,7 +310,7 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
         if (row[ColNameMovieServiceShowtimeOfShowtimeDayOfTheWeekId]) {
             showtimeDayOfTheWeek = new ShowtimeDayOfTheWeek(
                 +row[ColNameMovieServiceShowtimeOfShowtimeDayOfTheWeekId],
-                row[ColNameMovieServiceShowtimeDayOfTheWeekDisplayName]
+                row["day_of_the_week_displayname"]
             )
         }
 
