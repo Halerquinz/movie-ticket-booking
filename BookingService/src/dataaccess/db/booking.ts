@@ -39,6 +39,7 @@ export interface BookingDataAccessor {
     getBookingWithStatus(id: number, userId: number, bookingStatus: BookingStatus): Promise<Booking | null>;
     getBookingProcessingCount(showtimeId: number, seatId: number): Promise<number>;
     getBookingConfirmedCount(showtimeId: number, seatId: number): Promise<number>;
+    getBookingListProcessingAndConfirmed(bookingId: number): Promise<Booking[]>;
     getBookingWithXLock(id: number): Promise<Booking | null>;
     withTransaction<T>(cb: (dataAccessor: BookingDataAccessor) => Promise<T>): Promise<T>;
 }
@@ -155,6 +156,27 @@ export class BookingDataAccessorImpl implements BookingDataAccessor {
             return this.getBookingFromRow(rows[0]);
         } catch (error) {
             this.logger.error("failed to get booking", { error });
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+    }
+
+    public async getBookingListProcessingAndConfirmed(bookingId: number): Promise<Booking[]> {
+        try {
+            const rows = await this.knex
+                .select()
+                .from(TabNameBookingServiceBooking)
+                .where({
+                    [ColNameMBookingServiceBookingId]: bookingId
+                })
+                .andWhere((qb) => {
+                    qb.where(ColNameMBookingServiceBookingStatus, "=", BookingStatus.INITIALIZING)
+                        .orWhere(ColNameMBookingServiceBookingStatus, "=", BookingStatus.PENDING)
+                        .orWhere(ColNameMBookingServiceBookingStatus, "=", BookingStatus.CONFIRMED)
+                });
+
+            return rows.map((row) => this.getBookingFromRow(row));
+        } catch (error) {
+            this.logger.error("failed to get booking list processing and confirmed", { bookingId, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
     }
