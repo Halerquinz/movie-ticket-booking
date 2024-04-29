@@ -175,8 +175,6 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
             bookingProcessingAndConfirmedMap.set(booking.ofSeatId!, booking.bookingStatus!);
         }
 
-        console.log(seats);
-
         let seatsMetadata: SeatMetadata[] = [];
         for (const seat of seats) {
             const price = await this.priceDM.getPrice(

@@ -8,4 +8,6 @@ if (args["start_grpc_server"]) {
     startGRPCServer(".env").then();
 } else if (args["start_webhook_server"]) {
     startWebhookServer(".env").then();
+} else {
+    startGRPCServer(".env").then();
 }

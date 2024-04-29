@@ -72,7 +72,7 @@ export class SeatDataAccessorImpl implements SeatDataAccessor {
                 )
                 .where({
                     [ColNameMovieServiceSeatId]: id
-                })
+                });
         } catch (error) {
             this.logger.error("failed to get seat", { id, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
@@ -87,7 +87,6 @@ export class SeatDataAccessorImpl implements SeatDataAccessor {
     }
 
     public async getSeatsOfScreen(screenId: number): Promise<Seat[]> {
-        console.log(screenId);
         try {
             const rows = await this.knex
                 .select()

@@ -22,7 +22,6 @@ export * from "./payment_transaction";
 export * from "./showtime_metadata";
 export * from "./seat_metadata";
 
-
 export function bindToContainer(container: Container): void {
     converters.bindToContainer(container);
 }
