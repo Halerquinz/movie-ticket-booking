@@ -24,6 +24,7 @@ export class ScreenCreatedProducerImpl implements ScreenCreatedProducer {
         private readonly binaryConverter: BinaryConverter,
         private readonly logger: Logger
     ) { }
+
     public async createScreenCreatedMessage(message: ScreenCreated): Promise<void> {
         try {
             await this.producer.connect();

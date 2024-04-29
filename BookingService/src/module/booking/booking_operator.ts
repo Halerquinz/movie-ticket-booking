@@ -36,15 +36,14 @@ export class BookingOperatorImpl implements BookingOperator {
                 return;
             }
 
-            switch (paymentTransactionStatus) {
-                case PaymentTransactionStatus.CANCEL:
-                    booking.bookingStatus = BookingStatus.CANCEL
-                case PaymentTransactionStatus.SUCCESS:
-                    booking.bookingStatus = BookingStatus.CONFIRMED
+            if (paymentTransactionStatus == PaymentTransactionStatus.CANCEL) {
+                booking.bookingStatus = BookingStatus.CANCEL;
+            } else if (paymentTransactionStatus === PaymentTransactionStatus.SUCCESS) {
+                booking.bookingStatus = BookingStatus.CONFIRMED;
             }
 
             await bookingDM.updateBooking(booking);
-            this.logger.info("successfully updated booking status", { bookingId: bookingId, status: paymentTransactionStatus });
+            this.logger.info("successfully updated booking status", { bookingId: bookingId, status: booking.bookingStatus });
         });
     }
 
@@ -59,10 +58,11 @@ export class BookingOperatorImpl implements BookingOperator {
             if (booking.bookingStatus === BookingStatus.INITIALIZING) {
                 booking.bookingStatus = BookingStatus.CANCEL;
                 await bookingDM.updateBooking(booking);
+                this.logger.info("successfully to cancel booking", { bookingId: bookingId });
             }
         })
 
-        this.logger.info("successfully canceled booking", { bookingId: bookingId });
+        this.logger.info("successfully to check booking status after initialize", { bookingId: bookingId });
     }
 }
 

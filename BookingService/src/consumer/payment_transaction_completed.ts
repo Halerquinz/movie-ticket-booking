@@ -22,7 +22,7 @@ export class PaymentTransactionCompletedMessageHandlerImpl implements PaymentTra
 
     public async onPaymentTransactionCompleted(message: PaymentTransactionCompleted): Promise<void> {
         this.logger.info(
-            "payment_service_payment_transaction_created message received",
+            "payment_service_payment_transaction_completed message received",
             { payload: message }
         );
 
@@ -31,7 +31,10 @@ export class PaymentTransactionCompletedMessageHandlerImpl implements PaymentTra
             return;
         }
 
-        await this.bookingOperator.updateBookingStatusAfterPaymentTransactionCompleted(message.ofBookingId, message.paymentTransactionStatus);
+        await this.bookingOperator.updateBookingStatusAfterPaymentTransactionCompleted(
+            message.ofBookingId,
+            message.paymentTransactionStatus
+        );
     }
 }
 

@@ -1,3 +1,5 @@
+import { Booking as BookingProto } from "../../proto/gen/Booking"
+
 export enum BookingStatus {
     PENDING = 0,
     CONFIRMED = 1,
@@ -16,16 +18,16 @@ export class Booking {
         public amount: number
     ) { }
 
-    public static fromProto(BookingProto: any | undefined): Booking {
+    public static fromProto(bookingProto: BookingProto | undefined): Booking {
         return new Booking(
-            BookingProto?.id || 0,
-            BookingProto?.ofUserId || "",
-            BookingProto?.ofShowtimeId || "",
-            BookingProto?.ofSeatId || 0,
-            BookingProto?.bookingTime || 0,
-            BookingProto?.expireAt || null,
-            BookingProto?.bookingStatus,
-            BookingProto?.amount || null
+            bookingProto?.id || 0,
+            bookingProto?.ofUserId || 0,
+            bookingProto?.ofShowtimeId || 0,
+            bookingProto?.ofSeatId || 0,
+            bookingProto?.bookingTime as number || 0,
+            bookingProto?.expireAt as number || 0,
+            bookingProto?.bookingStatus as any,
+            bookingProto?.amount || 0
         )
     }
 }
