@@ -15,9 +15,11 @@ service MovieService {
    rpc DeleteScreenType(DeleteScreenTypeRequest) returns (DeleteScreenTypeResponse) {}
 
    rpc CreateTheater(CreateTheaterRequest) returns (CreateTheaterResponse) {}
+   rpc GetTheater(GetTheaterRequest) returns (GetTheaterResponse) {}
    rpc DeleteTheater(DeleteTheaterRequest) returns (DeleteTheaterResponse) {}
 
    rpc CreateScreen(CreateScreenRequest) returns (CreateScreenResponse) {}
+   rpc GetScreen(GetScreenRequest) returns (GetScreenResponse) {}
    rpc DeleteScreen(DeleteScreenRequest) returns (DeleteScreenResponse) {}
 
    rpc GetSeat(GetSeatRequest) returns (GetSeatResponse) {}
@@ -299,6 +301,14 @@ message CreateTheaterResponse {
     uint32 seat_count = 5;
 }
 
+message GetTheaterRequest {
+    uint32 theater_id = 1;
+}
+
+message GetTheaterResponse {
+    Theater theater = 1;
+}
+
 message DeleteTheaterRequest {
     uint32 id = 1;
 }
@@ -312,6 +322,15 @@ message CreateScreenRequest {
 }
 
 message CreateScreenResponse {
+    Screen screen = 1;
+}
+
+
+message GetScreenRequest {
+    uint32 screen_id = 1;
+}
+
+message GetScreenResponse {
     Screen screen = 1;
 }
 
