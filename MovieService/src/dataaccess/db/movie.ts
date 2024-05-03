@@ -269,7 +269,7 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
             .select()
             .from(TabNameMovieServiceMovieTab)
             .whereRaw(`${ColNameMovieServiceMovieFullTextSearchDocument} @@ plainto_tsquery (?)`, query)
-            .orderByRaw(`ts-rank(${ColNameMovieServiceMovieFullTextSearchDocument}, plainto_tsquery (?)) DESC`, query)
+            .orderByRaw(`ts_rank(${ColNameMovieServiceMovieFullTextSearchDocument}, plainto_tsquery (?)) DESC`, query)
             .limit(limit);
         try {
             const rows = await queryBuilder
