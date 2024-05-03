@@ -19,6 +19,7 @@ const MOVIES_POSTER_FIELD_UPLOAD_NAME = "poster";
 const MOVIES_POSTER_FIELD_UPLOAD_MAX_COUNT = 1;
 const MOVIES_IMAGE_LIST_FIELD_UPLOAD_NAME = "image_list";
 const MOVIES_IMAGE_LIST_FIELD_UPLOAD_MAX_COUNT = 10;
+const DEFAULT_GET_MOVIE_LIST_LIMIT = 10;
 
 export function getMoviesRouter(
     movieManagementOperator: MovieManagementOperator,
@@ -27,6 +28,8 @@ export function getMoviesRouter(
     uploadFileMiddlewareFactory: UploadFileMiddlewareFactory
 ): express.Router {
     const router = express.Router();
+
+    const userLoggedInAuthMiddleware = authMiddlewareFactory.getAuthMiddleware(() => true, true);
 
     const moviesManageAuthMiddleware = authMiddlewareFactory.getAuthMiddleware((authUserInfo) =>
         checkUserHasUserPermission(authUserInfo.userPermissionList, MOVIES_MANAGE_ALL_PERMISSION),
@@ -76,6 +79,19 @@ export function getMoviesRouter(
                 );
                 res.json(movie);
             }, next);
+        })
+    );
+
+    router.get(
+        "/api/movies/search",
+        userLoggedInAuthMiddleware,
+        asyncHandler(async (req, res) => {
+            const query = `${req.query.query || ""}`;
+            const limit = +(req.query.limit || DEFAULT_GET_MOVIE_LIST_LIMIT);
+            const movie_list = await movieManagementOperator.searchMovieList(query, limit);
+            res.json({
+                movie_list: movie_list,
+            });
         })
     );
 

@@ -28,6 +28,7 @@ export interface MovieManagementOperator {
     getCurrentShowingMovieList(): Promise<Movie[]>;
     getUpcomingMovieList(): Promise<Movie[]>;
     deleteMovie(id: number): Promise<void>;
+    searchMovieList(query: string, limit: number): Promise<Movie[]>;
 }
 
 export class MovieManagementOperatorImpl implements MovieManagementOperator {
@@ -156,6 +157,22 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
                 Movie.fromProto(movieProto)
             ) || []
         );
+    }
+
+    public async searchMovieList(query: string, limit: number): Promise<Movie[]> {
+        const { error: searchMovieError, response: searchMovieResponse } = await promisifyGRPCCall(
+            this.movieServiceDM.searchMovie.bind(this.movieServiceDM),
+            { query, limit }
+        );
+        if (searchMovieError !== null) {
+            this.logger.error("failed to call movie_service.searchMovie()", {
+                error: searchMovieError,
+            });
+            throw new ErrorWithHTTPCode("Failed to search movie list", getHttpCodeFromGRPCStatus(searchMovieError.code));
+        }
+
+        const movieProtoList = searchMovieResponse?.movieList || [];
+        return movieProtoList.map((movieProto) => Movie.fromProto(movieProto));
     }
 }
 
