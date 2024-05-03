@@ -56,6 +56,7 @@ export interface MovieManagementOperator {
     }>;
     getCurrentShowingMovieList(): Promise<Movie[]>;
     getUpcomingMovieList(): Promise<Movie[]>;
+    searchMovie(query: string, limit: number): Promise<Movie[]>;
     deleteMovie(id: number): Promise<void>;
 }
 
@@ -196,6 +197,13 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
         }
 
         return true;
+    }
+
+    public async searchMovie(query: string, limit: number): Promise<Movie[]> {
+        if (query == "") {
+            return [];
+        }
+        return await this.movieDM.searchMovie(query, limit);
     }
 
     public async deleteMovie(id: number): Promise<void> {

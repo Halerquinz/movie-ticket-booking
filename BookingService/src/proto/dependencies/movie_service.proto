@@ -36,6 +36,8 @@ service MovieService {
    rpc GetShowtimeMetadata(GetShowtimeMetadataRequest) returns (GetShowtimeMetadataResponse) {}
 
    rpc GetPrice(GetPriceRequest) returns (GetPriceResponse) {}
+
+   rpc SearchMovie(SearchMovieRequest) returns (SearchMovieResponse) {}
 }
 
 message MovieGenre {
@@ -454,4 +456,13 @@ message GetShowtimeMetadataRequest {
 
 message GetShowtimeMetadataResponse {
     ShowtimeMetadata showtime_metadata = 1;
+}
+
+message SearchMovieRequest {
+    string query = 1;
+    uint32 limit = 2;
+}
+
+message SearchMovieResponse {
+    repeated Movie movie_list = 1;
 }

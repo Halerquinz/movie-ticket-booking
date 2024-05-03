@@ -16,6 +16,8 @@ import { THEATER_MANAGEMENT_OPERATOR_TOKEN, TheaterManagementOperator } from "..
 import { MovieServiceHandlers } from "../proto/gen/MovieService";
 import { ErrorWithStatus } from "../utils";
 
+const DEFAULT_MOVIE_SEARCH_LIMIT = 10;
+
 export class MovieServiceHandlerFactory {
     constructor(
         private readonly movieGenreManagementOperator: MovieGenreManagementOperator,
@@ -485,6 +487,7 @@ export class MovieServiceHandlerFactory {
                     this.handleError(error, callback);
                 }
             },
+
             GetShowtimeMetadata: async (call, callback) => {
                 const req = call.request;
                 if (req.showtimeId === undefined) {
@@ -494,6 +497,24 @@ export class MovieServiceHandlerFactory {
                 try {
                     const showtimeMetadata = await this.showtimeManagementOperator.getShowtimeMetadata(req.showtimeId);
                     callback(null, { showtimeMetadata });
+                } catch (error) {
+                    this.handleError(error, callback);
+                }
+            },
+
+            SearchMovie: async (call, callback) => {
+                const req = call.request;
+                if (req.limit === undefined) {
+                    req.limit = DEFAULT_MOVIE_SEARCH_LIMIT;
+                }
+
+                if (req.query === undefined) {
+                    return callback({ message: "query is required", code: status.INVALID_ARGUMENT });
+                }
+
+                try {
+                    const movieList = await this.movieManagementOperator.searchMovie(req.query, req.limit);
+                    callback(null, { movieList });
                 } catch (error) {
                     this.handleError(error, callback);
                 }

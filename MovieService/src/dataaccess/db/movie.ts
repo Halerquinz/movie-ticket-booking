@@ -44,6 +44,7 @@ export interface MovieDataAccessor {
     getCurrentShowingMovieList(requestTime: number): Promise<Movie[]>;
     getUpcomingMovieList(requestTime: number): Promise<Movie[]>;
     getMovieByTitleWithXLock(title: string): Promise<Movie | null>;
+    searchMovie(query: string, limit: number): Promise<Movie[]>;
     withTransaction<T>(cb: (dataAccessor: MovieDataAccessor) => Promise<T>): Promise<T>;
 }
 
@@ -68,6 +69,8 @@ const ColNameMovieServiceMovieTrailerYoutubeLinkUrl = "youtube_link_url";
 const TabNameMovieServiceMovieTypeTab = "movie_service_movie_type_tab";
 const ColNameMovieServiceMovieTypeId = "movie_type_id";
 const ColNameMovieServiceMovieTypeDisplayname = "display_name";
+
+const ColNameMovieServiceMovieFullTextSearchDocument = "movie_full_text_search_document";
 
 export class MovieDataAccessorImpl implements MovieDataAccessor {
     constructor(
@@ -259,6 +262,26 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
         }
 
         return this.getMovieFromRow(rows[0]);
+    }
+
+    public async searchMovie(query: string, limit: number): Promise<Movie[]> {
+        let queryBuilder = this.knex
+            .select()
+            .from(TabNameMovieServiceMovieTab)
+            .whereRaw(`${ColNameMovieServiceMovieFullTextSearchDocument} @@ plainto_tsquery (?)`, query)
+            .orderByRaw(`ts-rank(${ColNameMovieServiceMovieFullTextSearchDocument}, plainto_tsquery (?)) DESC`, query)
+            .limit(limit);
+        try {
+            const rows = await queryBuilder
+            return rows.map((row: Record<string, any>) => this.getMovieFromRow(row));
+        } catch (error) {
+            this.logger.error("get movie list fail", {
+                query,
+                limit,
+                error
+            });
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
     }
 
     public async withTransaction<T>(cb: (dataAccessor: MovieDataAccessor) => Promise<T>): Promise<T> {
