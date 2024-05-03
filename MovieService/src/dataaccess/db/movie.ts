@@ -70,7 +70,7 @@ const TabNameMovieServiceMovieTypeTab = "movie_service_movie_type_tab";
 const ColNameMovieServiceMovieTypeId = "movie_type_id";
 const ColNameMovieServiceMovieTypeDisplayname = "display_name";
 
-const ColNameMovieServiceMovieFullTextSearchDocument = "movie_full_text_search_document";
+const ColNameMovieServiceMovieFullTextSearchDocument = "full_text_search_document";
 
 export class MovieDataAccessorImpl implements MovieDataAccessor {
     constructor(
