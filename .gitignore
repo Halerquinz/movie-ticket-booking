@@ -1,3 +1,8 @@
-minio-data/
+minio-data
+elk-data
+db-data
+zookeeper-data
+kafka-data
+redis-data
 Web
-elk-data/
+config
