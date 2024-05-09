@@ -39,8 +39,6 @@ export class PaymentTransactionManagementOperatorImpl implements PaymentTransact
             this.getBookingWithStatus(bookingId, userId, BookingStatus.INITIALIZING),
             this.paymentTransactionDM.getPaymentTransactionByBookingIdWithStatusPending(bookingId)
         ])
-        // const booking = await this.getBookingWithStatus(bookingId, userId, BookingStatus.INITIALIZING);
-        // const paymentTransaction = await this.paymentTransactionDM.getPaymentTransactionByBookingIdWithXLock(bookingId);
         const booking = dmResults[0];
         const paymentTransaction = dmResults[1];
 

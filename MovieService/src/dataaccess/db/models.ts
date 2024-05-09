@@ -1,5 +1,3 @@
-import { _ShowtimeType_Values } from "../../proto/gen/ShowtimeType";
-
 export class MovieGenre {
     constructor(
         public id: number,

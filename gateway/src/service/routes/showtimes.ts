@@ -12,7 +12,7 @@ import {
 } from "../utils";
 import { BOOKING_MANAGEMENT_OPERATOR_TOKEN, BookingManagementOperator } from "../../module/bookings";
 
-const SHOWTIMES_MANAGE_ALL_PERMISSION = "theaters.manage";
+const SHOWTIMES_MANAGE_ALL_PERMISSION = "showtimes.manage";
 
 export function getShowtimesRouter(
     showtimeManagementOperator: ShowtimeManagementOperator,

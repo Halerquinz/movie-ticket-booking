@@ -38,7 +38,7 @@ export async function up(knex: Knex): Promise<void> {
         CREATE TRIGGER check_showtime_overlap
             BEFORE INSERT ON public.${TabNameMovieServiceShowtime}
             FOR EACH ROW
-            EXECUTE PROCEDURE check_showtime_overlap()
+            EXECUTE PROCEDURE check_showtime_overlap();
     `)
 }
 

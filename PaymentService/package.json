@@ -1,7 +1,7 @@
 {
-  "name": "movie_service",
+  "name": "payment_service",
   "version": "1.0.0",
-  "description": "movie_service for movie_ticket_booking",
+  "description": "payment_service of movie_ticket_booking project",
   "main": "main.ts",
   "scripts": {
     "api-knex": "TS_NODE_COMPILER_OPTIONS='{ \"module\": \"commonjs\" }' knex --knexfile=./knexfile.ts",

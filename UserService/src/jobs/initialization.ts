@@ -1,5 +1,13 @@
 import { Logger } from "winston";
-import { UserDataAccessor, UserRoleDataAccessor, UserPermissionDataAccessor, UserListFilterOptions, USER_DATA_ACCESSOR_TOKEN, USER_PERMISSION_DATA_ACCESSOR_TOKEN, USER_ROLE_DATA_ACCESSOR_TOKEN } from "../dataaccess/db";
+import {
+    UserDataAccessor,
+    UserRoleDataAccessor,
+    UserPermissionDataAccessor,
+    UserListFilterOptions,
+    USER_DATA_ACCESSOR_TOKEN,
+    USER_PERMISSION_DATA_ACCESSOR_TOKEN,
+    USER_ROLE_DATA_ACCESSOR_TOKEN
+} from "../dataaccess/db";
 import { USER_PASSWORD_MANAGEMENT_OPERATOR_TOKEN, UserPasswordManagementOperator } from "../module/password";
 import { USER_PERMISSION_MANAGEMENT_OPERATOR_TOKEN, UserPermissionManagementOperator } from "../module/permission";
 import { USER_ROLE_MANAGEMENT_OPERATOR_TOKEN, UserRoleManagementOperator } from "../module/role";
