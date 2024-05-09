@@ -1,10 +1,10 @@
 module.exports = {
     apps: [
         {
-            name: "user_service",
+            name: "user_service_grpc_server",
             script: "./dist/main.js",
             args: " --start_grpc_server",
-            instances: 5,
+            instances: 2,
             instance_var: "NODE_ID",
         },
     ],
