@@ -6,3 +6,4 @@ kafka-data
 redis-data
 Web
 config
+.DS_Store
