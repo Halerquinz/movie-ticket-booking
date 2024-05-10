@@ -4,7 +4,8 @@ import { BOOKING_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
 import { BookingServiceClient } from "../../proto/gen/BookingService";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGRPCCall, } from "../../utils";
 import { AuthenticatedUserInformation } from "../../service/utils";
-import { Booking } from "../schemas";
+import { Booking, BookingMetadata, BookingStatus } from "../schemas";
+
 
 export interface BookingManagementOperator {
     createBooking(
@@ -13,6 +14,12 @@ export interface BookingManagementOperator {
         seatId: number,
         amount: number,
     ): Promise<Booking>;
+    getBookingList(
+        authenticatedUserInfo: AuthenticatedUserInformation,
+        offset: number,
+        limit: number,
+        bookingStatus: BookingStatus
+    ): Promise<BookingMetadata[]>
 }
 
 export class BookingManagementOperatorImpl implements BookingManagementOperator {
@@ -38,6 +45,25 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
         }
 
         return Booking.fromProto(createBookingResponse?.booking);
+    }
+
+    public async getBookingList(
+        authenticatedUserInfo: AuthenticatedUserInformation,
+        offset: number,
+        limit: number,
+        bookingStatus: BookingStatus
+    ): Promise<BookingMetadata[]> {
+        const { error: getBookingListError, response: getBookingListResponse } = await promisifyGRPCCall(
+            this.bookingServiceDM.getBookingList.bind(this.bookingServiceDM),
+            { userId: authenticatedUserInfo.user.id, bookingStatus, limit, offset }
+        );
+
+        if (getBookingListError !== null) {
+            this.logger.error("failed to call booking_service.getBookingList()", { error: getBookingListError });
+            throw new ErrorWithHTTPCode("failed to get booking list", getHttpCodeFromGRPCStatus(getBookingListError.code));
+        }
+
+        return getBookingListResponse?.bookingList?.map((booking) => BookingMetadata.fromProto(booking)) || [];
     }
 }
 

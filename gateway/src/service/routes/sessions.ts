@@ -12,10 +12,14 @@ import {
     getCookieOptions
 } from "../utils";
 import { PAYMENT_TRANSACTION_MANAGEMENT_OPERATOR_TOKEN, PaymentTransactionManagementOperator } from "../../module/payment_transactions";
+import { BOOKING_MANAGEMENT_OPERATOR_TOKEN, BookingManagementOperator } from "../../module/bookings";
+
+const DEFAULT_GET_BOOKING_LIST_LIMIT = 10;
 
 export function getSessionsRouter(
     sessionManagementOperator: SessionManagementOperator,
     paymentTransactionManagementOperator: PaymentTransactionManagementOperator,
+    bookingManagementOperator: BookingManagementOperator,
     authMiddlewareFactory: AuthMiddlewareFactory,
     errorHandlerMiddlewareFactory: ErrorHandlerMiddlewareFactory
 ): express.Router {
@@ -73,6 +77,25 @@ export function getSessionsRouter(
         })
     )
 
+    router.get("/api/sessions/user/bookings",
+        userLoggedInAuthMiddleware,
+        asyncHandler(async (req, res, next) => {
+            errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
+                const authenticatedUserInformation = res.locals.authenticatedUserInformation as AuthenticatedUserInformation;
+                const offset = +(req.query.offset || 0);
+                const limit = +(req.query.limit || DEFAULT_GET_BOOKING_LIST_LIMIT);
+                const bookingStatus = +(req.query.status || 0);
+                const bookingList = await bookingManagementOperator.getBookingList(
+                    authenticatedUserInformation,
+                    offset,
+                    limit,
+                    bookingStatus
+                );
+                res.json({ bookingList: bookingList });
+            }, next);
+        })
+    )
+
     router.delete(
         "/api/sessions",
         userLoggedInAuthMiddlewareWithoutTokenRefresh,
@@ -93,6 +116,7 @@ injected(
     getSessionsRouter,
     SESSION_MANAGEMENT_OPERATOR_TOKEN,
     PAYMENT_TRANSACTION_MANAGEMENT_OPERATOR_TOKEN,
+    BOOKING_MANAGEMENT_OPERATOR_TOKEN,
     AUTH_MIDDLEWARE_FACTORY_TOKEN,
     ERROR_HANDLER_MIDDLEWARE_FACTORY_TOKEN
 );

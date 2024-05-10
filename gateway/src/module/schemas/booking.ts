@@ -18,7 +18,7 @@ export class Booking {
         public amount: number
     ) { }
 
-    public static fromProto(bookingProto: BookingProto | undefined): Booking {
+    public static fromProto(bookingProto: BookingProto | undefined | null): Booking {
         return new Booking(
             bookingProto?.id || 0,
             bookingProto?.ofUserId || 0,
