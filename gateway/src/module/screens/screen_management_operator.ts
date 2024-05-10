@@ -31,7 +31,7 @@ export class ScreenManagementOperatorImpl implements ScreenManagementOperator {
             throw new ErrorWithHTTPCode("failed to create screen", getHttpCodeFromGRPCStatus(createScreenError.code));
         }
 
-        return Screen.fromProto(createScreenResponse);
+        return Screen.fromProto(createScreenResponse?.screen);
     }
 
     public async deleteScreen(id: number): Promise<void> {
