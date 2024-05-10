@@ -5,6 +5,7 @@ service BookingService {
     rpc GetBookingWithStatus(GetBookingWithStatusRequest) returns (GetBookingWithStatusResponse) {}
     rpc UpdateBookingStatusFromInitializingToPending(UpdateBookingStatusFromInitializingToPendingRequest) returns (UpdateBookingStatusFromInitializingToPendingResponse) {}
     rpc GetBookingListProcessingAndConfirmedByShowtimeId(GetBookingListProcessingAndConfirmedByShowtimeIdRequest) returns (GetBookingListProcessingAndConfirmedByShowtimeIdResponse) {}
+    rpc GetBookingList(GetBookingListRequest) returns (GetBookingListResponse) {}
 }
 
 message BookingStatus {
@@ -60,4 +61,116 @@ message GetBookingListProcessingAndConfirmedByShowtimeIdRequest {
 
 message GetBookingListProcessingAndConfirmedByShowtimeIdResponse {
     repeated Booking booking_list = 1;
+}
+
+
+message Theater {
+    uint32 id = 1;
+    string display_name = 2;
+    string location = 3;
+    uint32 screen_count = 4;
+    uint32 seat_count = 5;
+}
+
+message ShowtimeDayOfTheWeek {
+    uint32 id = 1;
+    string display_name = 2;
+}
+
+message ShowtimeSlot {
+    uint32 id = 1;
+    string display_name = 2;
+}
+
+message Showtime {
+    uint32 id = 1;
+    uint32 of_movie_id = 2;
+    uint32 of_screen_id = 3;
+    uint64 time_start = 4;
+    uint64 time_end = 5;
+    ShowtimeSlot showtime_slot = 6;
+    ShowtimeDayOfTheWeek showtime_day_of_the_week = 7;
+}
+
+message ScreenType {
+    uint32 id = 1 ;
+    string display_name = 2;
+    string description = 3;
+    uint32 seat_count = 4;
+    uint32 row_count = 5;
+    uint32 seat_of_row_count = 6;
+}
+message Screen {
+    uint32 id = 1;
+    uint32 of_theater_id = 2;
+    ScreenType screen_type = 3;
+    string display_name = 4;
+}
+
+message SeatType {
+    uint32 id = 1;
+    string display_name = 2;
+}
+
+message Seat {
+    uint32 id = 1;
+    SeatType seat_type = 2;
+    uint32 of_screen_id = 3;
+    uint32 column = 4;
+    string row = 5;
+    string no = 6;
+}
+
+message MovieType {
+    uint32 id = 1;
+    string display_name = 2;
+}
+
+message MovieImage {
+    uint32 id = 1;
+    uint32 of_movie_id = 2;
+    string original_file_name = 3;
+    string original_image_file_name = 4;
+}
+
+message MoviePoster {
+    uint32 of_movie_id = 1;
+    string original_file_name = 2;
+    string original_image_file_name = 3;
+}
+
+message MovieTrailer {
+    uint32 of_movie_id = 1;
+    string youtube_link_url = 2;
+}
+
+message Movie {
+    uint32 id = 1;
+    string title = 2;
+    string description = 3;
+    uint32 duration = 4;
+    uint64 release_date = 5;
+    MoviePoster poster = 6;
+    MovieTrailer trailer = 7;
+    MovieType movie_type = 8;
+}
+
+message BookingMetadata {
+    Booking booking = 1;
+    Theater theater = 2;
+    Screen screen = 3;
+    Showtime showtime = 4;
+    Movie movie = 5;
+    Seat seat = 6;
+}
+
+message GetBookingListRequest {
+    uint32 user_id = 1;
+    BookingStatus.Values bookingStatus = 2;
+    uint32 offset = 3;
+    uint32 limit = 4;
+}
+
+message GetBookingListResponse {
+    repeated BookingMetadata bookingList = 1;
 }
