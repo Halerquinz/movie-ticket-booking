@@ -15,7 +15,9 @@ export async function up(knex: Knex): Promise<void> {
             table.integer("amount").notNullable();
 
             table.unique(["of_showtime_id", "of_seat_id", "booking_time"]);
+
             table.index(["booking_status", "of_seat_id", "of_showtime_id"], "booking_service_booking_seat_with_status_idx");
+            table.index(["booking_status", "of_user_id"], "booking_service_booking_of_user_id_idx");
             table.index(["booking_status"], "booking_service_booking_status_idx");
         });
     }
