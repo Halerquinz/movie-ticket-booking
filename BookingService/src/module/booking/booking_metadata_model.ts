@@ -4,6 +4,13 @@ import { ShowtimeDayOfTheWeek as ShowtimeDayOfTheWeekProto } from "../../proto/g
 import { Seat as SeatProto } from "../../proto/gen/Seat";
 import { SeatType as SeatTypeProto } from "../../proto/gen/SeatType";
 import { Price as PriceProto } from "../../proto/gen/Price";
+import { ScreenType as ScreenTypeProto } from "../../proto/gen/ScreenType";
+import { Screen as ScreenProto } from "../../proto/gen/Screen";
+import { Theater as TheaterProto } from "../../proto/gen/Theater";
+import { MoviePoster } from "../../proto/gen/MoviePoster";
+import { MovieTrailer } from "../../proto/gen/MovieTrailer";
+import { Movie as MovieProto } from "../../proto/gen/Movie";
+import { Booking } from "../../dataaccess/db";
 
 export class ShowtimeSlot {
     constructor(
@@ -63,7 +70,7 @@ export class Showtime {
 export class SeatType {
     constructor(
         public id: SeatTypeId,
-        public displayName: String
+        public displayName: string
     ) { }
 
     public static fromProto(seatTypeProto: SeatTypeProto | undefined | null): SeatType {
@@ -122,4 +129,118 @@ export class Price {
             priceProto?.price || 0
         );
     }
+}
+
+export class MovieType {
+    constructor(
+        public id: number,
+        public display_name: string
+    ) { }
+
+    public static fromProto(MovieGenreProto: any | undefined | null): MovieType {
+        return new MovieType(
+            MovieGenreProto?.id || 0,
+            MovieGenreProto?.displayName || "",
+        );
+    }
+}
+
+
+export class Movie {
+    constructor(
+        public id: number,
+        public title: string,
+        public description: string,
+        public duration: number,
+        public releaseDate: number,
+        public trailer: MovieTrailer | null,
+        public poster: MoviePoster | null,
+        public movieType: MovieType | null,
+    ) { }
+
+    public static fromProto(movieProto: MovieProto | undefined | null): Movie {
+        const movieType = MovieType.fromProto(movieProto?.movieType);
+        return new Movie(
+            movieProto?.id || 0,
+            movieProto?.title || "",
+            movieProto?.description || "",
+            movieProto?.duration || 0,
+            movieProto?.releaseDate as number || 0,
+            movieProto?.trailer || null,
+            movieProto?.poster || null,
+            movieType
+        );
+    }
+}
+
+export class Theater {
+    constructor(
+        public id: number,
+        public displayName: string,
+        public location: string,
+        public screenCount: number,
+        public seatCount: number,
+    ) { }
+
+    public static fromProto(theaterProto: TheaterProto | undefined | null): Theater {
+        return new Theater(
+            theaterProto?.id || 0,
+            theaterProto?.displayName || "",
+            theaterProto?.location || "",
+            theaterProto?.screenCount || 0,
+            theaterProto?.seatCount || 0,
+        );
+    }
+}
+
+export class Screen {
+    constructor(
+        public id: number,
+        public ofTheaterId: number,
+        public screenType: ScreenType | null,
+        public displayName: string
+    ) { }
+
+    public static fromProto(screenProto: ScreenProto | undefined | null): Screen {
+        const screenType = ScreenType.fromProto(screenProto?.screenType);
+        return new Screen(
+            screenProto?.id || 0,
+            screenProto?.ofTheaterId || 0,
+            screenType,
+            screenProto?.displayName || ""
+        );
+    }
+}
+
+export class ScreenType {
+    constructor(
+        public id: number,
+        public displayName: string,
+        public description: string,
+        public seatCount: number,
+        public rowCount: number,
+        public seatOfRowCount: number
+    ) { }
+
+    public static fromProto(screenTypeProto: ScreenTypeProto | undefined | null): ScreenType {
+        return new ScreenType(
+            screenTypeProto?.id || 0,
+            screenTypeProto?.displayName || "",
+            screenTypeProto?.description || "",
+            screenTypeProto?.seatCount || 0,
+            screenTypeProto?.rowCount || 0,
+            screenTypeProto?.seatOfRowCount || 0
+        );
+    }
+}
+
+export class BookingMetadata {
+    constructor(
+        public booking: Booking,
+        public theater: Theater,
+        public screen: Screen,
+        public showtime: Showtime,
+        public movie: Movie,
+        public seat: Seat
+    ) { }
 }

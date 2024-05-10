@@ -39,6 +39,7 @@ export interface BookingDataAccessor {
     getBookingWithStatus(id: number, userId: number, bookingStatus: BookingStatus): Promise<Booking | null>;
     getBookingProcessingCount(showtimeId: number, seatId: number): Promise<number>;
     getBookingConfirmedCount(showtimeId: number, seatId: number): Promise<number>;
+    getBookingList(userId: number, bookingStatus: BookingStatus, offset: number, limit: number): Promise<Booking[]>;
     getBookingListProcessingAndConfirmedByShowtimeId(showtimeId: number): Promise<Booking[]>;
     getBookingWithXLock(id: number): Promise<Booking | null>;
     withTransaction<T>(cb: (dataAccessor: BookingDataAccessor) => Promise<T>): Promise<T>;
@@ -156,6 +157,33 @@ export class BookingDataAccessorImpl implements BookingDataAccessor {
             return this.getBookingFromRow(rows[0]);
         } catch (error) {
             this.logger.error("failed to get booking", { error });
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+    }
+
+
+    public async getBookingList(
+        userId: number,
+        bookingStatus: BookingStatus,
+        offset: number,
+        limit: number
+    ): Promise<Booking[]> {
+        try {
+            const rows = await this.knex
+                .select()
+                .from(TabNameBookingServiceBooking)
+                .where({
+                    [ColNameMBookingServiceOfUserId]: userId
+                })
+                .andWhere({
+                    [ColNameMBookingServiceBookingStatus]: bookingStatus
+                })
+                .offset(offset)
+                .limit(limit);
+
+            return rows.map((row) => this.getBookingFromRow(row));
+        } catch (error) {
+            this.logger.error("failed to get booking list", { userId, bookingStatus, offset, limit, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
     }

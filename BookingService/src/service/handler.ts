@@ -89,7 +89,37 @@ export class BookingServiceHandlersFactory {
                 } catch (error) {
                     this.handleError(error, callback);
                 }
+            },
+
+            GetBookingList: async (call, callback) => {
+                const req = call.request;
+                if (req.userId === undefined) {
+                    return callback({ message: "user id is required", code: status.INVALID_ARGUMENT });
+                }
+                if (req.limit === undefined) {
+                    return callback({ message: "limit id is required", code: status.INVALID_ARGUMENT });
+                }
+                if (req.bookingStatus === undefined) {
+                    return callback({ message: "booking status is required", code: status.INVALID_ARGUMENT }); req.offset = 0;
+                }
+
+                if (req.offset === undefined) {
+                    req.offset = 0;
+                }
+
+                try {
+                    const bookingList = await this.bookingManagementOperator.getBookingList(
+                        req.userId,
+                        req.offset,
+                        req.limit,
+                        req.bookingStatus as any
+                    );
+                    callback(null, { bookingList: bookingList as any });
+                } catch (error) {
+                    this.handleError(error, callback);
+                }
             }
+
         }
 
         return handler;
