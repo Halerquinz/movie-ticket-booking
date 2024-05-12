@@ -5,5 +5,5 @@ zookeeper-data
 kafka-data
 redis-data
 Web
-config
+config/*.env
 .DS_Store
