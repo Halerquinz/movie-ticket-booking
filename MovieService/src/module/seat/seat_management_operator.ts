@@ -65,13 +65,24 @@ export class SeatManagementOperatorImpl implements SeatManagementOperator {
                         no = `${seatRowNameAlphaMap.get(i)}0${j}`
                     }
 
-                    await seatDM.createSeat({
-                        ofScreenId: screenId,
-                        row: seatRowNameAlphaMap.get(i),
-                        ofSeatTypeId: SeatTypeId.NORMAL,
-                        column: j,
-                        no: no
-                    })
+                    // All seats in rows C, D, E, and F are VIP type
+                    if (i > 2 && i < 7) {
+                        await seatDM.createSeat({
+                            ofScreenId: screenId,
+                            row: seatRowNameAlphaMap.get(i),
+                            ofSeatTypeId: SeatTypeId.VIP,
+                            column: j,
+                            no: no
+                        })
+                    } else {
+                        await seatDM.createSeat({
+                            ofScreenId: screenId,
+                            row: seatRowNameAlphaMap.get(i),
+                            ofSeatTypeId: SeatTypeId.NORMAL,
+                            column: j,
+                            no: no
+                        })
+                    }
                 }
             }
         })
