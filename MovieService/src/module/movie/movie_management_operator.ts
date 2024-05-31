@@ -52,10 +52,10 @@ export interface MovieManagementOperator {
     getMovie(id: number): Promise<{
         movie: Movie,
         genreList: MovieGenre[] | undefined,
-        imageList: MovieImage[] | undefined
+        imageList: MovieImage[] | undefined;
     }>;
-    getCurrentShowingMovieList(): Promise<Movie[]>;
-    getUpcomingMovieList(): Promise<Movie[]>;
+    getCurrentShowingMovieList(offset: number, limit: number): Promise<Movie[]>;
+    getUpcomingMovieList(offset: number, limit: number): Promise<Movie[]>;
     searchMovie(query: string, limit: number): Promise<Movie[]>;
     deleteMovie(id: number): Promise<void>;
 }
@@ -142,7 +142,7 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
                 image.originalFileName,
                 image.imageData
             ))
-        )
+        );
 
         await this.moviePosterOperator.createPoster(
             createdMovie.movieId,
@@ -158,7 +158,7 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
             }
 
             await movieTrailerDM.createMovieTrailer(createdMovie.movieId, trailer);
-        })
+        });
 
         return {
             id: createdMovie.movieId,
@@ -168,7 +168,7 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
     public async getMovie(id: number): Promise<{
         movie: Movie,
         genreList: MovieGenre[] | undefined,
-        imageList: MovieImage[] | undefined
+        imageList: MovieImage[] | undefined;
     }> {
         const movie = await this.movieDM.getMovieById(id);
         if (movie === null) {
@@ -210,14 +210,14 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
         return this.movieDM.deleteMovie(id);
     }
 
-    public async getCurrentShowingMovieList(): Promise<Movie[]> {
+    public async getCurrentShowingMovieList(offset: number, limit: number): Promise<Movie[]> {
         const requestTime = this.timer.getCurrentTime();
-        return await this.movieDM.getCurrentShowingMovieList(requestTime);
+        return await this.movieDM.getCurrentShowingMovieList(requestTime, offset, limit);
     }
 
-    public async getUpcomingMovieList(): Promise<Movie[]> {
+    public async getUpcomingMovieList(offset: number, limit: number): Promise<Movie[]> {
         const requestTime = this.timer.getCurrentTime();
-        return await this.movieDM.getUpcomingMovieList(requestTime);
+        return await this.movieDM.getUpcomingMovieList(requestTime, offset, limit);
     }
 
     private sanitizeTitle(title: string): string {

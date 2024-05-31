@@ -7,6 +7,7 @@ import { PosterInfo } from "../../proto/gen/PosterInfo";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGRPCCall, } from "../../utils";
 import { Movie, MovieGenre, MovieImage } from "../schemas";
 import { IMAGE_PROTO_TO_IMAGE_CONVERTER_TOKEN, ImageProtoToImageConverter, POSTER_PROTO_TO_POSTER_CONVERTER_TOKEN, PosterProtoToPosterConverter } from "../schemas/converters";
+import { Movie as MovieProto } from "../../proto/gen/Movie";
 
 export interface MovieManagementOperator {
     createMovie(
@@ -23,10 +24,10 @@ export interface MovieManagementOperator {
     getMovie(id: number): Promise<{
         movie: Movie,
         genreList: MovieGenre[] | undefined,
-        imageList: MovieImage[] | undefined
+        imageList: MovieImage[] | undefined;
     }>;
-    getCurrentShowingMovieList(): Promise<Movie[]>;
-    getUpcomingMovieList(): Promise<Movie[]>;
+    getCurrentShowingMovieList(offset: number, limit: number): Promise<Movie[]>;
+    getUpcomingMovieList(offset: number, limit: number): Promise<Movie[]>;
     deleteMovie(id: number): Promise<void>;
     searchMovieList(query: string, limit: number): Promise<Movie[]>;
 }
@@ -88,9 +89,9 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
         }
     }
 
-    public async getCurrentShowingMovieList(): Promise<Movie[]> {
+    public async getCurrentShowingMovieList(offset: number, limit: number): Promise<Movie[]> {
         const { error: getCurrentShowingMovieListError, response: getCurrentShowingMovieListResponse } = await promisifyGRPCCall(
-            this.movieServiceDM.getCurrentShowingMovieList.bind(this.movieServiceDM), {}
+            this.movieServiceDM.getCurrentShowingMovieList.bind(this.movieServiceDM), { offset, limit }
         );
 
         if (getCurrentShowingMovieListError !== null) {
@@ -101,9 +102,18 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
             );
         }
 
+        if (getCurrentShowingMovieListResponse?.movieList === undefined) return [];
+
+        let movieListProto = getCurrentShowingMovieListResponse?.movieList as any;
+        movieListProto = await Promise.all(movieListProto.map(async (movieProto: any) => {
+            movieProto.poster = await this.posterProtoToPosterConverter.convert(movieProto?.poster);
+            return movieProto;
+        }));
+
         return (
-            getCurrentShowingMovieListResponse?.movieList?.map((movieProto) =>
-                Movie.fromProto(movieProto)
+            movieListProto.map((movieProto: MovieProto) => {
+                return Movie.fromProto(movieProto);
+            }
             ) || []
         );
     }
@@ -111,7 +121,7 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
     public async getMovie(id: number): Promise<{
         movie: Movie,
         genreList: MovieGenre[] | undefined,
-        imageList: MovieImage[] | undefined
+        imageList: MovieImage[] | undefined;
     }> {
         const { error: getMovieError, response: getMovieResponse } = await promisifyGRPCCall(
             this.movieServiceDM.getMovie.bind(this.movieServiceDM), { id }
@@ -139,9 +149,9 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
         };
     }
 
-    public async getUpcomingMovieList(): Promise<Movie[]> {
+    public async getUpcomingMovieList(offset: number, limit: number): Promise<Movie[]> {
         const { error: getUpcomingMovieListError, response: getUpcomingMovieListResponse } = await promisifyGRPCCall(
-            this.movieServiceDM.getUpcomingMovieList.bind(this.movieServiceDM), {}
+            this.movieServiceDM.getUpcomingMovieList.bind(this.movieServiceDM), { offset, limit }
         );
 
         if (getUpcomingMovieListError !== null) {
@@ -152,9 +162,18 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
             );
         }
 
+        if (getUpcomingMovieListResponse?.movieList === undefined) return [];
+
+        let movieListProto = getUpcomingMovieListResponse?.movieList as any;
+        movieListProto = await Promise.all(movieListProto.map(async (movieProto: any) => {
+            movieProto.poster = await this.posterProtoToPosterConverter.convert(movieProto?.poster);
+            return movieProto;
+        }));
+
         return (
-            getUpcomingMovieListResponse?.movieList?.map((movieProto) =>
-                Movie.fromProto(movieProto)
+            movieListProto.map((movieProto: MovieProto) => {
+                return Movie.fromProto(movieProto);
+            }
             ) || []
         );
     }

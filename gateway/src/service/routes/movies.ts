@@ -20,6 +20,9 @@ const MOVIES_POSTER_FIELD_UPLOAD_MAX_COUNT = 1;
 const MOVIES_IMAGE_LIST_FIELD_UPLOAD_NAME = "image_list";
 const MOVIES_IMAGE_LIST_FIELD_UPLOAD_MAX_COUNT = 10;
 const DEFAULT_GET_MOVIE_LIST_LIMIT = 10;
+const DEFAULT_GET_UPCOMING_MOVIE_LIST_LIMIT = 5;
+const DEFAULT_GET_CURRENT_SHOWING_MOVIE_LIST_LIMIT = 5;
+
 
 export function getMoviesRouter(
     movieManagementOperator: MovieManagementOperator,
@@ -51,13 +54,13 @@ export function getMoviesRouter(
                 const poster = {
                     imageData: fileList["poster" as any][0].buffer,
                     originalFileName: fileList["poster" as any][0].originalname
-                }
+                };
                 const imageList = fileList["image_list"].map((image: any) => (
                     {
                         imageData: image.buffer,
                         originalFileName: image.originalname
                     }
-                ))
+                ));
 
                 const title = req.body.title as string;
                 const description = req.body.description as string;
@@ -77,7 +80,7 @@ export function getMoviesRouter(
                     imageList,
                     poster
                 );
-                res.json(movie);
+                res.json({ movie });
             }, next);
         })
     );
@@ -101,30 +104,38 @@ export function getMoviesRouter(
         asyncHandler(async (req, res, next) => {
             errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
                 const movieId = +req.params.movieId;
-                const movie = await movieManagementOperator.getMovie(movieId);
-                res.json(movie);
+                const { movie, genreList, imageList } = await movieManagementOperator.getMovie(movieId);
+                res.json({
+                    movie: movie,
+                    genre_list: genreList,
+                    image_list: imageList
+                });
             }, next);
         })
     );
 
     router.get(
         "/api/movies/current-showing",
-        moviesManageAuthMiddleware,
-        asyncHandler(async (_req, res, next) => {
+        asyncHandler(async (req, res, next) => {
             errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
-                const movie = await movieManagementOperator.getCurrentShowingMovieList();
-                res.json(movie);
+                const offset = +(req.query.offset || 0);
+                const limit = +(req.query.limit || DEFAULT_GET_CURRENT_SHOWING_MOVIE_LIST_LIMIT);
+                const currentShowingMovieList = await movieManagementOperator.getCurrentShowingMovieList(offset, limit);
+                res.json({ current_showing_movie_list: currentShowingMovieList });
             }, next);
         })
     );
 
     router.get(
         "/api/movies/upcoming",
-        moviesManageAuthMiddleware,
-        asyncHandler(async (_req, res, next) => {
+        asyncHandler(async (req, res, next) => {
             errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
-                const movie = await movieManagementOperator.getUpcomingMovieList();
-                res.json(movie);
+                const offset = +(req.query.offset || 0);
+                const limit = +(req.query.limit || DEFAULT_GET_UPCOMING_MOVIE_LIST_LIMIT);
+                const upcomingMovieList = await movieManagementOperator.getUpcomingMovieList(offset, limit);
+                res.json({
+                    upcoming_movie_list: upcomingMovieList
+                });
             }, next);
         })
     );

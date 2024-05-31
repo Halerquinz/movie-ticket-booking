@@ -17,6 +17,8 @@ import { MovieServiceHandlers } from "../proto/gen/MovieService";
 import { ErrorWithStatus } from "../utils";
 
 const DEFAULT_MOVIE_SEARCH_LIMIT = 10;
+const DEFAULT_GET_UPCOMING_MOVIE_LIST_LIMIT = 5;
+const DEFAULT_GET_CURRENT_SHOWING_MOVIE_LIST_LIMIT = 5;
 
 export class MovieServiceHandlerFactory {
     constructor(
@@ -88,10 +90,10 @@ export class MovieServiceHandlerFactory {
                 try {
                     const createdMovieGenre = await this.movieGenreManagementOperator.createMovieGenre(
                         req.displayName
-                    )
+                    );
                     callback(null, { movieGenre: createdMovieGenre });
                 } catch (error) {
-                    this.handleError(error, callback)
+                    this.handleError(error, callback);
                 }
             },
 
@@ -170,7 +172,7 @@ export class MovieServiceHandlerFactory {
                         req.theaterId,
                         req.screenTypeId,
                         req.displayName,
-                    )
+                    );
                     callback(null, { screen: createdScreen as any });
                 } catch (error) {
                     this.handleError(error, callback);
@@ -235,7 +237,7 @@ export class MovieServiceHandlerFactory {
                     await this.showtimeManagementOperator.deleteShowtime(req.id);
                     callback(null, {});
                 } catch (error) {
-                    this.handleError(error, callback)
+                    this.handleError(error, callback);
                 }
             },
 
@@ -249,7 +251,7 @@ export class MovieServiceHandlerFactory {
                     await this.movieManagementOperator.deleteMovie(req.id);
                     callback(null, {});
                 } catch (error) {
-                    this.handleError(error, callback)
+                    this.handleError(error, callback);
                 }
             },
 
@@ -263,7 +265,7 @@ export class MovieServiceHandlerFactory {
                     await this.movieGenreManagementOperator.deleteMovieGenre(req.id);
                     callback(null, {});
                 } catch (error) {
-                    this.handleError(error, callback)
+                    this.handleError(error, callback);
                 }
             },
 
@@ -278,7 +280,7 @@ export class MovieServiceHandlerFactory {
                     await this.screenManagementOperator.deleteScreen(req.id);
                     callback(null, {});
                 } catch (error) {
-                    this.handleError(error, callback)
+                    this.handleError(error, callback);
                 }
             },
 
@@ -292,7 +294,7 @@ export class MovieServiceHandlerFactory {
                     await this.screenManagementOperator.deleteScreen(req.id);
                     callback(null, {});
                 } catch (error) {
-                    this.handleError(error, callback)
+                    this.handleError(error, callback);
                 }
             },
 
@@ -306,16 +308,24 @@ export class MovieServiceHandlerFactory {
                     await this.theaterManagementOperator.deleteTheater(req.id);
                     callback(null, {});
                 } catch (error) {
-                    this.handleError(error, callback)
+                    this.handleError(error, callback);
                 }
             },
 
             GetCurrentShowingMovieList: async (call, callback) => {
+                const req = call.request;
+                if (req.limit === undefined) {
+                    req.limit = DEFAULT_GET_CURRENT_SHOWING_MOVIE_LIST_LIMIT;
+                }
+                if (req.offset === undefined) {
+                    req.offset = 0;
+                }
+
                 try {
-                    const currentShowingMovieList = await this.movieManagementOperator.getCurrentShowingMovieList();
+                    const currentShowingMovieList = await this.movieManagementOperator.getCurrentShowingMovieList(req.offset, req.limit);
                     callback(null, { movieList: currentShowingMovieList });
                 } catch (error) {
-                    this.handleError(error, callback)
+                    this.handleError(error, callback);
                 }
             },
 
@@ -332,18 +342,25 @@ export class MovieServiceHandlerFactory {
                         );
                     callback(null, { genreList, imageList, movie });
                 } catch (error) {
-                    this.handleError(error, callback)
+                    this.handleError(error, callback);
                 }
             },
 
 
             GetUpcomingMovieList: async (call, callback) => {
                 const req = call.request;
+                if (req.limit === undefined) {
+                    req.limit = DEFAULT_GET_UPCOMING_MOVIE_LIST_LIMIT;
+                }
+                if (req.offset === undefined) {
+                    req.offset = 0;
+                }
+
                 try {
-                    const movieList = await this.movieManagementOperator.getUpcomingMovieList();
+                    const movieList = await this.movieManagementOperator.getUpcomingMovieList(req.offset, req.limit);
                     callback(null, { movieList: movieList });
                 } catch (error) {
-                    this.handleError(error, callback)
+                    this.handleError(error, callback);
                 }
             },
 
@@ -364,7 +381,7 @@ export class MovieServiceHandlerFactory {
                     );
                     callback(null, { movieGenre: movieGenre });
                 } catch (error) {
-                    this.handleError(error, callback)
+                    this.handleError(error, callback);
                 }
             },
 
@@ -388,7 +405,7 @@ export class MovieServiceHandlerFactory {
                     );
                     callback(null, { theater: theater, showtimeListOfTheater: showtimeListOfTheater });
                 } catch (error) {
-                    this.handleError(error, callback)
+                    this.handleError(error, callback);
                 }
             },
 
@@ -407,7 +424,7 @@ export class MovieServiceHandlerFactory {
                     );
                     callback(null, { theater: theater, showtimeListOfTheater: showtimeListOfTheater });
                 } catch (error) {
-                    this.handleError(error, callback)
+                    this.handleError(error, callback);
                 }
             },
 
@@ -519,7 +536,7 @@ export class MovieServiceHandlerFactory {
                     this.handleError(error, callback);
                 }
             }
-        }
+        };
         return handler;
     }
 

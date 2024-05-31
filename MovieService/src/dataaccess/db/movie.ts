@@ -41,8 +41,8 @@ export interface MovieDataAccessor {
     deleteMovie(id: number): Promise<void>;
     getMovieById(id: number): Promise<Movie | null>;
     getMovieByIdWithXLock(id: number): Promise<Movie | null>;
-    getCurrentShowingMovieList(requestTime: number): Promise<Movie[]>;
-    getUpcomingMovieList(requestTime: number): Promise<Movie[]>;
+    getCurrentShowingMovieList(requestTime: number, offset: number, limit: number): Promise<Movie[]>;
+    getUpcomingMovieList(requestTime: number, offset: number, limit: number): Promise<Movie[]>;
     getMovieByTitleWithXLock(title: string): Promise<Movie | null>;
     searchMovie(query: string, limit: number): Promise<Movie[]>;
     withTransaction<T>(cb: (dataAccessor: MovieDataAccessor) => Promise<T>): Promise<T>;
@@ -110,7 +110,7 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
                 })
                 .where({
                     [ColNameMovieServiceMovieId]: args.movieId
-                })
+                });
         } catch (error) {
             this.logger.error("failed to update movie", { args, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
@@ -195,7 +195,7 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
         return this.getMovieFromRow(rows[0]);
     }
 
-    public async getCurrentShowingMovieList(requestTime: number): Promise<Movie[]> {
+    public async getCurrentShowingMovieList(requestTime: number, offset: number, limit: number): Promise<Movie[]> {
         try {
             const rows = await this.knex
                 .select()
@@ -205,16 +205,18 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
                     `${TabNameMovieServiceMovieTab}.${ColNameMovieServiceMovieId} `,
                     `${TabNameMovieServiceMoviePosterTab}.${ColNameMovieServiceMoviePosterOfMovieId} `,
                 )
-                .where(ColNameMovieServiceMovieReleaseDate, "<=", requestTime);
+                .where(ColNameMovieServiceMovieReleaseDate, "<=", requestTime)
+                .offset(offset)
+                .limit(limit);
 
             return rows.map(row => this.getMovieFromJoinedRow(row));
         } catch (error) {
-            this.logger.error("fail to get current showing movie list", { requestTime, error });
+            this.logger.error("failed to get current showing movie list", { requestTime, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
     }
 
-    public async getUpcomingMovieList(requestTime: number): Promise<Movie[]> {
+    public async getUpcomingMovieList(requestTime: number, offset: number, limit: number): Promise<Movie[]> {
         try {
             const rows = await this.knex
                 .select()
@@ -224,11 +226,13 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
                     `${TabNameMovieServiceMovieTab}.${ColNameMovieServiceMovieId} `,
                     `${TabNameMovieServiceMoviePosterTab}.${ColNameMovieServiceMoviePosterOfMovieId} `,
                 )
-                .where(ColNameMovieServiceMovieReleaseDate, ">", requestTime);
+                .where(ColNameMovieServiceMovieReleaseDate, ">", requestTime)
+                .offset(offset)
+                .limit(limit);
 
             return rows.map(row => this.getMovieFromJoinedRow(row));
         } catch (error) {
-            this.logger.error("fail to get current showing movie list", { requestTime, error });
+            this.logger.error("failed to get current showing movie list", { requestTime, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
     }
@@ -247,7 +251,7 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
         } catch (error) {
             this.logger.error("failed to get movie by title", {
                 title
-            })
+            });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
@@ -272,10 +276,10 @@ export class MovieDataAccessorImpl implements MovieDataAccessor {
             .orderByRaw(`ts_rank(${ColNameMovieServiceMovieFullTextSearchDocument}, plainto_tsquery (?)) DESC`, query)
             .limit(limit);
         try {
-            const rows = await queryBuilder
+            const rows = await queryBuilder;
             return rows.map((row: Record<string, any>) => this.getMovieFromRow(row));
         } catch (error) {
-            this.logger.error("get movie list fail", {
+            this.logger.error("get movie list failed", {
                 query,
                 limit,
                 error
