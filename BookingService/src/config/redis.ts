@@ -3,7 +3,7 @@ import { token } from "brandi";
 export class RedisConfig {
     public host = "127.0.0.1";
     public port = 6379;
-    public url = "127.0.0.1:6379"
+    public url = "127.0.0.1:6379";
 
     public static fromEnv(): RedisConfig {
         const config = new RedisConfig();

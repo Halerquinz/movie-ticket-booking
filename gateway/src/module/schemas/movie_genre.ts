@@ -8,6 +8,6 @@ export class MovieGenre {
         return new MovieGenre(
             MovieGenreProto?.id || 0,
             MovieGenreProto?.displayName || "",
-        )
+        );
     }
 }

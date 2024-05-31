@@ -6,7 +6,7 @@ export function getInstanceKafka(config: KafkaConfig): Kafka {
     return new Kafka({
         clientId: config.clientId,
         brokers: config.brokers
-    })
+    });
 }
 
 injected(getInstanceKafka, KAFKA_CONFIG_TOKEN);

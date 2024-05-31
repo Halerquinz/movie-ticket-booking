@@ -27,7 +27,7 @@ export class InitializationJobImpl implements InitializationJob {
         const count = await Promise.all([
             this.priceDM.getPriceCount(),
             this.movieTypeHasScreenTypeDM.getMovieTypeHasScreenTypeCount()
-        ])
+        ]);
         if (count[0] > 0 || count[1] > 0) {
             this.logger.info("will skip initialization");
             return;
@@ -36,7 +36,7 @@ export class InitializationJobImpl implements InitializationJob {
         await Promise.all([
             this.priceManagementOperator.insertDefaultPrice(),
             this.movieTypeHasScreenTypeManagementOperator.insertMovieTypeHasScreenType()
-        ])
+        ]);
 
         this.logger.info("initialization finish");
     }

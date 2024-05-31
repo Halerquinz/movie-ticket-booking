@@ -1,0 +1,64 @@
+{
+    "sqltools.connections": [
+        {
+            "pgOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "user_service_db",
+            "database": "movie_ticket_booking_user_service_db",
+            "username": "postgres",
+            "password": "admin",
+            "askForPassword": false,
+        },
+        {
+            "pgOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5433,
+            "driver": "PostgreSQL",
+            "name": "movie_service_db",
+            "database": "movie_ticket_booking_movie_service_db",
+            "username": "postgres",
+            "password": "admin",
+            "askForPassword": false,
+        },
+        {
+            "pgOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5434,
+            "driver": "PostgreSQL",
+            "name": "booking_service_db",
+            "database": "movie_ticket_booking_booking_service_db",
+            "username": "postgres",
+            "password": "admin",
+            "askForPassword": false,
+        },
+        {
+            "pgOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5435,
+            "driver": "PostgreSQL",
+            "name": "payment_service_db",
+            "database": "movie_ticket_booking_payment_service_db",
+            "username": "postgres",
+            "password": "admin",
+            "askForPassword": false,
+        }
+    ]
+}

@@ -7,7 +7,7 @@ import { PAYMENT_SERVICE_DM_TOKEN, getPaymentServiceDM } from "./payment_service
 export * from "./user_service";
 export * from "./movie_service";
 export * from "./booking_service";
-export * from "./payment_service"
+export * from "./payment_service";
 
 export function bindToContainer(container: Container): void {
     container.bind(USER_SERVICE_DM_TOKEN).toInstance(getUserServiceDM).inSingletonScope();

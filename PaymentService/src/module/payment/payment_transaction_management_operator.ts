@@ -38,7 +38,7 @@ export class PaymentTransactionManagementOperatorImpl implements PaymentTransact
         const dmResults = await Promise.all([
             this.getBookingWithStatus(bookingId, userId, BookingStatus.INITIALIZING),
             this.paymentTransactionDM.getPaymentTransactionByBookingIdWithStatusPending(bookingId)
-        ])
+        ]);
         const booking = dmResults[0];
         const paymentTransaction = dmResults[1];
 
@@ -257,4 +257,4 @@ injected(
 );
 
 export const PAYMENT_TRANSACTION_MANAGEMENT_OPERATOR_TOKEN =
-    token<PaymentTransactionManagementOperator>("PaymentTransactionManagementOperator")
+    token<PaymentTransactionManagementOperator>("PaymentTransactionManagementOperator");

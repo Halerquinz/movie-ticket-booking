@@ -5,7 +5,7 @@ import { ID_GENERATOR_TOKEN, SnowflakeIdGenerator } from "./snowflake_id";
 
 export * from "./errors";
 export * from "./logging";
-export * from "./time"
+export * from "./time";
 export * from "./snowflake_id";
 
 export function bindToContainer(container: Container): void {

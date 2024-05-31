@@ -1,5 +1,5 @@
-import { SeatMetadata as SeatMetadataProto } from "../../proto/gen/SeatMetadata"
-import { _SeatStatus_Values } from "../../proto/gen/SeatStatus"
+import { SeatMetadata as SeatMetadataProto } from "../../proto/gen/SeatMetadata";
+import { _SeatStatus_Values } from "../../proto/gen/SeatStatus";
 
 export class SeatMetadata {
     constructor(
@@ -21,6 +21,6 @@ export class SeatMetadata {
             seatMetadataProto?.no || "",
             seatMetadataProto?.status as any,
             seatMetadataProto?.price || 0
-        )
+        );
     }
 }

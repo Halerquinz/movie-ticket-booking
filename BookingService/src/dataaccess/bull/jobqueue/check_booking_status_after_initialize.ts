@@ -33,7 +33,7 @@ export class CheckBookingStatusAfterInitializeQueueImpl implements CheckBookingS
                 delay: ms(this.applicationConfig.expireTimeAfterInitializeBooking),
                 attempts: 5
             }
-        )
+        );
 
         this.logger.info(`Successfully to add CheckBookingStatusAfterInitializeQueue with booking_id=${bookingId}`);
     }

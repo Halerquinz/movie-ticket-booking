@@ -12,7 +12,7 @@ export class PaymentTransactionNotFound extends Error {
 }
 
 export interface CheckoutOperator {
-    onCreatePaymentTransaction(checkoutMetadata: PaymentTransactionDetail): Promise<{ id: string, url: string }>;
+    onCreatePaymentTransaction(checkoutMetadata: PaymentTransactionDetail): Promise<{ id: string, url: string; }>;
     onCancelPaymentTransaction(checkoutSessionId: string): Promise<void>;
     onPaymentThirdPartyResponse(payload: Buffer, signature: string): Promise<void>;
 }
@@ -25,7 +25,7 @@ export class CheckoutOperatorImpl implements CheckoutOperator {
         private readonly paymentTransactionCompletedProducer: PaymentTransactionCompletedProducer,
     ) { }
 
-    public async onCreatePaymentTransaction(checkoutMetadata: PaymentTransactionDetail): Promise<{ id: string, url: string }> {
+    public async onCreatePaymentTransaction(checkoutMetadata: PaymentTransactionDetail): Promise<{ id: string, url: string; }> {
         const checkoutSession = await this.checkoutSessionHandler.createCheckoutSession(checkoutMetadata);
         return {
             id: checkoutSession?.id!,

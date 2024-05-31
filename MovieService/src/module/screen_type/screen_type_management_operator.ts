@@ -70,8 +70,8 @@ export class ScreenTypeManagementOperatorImpl implements ScreenTypeManagementOpe
                 seatCount: seatCount,
                 rowCount: rowCount,
                 seatOfRowCount: seatOfRowCount
-            }
-        })
+            };
+        });
     }
 
     public async updateScreenType(
@@ -103,14 +103,14 @@ export class ScreenTypeManagementOperatorImpl implements ScreenTypeManagementOpe
                 screenTypeId: screenTypeId,
                 displayName: displayName,
                 description: description,
-            })
+            });
 
             if (description !== undefined) {
                 screenTypeRecord.description = description;
             }
 
             return screenTypeRecord;
-        })
+        });
     }
 
     public async deleteScreenType(id: number): Promise<void> {

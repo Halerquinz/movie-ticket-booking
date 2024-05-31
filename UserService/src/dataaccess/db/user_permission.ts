@@ -220,7 +220,7 @@ export class UserPermissionDataAccessorImpl implements UserPermissionDataAccesso
         return this.knex.transaction(async (trx) => {
             const trxDataAccessor = new UserPermissionDataAccessorImpl(trx, this.logger);
             return cb(trxDataAccessor);
-        })
+        });
     }
 
     private getUserPermissionFromRow(row: Record<string, any>): UserPermission {

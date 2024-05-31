@@ -55,7 +55,7 @@ export function getScreenTypesRouter(
                 const screenTypeId = +req.params.screenTypeId;
                 await screenTypeManagementOperator.deleteScreenType(screenTypeId);
                 res.json({});
-            }, next)
+            }, next);
         });
 
     return router;

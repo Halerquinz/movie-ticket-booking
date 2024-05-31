@@ -57,7 +57,7 @@ export function getSessionsRouter(
                     token: authenticatedUserInformation.token,
                     userRoleList: authenticatedUserInformation.userRoleList,
                     userPermissionList: authenticatedUserInformation.userPermissionList
-                })
+                });
             }, next);
         })
     );
@@ -75,7 +75,7 @@ export function getSessionsRouter(
                 res.json({ url: paymentTransactionUrl });
             }, next);
         })
-    )
+    );
 
     router.get("/api/sessions/user/bookings",
         userLoggedInAuthMiddleware,
@@ -94,7 +94,7 @@ export function getSessionsRouter(
                 res.json({ bookingList: bookingList });
             }, next);
         })
-    )
+    );
 
     router.delete(
         "/api/sessions",

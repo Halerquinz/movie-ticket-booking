@@ -12,7 +12,7 @@ export interface CreateShowtimeArguments {
     timeStart: number,
     timeEnd: number,
     of_showtime_slot_id: ShowtimeSlotType,
-    of_showtime_day_of_the_week_id: ShowtimeDayOfTheWeekType
+    of_showtime_day_of_the_week_id: ShowtimeDayOfTheWeekType;
 }
 
 export interface UpdateShowtimeArguments {
@@ -22,7 +22,7 @@ export interface UpdateShowtimeArguments {
     timeStart: number,
     timeEnd: number,
     of_showtime_slot_id: ShowtimeSlotType,
-    of_showtime_day_of_the_week_id: ShowtimeDayOfTheWeekType
+    of_showtime_day_of_the_week_id: ShowtimeDayOfTheWeekType;
 }
 
 export interface ShowtimeDataAccessor {
@@ -190,7 +190,7 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
         try {
             const rows = await this.knex
                 .select()
-                .from(TabNameMovieServiceShowtimeTab)
+                .from(TabNameMovieServiceShowtimeTab);
 
             return rows.map((row) => this.getShowtimeFromRow(row));
         } catch (error) {
@@ -278,12 +278,12 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
     private getShowtimeFromRow(row: Record<string, any>): Showtime {
         let showtimeSlot: ShowtimeSlot | null = null;
         if (row[ColNameMovieServiceShowtimeOfShowtimeSlotId]) {
-            showtimeSlot = new ShowtimeSlot(+row[ColNameMovieServiceShowtimeOfShowtimeSlotId], "",)
+            showtimeSlot = new ShowtimeSlot(+row[ColNameMovieServiceShowtimeOfShowtimeSlotId], "",);
         }
 
         let showtimeDayOfTheWeek: ShowtimeDayOfTheWeek | null = null;
         if (row[ColNameMovieServiceShowtimeOfShowtimeDayOfTheWeekId]) {
-            showtimeDayOfTheWeek = new ShowtimeDayOfTheWeek(+row[ColNameMovieServiceShowtimeOfShowtimeDayOfTheWeekId], "",)
+            showtimeDayOfTheWeek = new ShowtimeDayOfTheWeek(+row[ColNameMovieServiceShowtimeOfShowtimeDayOfTheWeekId], "",);
         }
 
         return new Showtime(
@@ -294,7 +294,7 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
             +row[ColNameMovieServiceShowtimeTimeEnd],
             showtimeDayOfTheWeek,
             showtimeSlot
-        )
+        );
     }
 
     private getShowtimeFromJoinedRow(row: Record<string, any>): Showtime {
@@ -303,7 +303,7 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
             showtimeSlot = new ShowtimeSlot(
                 +row[ColNameMovieServiceShowtimeOfShowtimeSlotId],
                 row["slot_displayname"]
-            )
+            );
         }
 
         let showtimeDayOfTheWeek: ShowtimeDayOfTheWeek | null = null;
@@ -311,7 +311,7 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
             showtimeDayOfTheWeek = new ShowtimeDayOfTheWeek(
                 +row[ColNameMovieServiceShowtimeOfShowtimeDayOfTheWeekId],
                 row["day_of_the_week_displayname"]
-            )
+            );
         }
 
         return new Showtime(
@@ -322,7 +322,7 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
             +row[ColNameMovieServiceShowtimeTimeEnd],
             showtimeDayOfTheWeek,
             showtimeSlot
-        )
+        );
     }
 }
 

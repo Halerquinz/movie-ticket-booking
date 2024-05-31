@@ -47,7 +47,7 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                 .where(ColNameMovieServicePriceOfMovieTypeId, "=", ofMovieTypeId)
                 .andWhere(ColNameMovieServicePriceOfSeatTypeId, "=", ofSeatTypeId)
                 .andWhere(ColNameMovieServicePriceOfShowtimeSlotId, "=", ofShowtimeSlotId)
-                .andWhere(ColNameMovieServicePriceOfShowtimeDayOfTheWeekId, "=", ofShowtimeDayOfTheWeekId)
+                .andWhere(ColNameMovieServicePriceOfShowtimeDayOfTheWeekId, "=", ofShowtimeDayOfTheWeekId);
         } catch (error) {
             this.logger.error("failed to get price", { error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
@@ -66,7 +66,7 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
             +row[ColNameMovieServicePriceOfShowtimeDayOfTheWeekId],
             +row[ColNameMovieServicePriceOfShowtimeSlotId],
             +row[ColNameMovieServicePrice]
-        )
+        );
     }
 
     public async getPriceCount(): Promise<number> {
@@ -76,7 +76,7 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                 .count()
                 .from(TabNameMovieServicePrice);
         } catch (error) {
-            this.logger.error("get price count fail", {
+            this.logger.error("get price count failed", {
                 error
             });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
@@ -351,7 +351,7 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_showtime_day_of_the_week_id: 2,
                     price: 180000
                 },
-            ])
+            ]);
         } catch (error) {
             this.logger.error("failed to insert all default price", { error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);

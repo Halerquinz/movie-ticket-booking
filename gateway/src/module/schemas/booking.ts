@@ -1,4 +1,4 @@
-import { Booking as BookingProto } from "../../proto/gen/Booking"
+import { Booking as BookingProto } from "../../proto/gen/Booking";
 
 export enum BookingStatus {
     PENDING = 0,
@@ -28,6 +28,6 @@ export class Booking {
             bookingProto?.expireAt as number || 0,
             bookingProto?.bookingStatus as any,
             bookingProto?.amount || 0
-        )
+        );
     }
 }

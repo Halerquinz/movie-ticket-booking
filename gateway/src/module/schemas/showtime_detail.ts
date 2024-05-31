@@ -1,5 +1,5 @@
 import { MovieType } from "./movie_type";
-import { ShowtimeDetail as ShowtimeDetailProto } from "../../proto/gen/ShowtimeDetail"
+import { ShowtimeDetail as ShowtimeDetailProto } from "../../proto/gen/ShowtimeDetail";
 
 export class ShowtimeDetail {
     constructor(

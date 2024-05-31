@@ -12,7 +12,7 @@ export interface UserRoleHasUserPermissionDataAccessor {
     getUserPermissionListOfUserRoleList(userRoleIdList: number[]): Promise<UserPermission[][]>;
     getUserRoleHasUserPermissionWithXLock(
         userRoleId: number, userPermissionId: number
-    ): Promise<{ userRoleId: number; userPermissionId: number } | null>;
+    ): Promise<{ userRoleId: number; userPermissionId: number; } | null>;
     withTransaction<T>(cb: (dataAccessor: UserRoleHasUserPermissionDataAccessor) => Promise<T>): Promise<T>;
 }
 
@@ -114,7 +114,7 @@ export class UserRoleHasUserPermissionDataAccessorImpl implements UserRoleHasUse
     public async getUserRoleHasUserPermissionWithXLock(
         userRoleId: number,
         userPermissionId: number
-    ): Promise<{ userRoleId: number; userPermissionId: number } | null> {
+    ): Promise<{ userRoleId: number; userPermissionId: number; } | null> {
         try {
             const rows = await this.knex
                 .select()

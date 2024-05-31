@@ -32,7 +32,7 @@ export class MovieTypeDataAccessorImpl implements MovieTypeDataAccessor {
                     [ColNameMovieServiceMovieTypeId]: id
                 });
         } catch (error) {
-            this.logger.error("failed to get movie type by id", { id })
+            this.logger.error("failed to get movie type by id", { id });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
@@ -60,7 +60,7 @@ export class MovieTypeDataAccessorImpl implements MovieTypeDataAccessor {
                 })
                 .forUpdate();
         } catch (error) {
-            this.logger.error("failed to get movie type by id", { id })
+            this.logger.error("failed to get movie type by id", { id });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 

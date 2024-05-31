@@ -50,7 +50,7 @@ export function getTheatersRouter(
                 const theaterId = +req.params.theaterId;
                 await theaterManagementOperator.deleteTheater(theaterId);
                 res.json({});
-            }, next)
+            }, next);
         });
 
     router.get(
@@ -59,11 +59,14 @@ export function getTheatersRouter(
             errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
                 const theaterId = +req.params.theaterId;
                 const requestTime = +req.body.request_time;
-                const showtimeList = await showtimeListManagementOperator.getShowtimeListOfTheater(
+                const { theater, showtimeListOfTheater } = await showtimeListManagementOperator.getShowtimeListOfTheater(
                     theaterId,
                     requestTime
                 );
-                res.json(showtimeList);
+                res.json({
+                    theater: theater,
+                    showtime_list: showtimeListOfTheater
+                });
             }, next);
         }));
 
@@ -74,12 +77,15 @@ export function getTheatersRouter(
                 const movieId = +req.params.movieId;
                 const theaterId = +req.params.theaterId;
                 const requestTime = +req.body.request_time;
-                const showtimeList = await showtimeListManagementOperator.getShowtimeListOfTheaterByMovieId(
+                const { theater, showtimeListOfTheater } = await showtimeListManagementOperator.getShowtimeListOfTheaterByMovieId(
                     theaterId,
                     movieId,
                     requestTime
                 );
-                res.json(showtimeList);
+                res.json({
+                    theater: theater,
+                    showtime_list: showtimeListOfTheater
+                });
             }, next);
         })
     );

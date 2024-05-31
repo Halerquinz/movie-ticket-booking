@@ -16,6 +16,6 @@ export class ScreenType {
             screenTypeProto?.seatCount || 0,
             screenTypeProto?.rowCount || 0,
             screenTypeProto?.seatOfRowCount || 0,
-        )
+        );
     }
 }

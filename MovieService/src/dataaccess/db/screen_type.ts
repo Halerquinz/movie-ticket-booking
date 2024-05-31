@@ -11,7 +11,7 @@ export interface CreateScreenTypeArguments {
     description: string;
     seatCount: number;
     rowCount: number,
-    seatOfRowCount: number
+    seatOfRowCount: number;
 }
 
 export interface UpdateScreenTypeArguments {
@@ -117,7 +117,7 @@ export class ScreenTypeDataAccessorImpl implements ScreenTypeDataAccessor {
                     [ColNameMovieServiceScreenTypeId]: id
                 });
         } catch (error) {
-            this.logger.error("failed to get screen type by id", { id })
+            this.logger.error("failed to get screen type by id", { id });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
@@ -145,7 +145,7 @@ export class ScreenTypeDataAccessorImpl implements ScreenTypeDataAccessor {
                 })
                 .forUpdate();
         } catch (error) {
-            this.logger.error("failed to get screen type by id", { id })
+            this.logger.error("failed to get screen type by id", { id });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
@@ -172,7 +172,7 @@ export class ScreenTypeDataAccessorImpl implements ScreenTypeDataAccessor {
                     [ColNameMovieServiceScreenTypeDisplayName]: displayName
                 });
         } catch (error) {
-            this.logger.error("failed to get screen type by name", { name: displayName })
+            this.logger.error("failed to get screen type by name", { name: displayName });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
@@ -199,7 +199,7 @@ export class ScreenTypeDataAccessorImpl implements ScreenTypeDataAccessor {
                     [ColNameMovieServiceScreenTypeDisplayName]: displayName
                 });
         } catch (error) {
-            this.logger.error("failed to get screen type by name", { name: displayName })
+            this.logger.error("failed to get screen type by name", { name: displayName });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 

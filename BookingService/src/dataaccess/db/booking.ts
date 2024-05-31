@@ -11,7 +11,7 @@ export interface CreateBookingArguments {
     ofSeatId: number,
     bookingTime: number,
     bookingStatus: BookingStatus,
-    amount: number
+    amount: number;
 }
 
 export enum BookingStatus {
@@ -111,7 +111,7 @@ export class BookingDataAccessorImpl implements BookingDataAccessor {
                 .andWhere(ColNameMBookingServiceOfSeatId, "=", seatId)
                 .andWhere((qb) => {
                     qb.where(ColNameMBookingServiceBookingStatus, "=", BookingStatus.INITIALIZING)
-                        .orWhere(ColNameMBookingServiceBookingStatus, "=", BookingStatus.PENDING)
+                        .orWhere(ColNameMBookingServiceBookingStatus, "=", BookingStatus.PENDING);
                 });
             return (rows[0] as any)["count"];
         } catch (error) {
@@ -199,7 +199,7 @@ export class BookingDataAccessorImpl implements BookingDataAccessor {
                 .andWhere((qb) => {
                     qb.where(ColNameMBookingServiceBookingStatus, "=", BookingStatus.INITIALIZING)
                         .orWhere(ColNameMBookingServiceBookingStatus, "=", BookingStatus.PENDING)
-                        .orWhere(ColNameMBookingServiceBookingStatus, "=", BookingStatus.CONFIRMED)
+                        .orWhere(ColNameMBookingServiceBookingStatus, "=", BookingStatus.CONFIRMED);
                 });
 
             return rows.map((row) => this.getBookingFromRow(row));

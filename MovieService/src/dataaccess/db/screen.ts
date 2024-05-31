@@ -116,7 +116,7 @@ export class ScreenDataAccessorImpl implements ScreenDataAccessor {
                     [ColNameMovieServiceScreenId]: id
                 });
         } catch (error) {
-            this.logger.error("failed to get screen by id", { id })
+            this.logger.error("failed to get screen by id", { id });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
@@ -144,7 +144,7 @@ export class ScreenDataAccessorImpl implements ScreenDataAccessor {
                 })
                 .forUpdate();
         } catch (error) {
-            this.logger.error("failed to get screen by id", { id })
+            this.logger.error("failed to get screen by id", { id });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
@@ -176,7 +176,7 @@ export class ScreenDataAccessorImpl implements ScreenDataAccessor {
                     [ColNameMovieServiceScreenDisplayName]: displayName
                 });
         } catch (error) {
-            this.logger.error("failed to get screen by displayName", { displayName })
+            this.logger.error("failed to get screen by displayName", { displayName });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
@@ -204,7 +204,7 @@ export class ScreenDataAccessorImpl implements ScreenDataAccessor {
                 })
                 .forUpdate();
         } catch (error) {
-            this.logger.error("failed to get screen by displayName", { displayName })
+            this.logger.error("failed to get screen by displayName", { displayName });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 

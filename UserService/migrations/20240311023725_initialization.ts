@@ -117,5 +117,9 @@ export async function down(knex: Knex): Promise<void> {
     await knex.schema.dropTableIfExists(TabNameUserServicePassword);
     await knex.schema.dropTableIfExists(TabNameUserServiceTokenPublicKey);
     await knex.schema.dropTableIfExists(TabNameUserServiceBlacklistedToken);
+    await knex.schema.dropTableIfExists(TabNameUserServiceUserRole);
+    await knex.schema.dropTableIfExists(TabNameUserServiceUserPermission);
+    await knex.schema.dropTableIfExists(TabNameUserServiceUserRoleHasUserPermission);
+    await knex.schema.dropTableIfExists(TabNameUserServiceUserHasUserRole);
 }
 

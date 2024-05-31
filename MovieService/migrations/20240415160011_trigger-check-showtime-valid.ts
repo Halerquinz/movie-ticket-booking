@@ -39,7 +39,7 @@ export async function up(knex: Knex): Promise<void> {
             BEFORE INSERT ON public.${TabNameMovieServiceShowtime}
             FOR EACH ROW
             EXECUTE PROCEDURE check_showtime_overlap();
-    `)
+    `);
 }
 
 

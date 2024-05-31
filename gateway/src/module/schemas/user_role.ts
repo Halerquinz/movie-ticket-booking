@@ -10,6 +10,6 @@ export class UserRole {
             UserRoleProto?.id || 0,
             UserRoleProto?.displayName || "",
             UserRoleProto?.description || "",
-        )
+        );
     }
 }

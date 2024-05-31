@@ -25,7 +25,7 @@ export interface ShowtimeListManagementOperator {
         requestTime: number
     ): Promise<{
         theater: Theater,
-        showtimeListOfTheater: ShowtimeDetail[]
+        showtimeListOfTheater: ShowtimeDetail[];
     }>;
     getShowtimeListOfTheaterByMovieId(
         theaterId: number,
@@ -33,8 +33,8 @@ export interface ShowtimeListManagementOperator {
         requestTime: number
     ): Promise<{
         theater: Theater,
-        showtimeListOfTheater: ShowtimeDetail[]
-    }>
+        showtimeListOfTheater: ShowtimeDetail[];
+    }>;
 }
 
 export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagementOperator {
@@ -138,8 +138,8 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
                         displayName: movie?.movieType?.displayName
                     }
                 }
-            )
-        })
+            );
+        });
 
         const screenIdList: number[] = [];
         for (const showtime of showtimeList) {
@@ -180,7 +180,7 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
                 theaterName: theaterRecord.displayName,
                 timeEnd: showtimeList[i].timeStart,
                 timeStart: showtimeList[i].timeStart
-            })
+            });
         }
         return showtimeListOfTheater;
     }

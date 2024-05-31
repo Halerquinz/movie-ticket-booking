@@ -49,7 +49,7 @@ export class ScreenManagementOperatorImpl implements ScreenManagementOperator {
                 theaterId,
                 screenTypeId,
                 displayName
-            )
+            );
 
             await this.screenCreatedProducer.createScreenCreatedMessage(new ScreenCreated(createdScreenId, screenTypeId));
 
@@ -58,8 +58,8 @@ export class ScreenManagementOperatorImpl implements ScreenManagementOperator {
                 ofTheaterId: theaterId,
                 screenType: screenType,
                 displayName: displayName
-            }
-        })
+            };
+        });
     }
 
     public async updateScreen(screenId: number, displayName: string): Promise<Screen> {
@@ -92,12 +92,12 @@ export class ScreenManagementOperatorImpl implements ScreenManagementOperator {
             await screenDM.updateScreen({
                 screenId: screenId,
                 displayName: displayName
-            })
+            });
 
             screenRecord.displayName = displayName;
 
             return screenRecord;
-        })
+        });
     }
 
     public async getScreen(id: number): Promise<Screen> {

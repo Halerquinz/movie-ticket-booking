@@ -12,4 +12,4 @@ export class GatewayServerConfig {
     }
 }
 
-export const GATEWAY_SERVER_CONFIG_TOKEN = token<GatewayServerConfig>("GatewayServerConfig")
+export const GATEWAY_SERVER_CONFIG_TOKEN = token<GatewayServerConfig>("GatewayServerConfig");

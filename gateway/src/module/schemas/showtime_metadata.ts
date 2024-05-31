@@ -1,4 +1,4 @@
-import { ShowtimeMetadata as ShowtimeMetadataProto } from "../../proto/gen/ShowtimeMetadata"
+import { ShowtimeMetadata as ShowtimeMetadataProto } from "../../proto/gen/ShowtimeMetadata";
 import { Movie } from "./movie";
 import { SeatMetadata } from "./seat_metadata";
 import { Showtime } from "./showtime";

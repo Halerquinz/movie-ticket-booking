@@ -28,7 +28,7 @@ export class PaymentServiceHandlersFactory {
                             req.bookingId,
                             req.userId
                         );
-                    callback(null, { checkoutUrl })
+                    callback(null, { checkoutUrl });
                 } catch (error) {
                     this.handleError(error, callback);
                 }
@@ -42,12 +42,12 @@ export class PaymentServiceHandlersFactory {
 
                 try {
                     await this.paymentTransactionManagementOperator.cancelPaymentTransaction(req.bookingId);
-                    callback(null, {})
+                    callback(null, {});
                 } catch (error) {
                     this.handleError(error, callback);
                 }
             }
-        }
+        };
 
         return handler;
     }

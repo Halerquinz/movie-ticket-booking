@@ -37,7 +37,7 @@ export class ErrorHandlerMiddlewareFactoryImpl implements ErrorHandlerMiddleware
             } else {
                 res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal Server Error" });
             }
-        })
+        });
     }
 }
 

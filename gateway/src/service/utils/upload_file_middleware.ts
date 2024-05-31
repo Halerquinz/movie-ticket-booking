@@ -8,7 +8,7 @@ export class UploadField {
 }
 
 export interface UploadFileMiddlewareFactory {
-    getUploadMultipleFileMiddleware(uploadFields: UploadField[]): RequestHandler
+    getUploadMultipleFileMiddleware(uploadFields: UploadField[]): RequestHandler;
 }
 
 export class UploadFileMiddlewareFactoryImpl implements UploadFileMiddlewareFactory {

@@ -20,12 +20,12 @@ export interface BookingManagementOperator {
     getBookingWithStatus(bookingId: number, userId: number, bookingStatus: BookingStatus): Promise<Booking>;
     updateBookingStatusFromInitializingToPending(bookingId: number): Promise<void>;
     getBookingListProcessingAndConfirmedByShowtimeId(showtimeId: number): Promise<Booking[]>;
-    getBookingList(userId: number, offset: number, limit: number, bookingStatus: BookingStatus): Promise<BookingMetadata[]>
+    getBookingList(userId: number, offset: number, limit: number, bookingStatus: BookingStatus): Promise<BookingMetadata[]>;
 }
 
 export class BookingManagementOperatorImpl implements BookingManagementOperator {
     private readonly bookingTimeInMS: number;
-    private readonly bookingTimeBeforeShowtimeStartInMs: number
+    private readonly bookingTimeBeforeShowtimeStartInMs: number;
 
     constructor(
         private readonly logger: Logger,
@@ -90,7 +90,7 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
             bookingStatus: BookingStatus.INITIALIZING,
             amount: amount,
             bookingTime: requestTime,
-        }
+        };
     }
 
     public async getBookingWithStatus(bookingId: number, userId: number, bookingStatus: BookingStatus): Promise<Booking> {
@@ -157,7 +157,7 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
         screen: Screen,
         showtime: Showtime,
         movie: Movie,
-        seat: Seat
+        seat: Seat;
     }> {
         const showtime = await this.getShowtime(booking.ofShowtimeId);
         if (showtime === null) {
@@ -195,13 +195,13 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
             showtime: showtime,
             movie: movie,
             seat: seat
-        }
+        };
     }
 
     private async checkBookingProcessingAndConfirmed(showtimeId: number, seatId: number): Promise<void> {
         const bookingProcessingAndConfirmedCount = await Promise.all([
-            await this.bookingDM.getBookingProcessingCount(showtimeId, seatId),
-            await this.bookingDM.getBookingConfirmedCount(showtimeId, seatId),
+            this.bookingDM.getBookingProcessingCount(showtimeId, seatId),
+            this.bookingDM.getBookingConfirmedCount(showtimeId, seatId),
         ]);
 
         const bookingProcessingCount = bookingProcessingAndConfirmedCount[0];

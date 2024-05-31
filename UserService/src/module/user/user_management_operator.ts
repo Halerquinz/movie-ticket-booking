@@ -15,7 +15,7 @@ export interface UserManagementOperator {
         limit: number,
         sortOrder: _UserListSortOrder_Values,
         filterOptions: UserListFilterOptions | undefined
-    ): Promise<{ totalUserCount: number; userList: User[] }>;
+    ): Promise<{ totalUserCount: number; userList: User[]; }>;
     getUser(userId: number): Promise<User>;
     searchUser(query: string, limit: number, includedUserIdList: number[]): Promise<User[]>;
 }
@@ -52,8 +52,8 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
                 id: createUserId,
                 username,
                 displayName
-            }
-        })
+            };
+        });
     }
 
     public async updateUser(user: User): Promise<User> {
@@ -100,7 +100,7 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
             }
 
             return userRecord;
-        })
+        });
     }
 
     public async getUser(userId: number): Promise<User> {

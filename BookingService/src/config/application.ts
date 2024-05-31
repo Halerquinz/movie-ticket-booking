@@ -7,7 +7,7 @@ export class ApplicationConfig {
     public static fromEnv(): ApplicationConfig {
         const config = new ApplicationConfig();
         if (process.env.BOOKING_TIME !== undefined) {
-            config.expireTimeAfterInitializeBooking = process.env.BOOKING_TIME
+            config.expireTimeAfterInitializeBooking = process.env.BOOKING_TIME;
         }
         return config;
     }

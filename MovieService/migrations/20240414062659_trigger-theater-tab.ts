@@ -24,7 +24,7 @@ export async function up(knex: Knex): Promise<void> {
             BEFORE INSERT ON public.${TabNameMovieServiceScreen}
             FOR EACH ROW
             EXECUTE PROCEDURE theater_tab_update_trigger_function();
-    `)
+    `);
 }
 
 

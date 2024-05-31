@@ -97,7 +97,7 @@ export class Seat {
     ) { }
 
     public static fromProto(seatProto: SeatProto | undefined | null): Seat {
-        const seatType = SeatType.fromProto(seatProto?.seatType)
+        const seatType = SeatType.fromProto(seatProto?.seatType);
         return new Seat(
             seatProto?.id || 0,
             seatType,

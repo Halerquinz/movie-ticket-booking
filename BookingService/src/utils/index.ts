@@ -6,7 +6,7 @@ import { BINARY_CONVERTER_TOKEN, BinaryConverterImpl } from "./binary_converter"
 
 export * from "./errors";
 export * from "./logging";
-export * from "./time"
+export * from "./time";
 export * from "./snowflake_id";
 export * from "./grpc";
 export * from "./binary_converter";

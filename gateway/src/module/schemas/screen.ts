@@ -16,6 +16,6 @@ export class Screen {
             screenProto?.ofTheaterId || 0,
             screenTypeFromProto || null,
             screenProto?.displayName || "",
-        )
+        );
     }
 }

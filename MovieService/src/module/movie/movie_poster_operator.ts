@@ -73,7 +73,7 @@ export class MoviePosterOperatorImpl implements MoviePosterOperator {
                 this.imageProcessor
                     .resizeImage(imageData, ORIGINAL_WIDTH, ORIGINAL_HEIGHT)
                     .then((resizedBuffer) => this.posterS3DM.uploadFile(originalImageFileName, resizedBuffer)),
-            ])
+            ]);
         } catch (error) {
             this.logger.error("failed to save image files", { error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);

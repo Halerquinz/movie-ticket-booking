@@ -10,6 +10,6 @@ export class User {
             UserProto?.id || 0,
             UserProto?.username || "",
             UserProto?.displayName || "",
-        )
+        );
     }
 }

@@ -23,7 +23,7 @@ export function getUsersRouter(
                 res.json(user);
             }, next);
         })
-    )
+    );
 
     router.patch(
         "/api/users/:userId",

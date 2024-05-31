@@ -33,7 +33,7 @@ export class BookingServiceHandlersFactory {
                         req.seatId,
                         req.amount
                     );
-                    callback(null, { booking: booking as any })
+                    callback(null, { booking: booking as any });
                 } catch (error) {
                     this.handleError(error, callback);
                 }
@@ -57,7 +57,7 @@ export class BookingServiceHandlersFactory {
                         req.userId,
                         req.bookingStatus as any
                     );
-                    callback(null, { booking: booking as any })
+                    callback(null, { booking: booking as any });
                 } catch (error) {
                     this.handleError(error, callback);
                 }
@@ -71,7 +71,7 @@ export class BookingServiceHandlersFactory {
 
                 try {
                     await this.bookingManagementOperator.updateBookingStatusFromInitializingToPending(req.bookingId);
-                    callback(null, {})
+                    callback(null, {});
                 } catch (error) {
                     this.handleError(error, callback);
                 }
@@ -120,7 +120,7 @@ export class BookingServiceHandlersFactory {
                 }
             }
 
-        }
+        };
 
         return handler;
     }

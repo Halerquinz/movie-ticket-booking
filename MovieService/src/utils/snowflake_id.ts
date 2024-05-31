@@ -16,7 +16,7 @@ export class SnowflakeIdGenerator implements IdGenerator {
     public async generate(): Promise<number> {
         return new Promise<number>((resolve) => {
             resolve(+this.snowflake.getUniqueID().toString(10));
-        })
+        });
     }
 }
 

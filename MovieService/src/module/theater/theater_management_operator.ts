@@ -29,7 +29,7 @@ export class TheaterManagementOperatorImpl implements TheaterManagementOperator 
             location: location,
             screenCount: 0,
             seatCount: 0
-        }
+        };
     }
 
     public async updateTheater(id: number, displayName: string, location: string): Promise<Theater> {
@@ -50,7 +50,7 @@ export class TheaterManagementOperatorImpl implements TheaterManagementOperator 
             theaterRecord.location = location;
 
             return theaterRecord;
-        })
+        });
     }
 
     public async getTheater(id: number): Promise<Theater> {

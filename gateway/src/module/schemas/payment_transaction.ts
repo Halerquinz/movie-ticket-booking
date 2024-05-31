@@ -24,6 +24,6 @@ export class PaymentTransaction {
             paymentTransactionProto?.status as any || 0,
             paymentTransactionProto?.requestTime as number || 0,
             paymentTransactionProto?.updateTime as number || 0,
-        )
+        );
     }
 }

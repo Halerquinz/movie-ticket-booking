@@ -1,7 +1,7 @@
 import { injected, token } from "brandi";
 
 export interface Timer {
-    getCurrentTime(): number
+    getCurrentTime(): number;
 }
 
 export class TimeImpl implements Timer {

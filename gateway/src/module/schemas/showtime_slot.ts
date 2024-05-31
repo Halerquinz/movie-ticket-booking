@@ -8,6 +8,6 @@ export class ShowtimeSlot {
         return new ShowtimeSlot(
             ShowtimeSlotProto?.id || 0,
             ShowtimeSlotProto?.displayName || "",
-        )
+        );
     }
 }

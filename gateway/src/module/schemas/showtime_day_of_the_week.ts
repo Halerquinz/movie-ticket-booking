@@ -8,6 +8,6 @@ export class ShowtimeDayOfTheWeek {
         return new ShowtimeDayOfTheWeek(
             ShowtimeDayOfTheWeekProto?.id || 0,
             ShowtimeDayOfTheWeekProto?.displayName || "",
-        )
+        );
     }
 }

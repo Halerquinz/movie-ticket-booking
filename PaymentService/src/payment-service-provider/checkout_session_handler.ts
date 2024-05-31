@@ -23,7 +23,7 @@ export class PaymentTransactionDetail {
 }
 
 export interface CheckoutSessionHandler {
-    createCheckoutSession(paymentTransactionDetail: PaymentTransactionDetail): Promise<{ id: string, url: string } | null>;
+    createCheckoutSession(paymentTransactionDetail: PaymentTransactionDetail): Promise<{ id: string, url: string; } | null>;
     cancelCheckoutSession(checkoutSessionId: string): Promise<void>;
     constructEvent(payload: Buffer, signature: string): Stripe.Event;
 }
@@ -35,7 +35,7 @@ export class CheckoutSessionHandlerImpl implements CheckoutSessionHandler {
         private readonly stripeConfig: StripeConfig
     ) { }
 
-    public async createCheckoutSession(paymentTransactionDetail: PaymentTransactionDetail): Promise<{ id: string, url: string } | null> {
+    public async createCheckoutSession(paymentTransactionDetail: PaymentTransactionDetail): Promise<{ id: string, url: string; } | null> {
         let checkoutSession: Stripe.Response<Stripe.Checkout.Session>;
         try {
             checkoutSession = await this.stripe.checkout.sessions.create({
@@ -75,7 +75,7 @@ export class CheckoutSessionHandlerImpl implements CheckoutSessionHandler {
         return {
             id: checkoutSession.id,
             url: checkoutSession.url
-        }
+        };
     }
 
     public async cancelCheckoutSession(checkoutSessionId: string): Promise<void> {

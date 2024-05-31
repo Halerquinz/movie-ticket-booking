@@ -52,7 +52,7 @@ export class MovieGenreDataAccessorImpl implements MovieGenreDataAccessor {
                 })
                 .where({
                     [ColNameMovieServiceMovieGenreId]: movieGenre.id
-                })
+                });
         } catch (error) {
             this.logger.error("failed to update movie genre", { movieGenre, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
@@ -91,7 +91,7 @@ export class MovieGenreDataAccessorImpl implements MovieGenreDataAccessor {
         } catch (error) {
             this.logger.error("failed to get movie genre by id", {
                 id
-            })
+            });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
@@ -121,7 +121,7 @@ export class MovieGenreDataAccessorImpl implements MovieGenreDataAccessor {
         } catch (error) {
             this.logger.error("failed to get movie genre by id", {
                 id
-            })
+            });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
@@ -150,7 +150,7 @@ export class MovieGenreDataAccessorImpl implements MovieGenreDataAccessor {
         } catch (error) {
             this.logger.error("failed to get movie genre by displayname", {
                 displayName
-            })
+            });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
@@ -180,7 +180,7 @@ export class MovieGenreDataAccessorImpl implements MovieGenreDataAccessor {
         } catch (error) {
             this.logger.error("failed to get movie genre by displayname", {
                 displayName
-            })
+            });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 

@@ -251,13 +251,19 @@ message GetMovieResponse {
     repeated MovieImage image_list = 3;
 }
 
-message GetCurrentShowingMovieListRequest {}
+message GetCurrentShowingMovieListRequest {
+    uint32 offset = 1;
+    uint32 limit = 2;
+}
 
 message GetCurrentShowingMovieListResponse {
     repeated Movie movie_list = 1;
 }
 
-message GetUpcomingMovieListRequest {}
+message GetUpcomingMovieListRequest {
+    uint32 offset = 1;
+    uint32 limit = 2;
+}
 
 message GetUpcomingMovieListResponse {
     repeated Movie movie_list = 1;

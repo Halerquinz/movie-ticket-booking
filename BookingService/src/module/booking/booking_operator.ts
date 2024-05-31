@@ -60,7 +60,7 @@ export class BookingOperatorImpl implements BookingOperator {
                 await bookingDM.updateBooking(booking);
                 this.logger.info("successfully to cancel booking", { bookingId: bookingId });
             }
-        })
+        });
 
         this.logger.info("successfully to check booking status after initialize", { bookingId: bookingId });
     }

@@ -62,7 +62,7 @@ export class SeatManagementOperatorImpl implements SeatManagementOperator {
                     // if column is less than 10 no is row01, row02 ...
                     let no: string = `${seatRowNameAlphaMap.get(i)}${j}`;
                     if (j < 10) {
-                        no = `${seatRowNameAlphaMap.get(i)}0${j}`
+                        no = `${seatRowNameAlphaMap.get(i)}0${j}`;
                     }
 
                     // All seats in rows C, D, E, and F are VIP type
@@ -73,7 +73,7 @@ export class SeatManagementOperatorImpl implements SeatManagementOperator {
                             ofSeatTypeId: SeatTypeId.VIP,
                             column: j,
                             no: no
-                        })
+                        });
                     } else {
                         await seatDM.createSeat({
                             ofScreenId: screenId,
@@ -81,11 +81,11 @@ export class SeatManagementOperatorImpl implements SeatManagementOperator {
                             ofSeatTypeId: SeatTypeId.NORMAL,
                             column: j,
                             no: no
-                        })
+                        });
                     }
                 }
             }
-        })
+        });
     }
 }
 

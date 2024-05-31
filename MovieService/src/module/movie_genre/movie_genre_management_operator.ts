@@ -34,8 +34,8 @@ export class MovieGenreManagementOperatorImpl implements MovieGenreManagementOpe
             return {
                 id: createdMovieGenreId,
                 displayName
-            }
-        })
+            };
+        });
     }
 
     public async updateMovieGenre(id: number, displayName: string): Promise<MovieGenre> {
@@ -56,11 +56,11 @@ export class MovieGenreManagementOperatorImpl implements MovieGenreManagementOpe
                 throw new ErrorWithStatus(`display name ${displayName} has already taken`, status.ALREADY_EXISTS);
             }
 
-            movieGenreRecord.displayName = displayName
+            movieGenreRecord.displayName = displayName;
 
-            await movieGenreDM.updateMovieGenre(movieGenreRecord)
+            await movieGenreDM.updateMovieGenre(movieGenreRecord);
             return movieGenreRecord;
-        })
+        });
     }
 
     public async deleteMovieGenre(id: number): Promise<void> {

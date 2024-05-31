@@ -40,7 +40,7 @@ export class TokenPublicKeyDataAccessorImpl implements TokenPublicKeyDataAccesso
             rows = await this.knex
                 .select(ColNameUserServiceTokenPublicKeyData)
                 .from(TabNameUserServiceTokenPublicKey)
-                .where({ [ColNameUserServiceTokenPublicKeyId]: id })
+                .where({ [ColNameUserServiceTokenPublicKeyId]: id });
         } catch (error) {
             this.logger.error("failed to get token public key by id", { id, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);

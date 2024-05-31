@@ -1,4 +1,4 @@
-import { status } from "@grpc/grpc-js"
+import { status } from "@grpc/grpc-js";
 
 export class ErrorWithStatus extends Error {
     constructor(

@@ -52,7 +52,7 @@ export class CheckoutSessionDataAccessorImpl implements CheckoutSessionDataAcces
             const rows = await this.knex
                 .select()
                 .from(TabNamePaymentServiceCheckoutSession)
-                .where(ColNamePaymentServiceCheckoutSessionOfPaymentTransactionId, "=", ofPaymentTransactionId)
+                .where(ColNamePaymentServiceCheckoutSessionOfPaymentTransactionId, "=", ofPaymentTransactionId);
             if (rows.length === 0) {
                 this.logger.debug("no checkout session with payment transaction id found", { paymentTransactionId: ofPaymentTransactionId });
                 return null;

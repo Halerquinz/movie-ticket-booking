@@ -12,4 +12,4 @@ RUN npm run build
 # Set environment variables
 ENV NODE_ENV=development
 EXPOSE 20003
-ENTRYPOINT ["/start_service.sh"]
+ENTRYPOINT ["sh", "./scripts/start_service.sh"]

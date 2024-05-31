@@ -14,7 +14,7 @@ export class DecodeTokenResult {
 
 export interface TokenGenerator {
     generate(userId: number): Promise<string>,
-    decode(token: string): Promise<DecodeTokenResult>
+    decode(token: string): Promise<DecodeTokenResult>;
 }
 
 export class JWTGenerator implements TokenGenerator {
@@ -75,11 +75,11 @@ export class JWTGenerator implements TokenGenerator {
         return new Promise<string>((resolve, reject) => {
             jwt.sign({}, this.tokenPrivateKey, signOptions, (error, encodedJwt) => {
                 if (error) {
-                    this.logger.error("fail to sign jwt token", { error });
-                    return reject(new ErrorWithStatus("fail to sign jwt token", status.INTERNAL));
+                    this.logger.error("failed to sign jwt token", { error });
+                    return reject(new ErrorWithStatus("failed to sign jwt token", status.INTERNAL));
                 }
                 resolve(String(encodedJwt));
-            })
+            });
         });
     }
 
@@ -102,7 +102,7 @@ export class JWTGenerator implements TokenGenerator {
                             callback(null, tokenPublicKey);
                         }, (error) => {
                             callback(error);
-                        })
+                        });
                 },
                 verifyOptions,
                 (error, decoded: any) => {
@@ -116,8 +116,8 @@ export class JWTGenerator implements TokenGenerator {
 
                     resolve(new DecodeTokenResult(+decoded["jti"], +decoded["sub"], +decoded["exp"] * 1000));
                 }
-            )
-        })
+            );
+        });
     }
 
     private async getTokenPublicKey(keyId: number): Promise<string> {

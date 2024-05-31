@@ -105,7 +105,7 @@ export class UserPasswordDataAccessorImpl implements UserPasswordDataAccessor {
         return this.knex.transaction(async (trx) => {
             const trxDataAccessor = new UserPasswordDataAccessorImpl(trx, this.logger);
             return cb(trxDataAccessor);
-        })
+        });
     }
 }
 

@@ -1,5 +1,6 @@
-import { MovieTrailer } from "../../proto/gen/MovieTrailer";
 import { MoviePoster } from "./movie_poster";
+import { MovieTrailer } from "./movie_trailer";
+import { Movie as MovieProto } from "../../proto/gen/Movie";
 import { MovieType } from "./movie_type";
 
 export class Movie {
@@ -11,20 +12,21 @@ export class Movie {
         public release_date: number,
         public trailer: MovieTrailer,
         public poster: MoviePoster,
-        public movieType: MovieType
+        public movie_type: MovieType
     ) { }
 
-    public static fromProto(MovieProto: any | undefined): Movie {
-        const movieType = MovieType.fromProto(MovieProto?.movieType);
+    public static fromProto(movieProto: MovieProto | undefined | null): Movie {
+        const movieType = MovieType.fromProto(movieProto?.movieType);
+        const movieTrailer = MovieTrailer.fromProto(movieProto?.trailer);
         return new Movie(
-            MovieProto?.id || 0,
-            MovieProto?.title || "",
-            MovieProto?.description || "",
-            MovieProto?.duration || 0,
-            MovieProto?.releaseDate || 0,
-            MovieProto?.trailer || null,
-            MovieProto?.poster || null,
+            movieProto?.id || 0,
+            movieProto?.title || "",
+            movieProto?.description || "",
+            movieProto?.duration || 0,
+            movieProto?.releaseDate as number || 0,
+            movieTrailer,
+            movieProto?.poster as any || null,
             movieType
-        )
+        );
     }
 }

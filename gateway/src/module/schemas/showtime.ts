@@ -21,6 +21,6 @@ export class Showtime {
             ShowtimeProto?.timeEnd || 0,
             ShowtimeProto?.showtimeSlot || null,
             ShowtimeProto?.showtimeDayOfTheWeek || null,
-        )
+        );
     }
 }

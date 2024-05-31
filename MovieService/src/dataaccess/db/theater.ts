@@ -141,7 +141,7 @@ export class TheaterDataAccessorImpl implements TheaterDataAccessor {
         try {
             const rows = await this.knex
                 .select()
-                .from(TabNameMovieServiceTheaterTab)
+                .from(TabNameMovieServiceTheaterTab);
 
             return rows.map(row => new Theater(
                 +row[ColNameMovieServiceTheaterId],
@@ -170,7 +170,7 @@ export class TheaterDataAccessorImpl implements TheaterDataAccessor {
             row[ColNameMovieServiceTheaterLocation],
             +row[ColNameMovieServiceTheaterScreenCount],
             +row[ColNameMovieServiceTheaterSeatCount]
-        )
+        );
     }
 }
 

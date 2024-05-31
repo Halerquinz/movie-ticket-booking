@@ -50,7 +50,7 @@ export function getScreensRouter(
                 const screenId = +req.params.screenId;
                 await screenManagementOperator.deleteScreen(screenId);
                 res.json({});
-            }, next)
+            }, next);
         });
 
     return router;

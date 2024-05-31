@@ -63,7 +63,7 @@ export function getMovieGenresRouter(
                 const movieGenreId = +req.params.movieGenreId;
                 await movieGenreManagementOperator.deleteMovieGenre(movieGenreId);
                 res.json({});
-            }, next)
+            }, next);
         });
 
     return router;

@@ -56,7 +56,7 @@ export class MovieImageDataAccessorImpl implements MovieImageDataAccessor {
                 .from(TabNameMovieServiceMovieImageTab)
                 .where({
                     [ColNameMovieServiceMovieImageOfMovieId]: ofMovieId
-                })
+                });
 
             return rows.map(row => new MovieImage(
                 +row[ColNameMovieServiceMovieImageId],
@@ -118,7 +118,7 @@ export class MovieImageDataAccessorImpl implements MovieImageDataAccessor {
             +row[ColNameMovieServiceMovieImageOfMovieId],
             row[ColNameMovieServiceMovieOriginalFileName],
             row[ColNameMovieServiceMovieOriginalImageFileName],
-        )
+        );
     }
 }
 

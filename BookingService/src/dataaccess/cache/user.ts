@@ -9,7 +9,7 @@ export interface UserCacheDM {
 }
 
 export class UserCacheDMImpl implements UserCacheDM {
-    constructor(private readonly client: Client, private readonly cacheConfig: CacheConfig) {}
+    constructor(private readonly client: Client, private readonly cacheConfig: CacheConfig) { }
 
     public async set(userId: number, user: User): Promise<void> {
         return this.client.set(this.getKey(userId), user, this.cacheConfig.userCacheTtlInSeconds);

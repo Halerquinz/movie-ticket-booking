@@ -10,6 +10,6 @@ export class UserPermission {
             UserPermissionProto?.id || 0,
             UserPermissionProto?.permissionName || "",
             UserPermissionProto?.description || "",
-        )
+        );
     }
 }

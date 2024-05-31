@@ -10,7 +10,7 @@ export interface SessionManagementOperator {
         user: User,
         token: string,
         userRoleList: UserRole[],
-        userPermissionList: UserPermission[]
+        userPermissionList: UserPermission[];
     }>;
     logout(token: string): Promise<void>;
     getUserOfSession(token: string): Promise<{
@@ -18,7 +18,7 @@ export interface SessionManagementOperator {
         newToken: string | null,
         userRoleList: UserRole[];
         userPermissionList: UserPermission[];
-    }>
+    }>;
 }
 
 export class SessionManagementOperatorImpl implements SessionManagementOperator {
@@ -80,7 +80,7 @@ export class SessionManagementOperatorImpl implements SessionManagementOperator 
         const userRoleList = await this.getUserRoleListOfUser(user.id);
         const userPermissionList = await this.getUserPermissionListOfUser(user.id);
 
-        return { user, newToken, userRoleList, userPermissionList }
+        return { user, newToken, userRoleList, userPermissionList };
     }
 
     private async getUserRoleListOfUser(userId: number): Promise<UserRole[]> {

@@ -1,7 +1,7 @@
 import { token } from "brandi";
 
 export class ApplicationConfig {
-    public checkoutTime = "35m"
+    public checkoutTime = "35m";
 
     public static fromEnv(): ApplicationConfig {
         const config = new ApplicationConfig();

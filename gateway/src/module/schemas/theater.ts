@@ -14,6 +14,6 @@ export class Theater {
             theaterProto?.location || "",
             theaterProto?.screenCount || 0,
             theaterProto?.seatCount || 0,
-        )
+        );
     }
 } 

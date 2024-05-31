@@ -63,7 +63,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
                 .into(TabNameUserServiceUser);
             return +rows[0][ColNameUserServiceUserId];
         } catch (error) {
-            this.logger.error("create user fail", {
+            this.logger.error("create user failed", {
                 username,
                 displayName,
                 error
@@ -82,9 +82,9 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
                 })
                 .where(ColNameUserServiceUserId, user.id);
         } catch (error) {
-            this.logger.error("fail to update user profile", {
+            this.logger.error("failed to update user profile", {
                 user
-            })
+            });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
     }
@@ -101,7 +101,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
         } catch (error) {
             this.logger.error("failed to get user by userId", {
                 userId
-            })
+            });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
@@ -131,7 +131,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
         } catch (error) {
             this.logger.error("failed to get user by userId", {
                 userId
-            })
+            });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
@@ -160,7 +160,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
         } catch (error) {
             this.logger.error("failed to get user by username", {
                 username
-            })
+            });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
@@ -191,7 +191,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
         } catch (error) {
             this.logger.error("failed to get user by username", {
                 username
-            })
+            });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
 
@@ -221,13 +221,13 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
                 ${TabNameUserServiceUser}.${ColNameUserServiceUserDisplayName}
                 `)
                 .offset(offset)
-                .limit(limit)
+                .limit(limit);
             queryBuilder = this.applyUserListOrderByClause(queryBuilder, sortOrder);
             queryBuilder = queryBuilder.where((qb) => this.getUserListFilterOptionsWhereClause(qb, filterOptions));
             const rows = await queryBuilder;
             return rows.map((row: Record<string, any>) => this.getUserFromRow(row));
         } catch (error) {
-            this.logger.error("get user list fail", {
+            this.logger.error("get user list failed", {
                 offset,
                 limit,
                 sortOrder,
@@ -246,7 +246,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
                 .from(TabNameUserServiceUser)
                 .where((qb) => this.getUserListFilterOptionsWhereClause(qb, filterOptions));
         } catch (error) {
-            this.logger.error("get user count fail", {
+            this.logger.error("get user count failed", {
                 filterOptions,
                 error
             });
@@ -263,10 +263,10 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
             .orderByRaw(`ts-rank(${ColNameUserServiceUserFullTextSearchDocument}, plainto_tsquery (?)) DESC`, query)
             .limit(limit);
         try {
-            const rows = await queryBuilder
+            const rows = await queryBuilder;
             return rows.map((row: Record<string, any>) => this.getUserFromRow(row));
         } catch (error) {
-            this.logger.error("get user list fail", {
+            this.logger.error("get user list failed", {
                 query,
                 limit,
                 includedUserIdList,
@@ -280,7 +280,7 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
         return this.knex.transaction(async (trx) => {
             const trxDataAccessor = new UserDataAccessorImpl(trx, this.logger);
             return cb(trxDataAccessor);
-        })
+        });
     }
 
     private applyUserListOrderByClause(qb: Knex.QueryBuilder, sortOptions: UserListSortOrder): Knex.QueryBuilder {

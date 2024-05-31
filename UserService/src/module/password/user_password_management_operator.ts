@@ -10,7 +10,7 @@ import { HASHER_TOKEN, Hasher } from "./hasher";
 export interface UserPasswordManagementOperator {
     createUserPassword(userId: number, password: string): Promise<void>;
     updateUserPassword(userId: number, password: string): Promise<void>;
-    loginWithPassword(username: string, password: string): Promise<{ user: User; token: string }>;
+    loginWithPassword(username: string, password: string): Promise<{ user: User; token: string; }>;
 }
 
 export class UserPasswordManagementOperatorImpl implements UserPasswordManagementOperator {
@@ -98,7 +98,7 @@ export class UserPasswordManagementOperatorImpl implements UserPasswordManagemen
         });
     }
 
-    public async loginWithPassword(username: string, password: string): Promise<{ user: User; token: string }> {
+    public async loginWithPassword(username: string, password: string): Promise<{ user: User; token: string; }> {
         const user = await this.userDM.getUserByUsername(username);
         if (user === null) {
             this.logger.error("no user with username found", { username });

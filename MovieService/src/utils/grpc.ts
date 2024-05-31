@@ -8,11 +8,11 @@ export declare type GRPCClientUnaryCall<RequestType, ResponseType> = (
 export async function promisifyGRPCCall<RequestType, ResponseType>(
     clientUnaryCall: GRPCClientUnaryCall<RequestType, ResponseType>,
     request: RequestType
-): Promise<{ error: ServiceError | null; response: ResponseType | undefined }> {
+): Promise<{ error: ServiceError | null; response: ResponseType | undefined; }> {
     return new Promise((resolve) => {
         clientUnaryCall(request, (error, response) => {
             resolve({ error, response });
-        })
-    })
+        });
+    });
 }
 

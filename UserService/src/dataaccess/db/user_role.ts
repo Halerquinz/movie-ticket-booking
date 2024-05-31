@@ -160,7 +160,7 @@ export class UserRoleDataAccessorImpl implements UserRoleDataAccessor {
         return this.knex.transaction(async (trx) => {
             const trxDataAccessor = new UserRoleDataAccessorImpl(trx, this.logger);
             return cb(trxDataAccessor);
-        })
+        });
     }
 }
 

@@ -19,7 +19,7 @@ export interface BookingManagementOperator {
         offset: number,
         limit: number,
         bookingStatus: BookingStatus
-    ): Promise<BookingMetadata[]>
+    ): Promise<BookingMetadata[]>;
 }
 
 export class BookingManagementOperatorImpl implements BookingManagementOperator {

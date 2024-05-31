@@ -11,7 +11,7 @@ export interface ShowtimeListManagementOperator {
         requestTime: number
     ): Promise<{
         theater: Theater,
-        showtimeListOfTheater: ShowtimeDetail[]
+        showtimeListOfTheater: ShowtimeDetail[];
     }>;
     getShowtimeListOfTheaterByMovieId(
         theaterId: number,
@@ -19,7 +19,7 @@ export interface ShowtimeListManagementOperator {
         requestTime: number
     ): Promise<{
         theater: Theater,
-        showtimeListOfTheater: ShowtimeDetail[]
+        showtimeListOfTheater: ShowtimeDetail[];
     }>,
 }
 
@@ -34,7 +34,7 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
         requestTime: number
     ): Promise<{
         theater: Theater,
-        showtimeListOfTheater: ShowtimeDetail[]
+        showtimeListOfTheater: ShowtimeDetail[];
     }> {
         const { error: getShowtimeListOfTheaterError, response: getShowtimeListOfTheaterResponse } = await promisifyGRPCCall(
             this.movieServiceDM.getShowtimeListOfTheater.bind(this.movieServiceDM),
@@ -54,7 +54,7 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
         return {
             theater,
             showtimeListOfTheater
-        }
+        };
     }
 
     public async getShowtimeListOfTheaterByMovieId(
@@ -83,7 +83,7 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
         return {
             theater,
             showtimeListOfTheater
-        }
+        };
     }
 }
 

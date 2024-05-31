@@ -96,7 +96,7 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
                 timeStart: timeStart,
                 of_showtime_slot_id: showtimeSlotId,
                 of_showtime_day_of_the_week_id: showtimeDayOfTheWeekId
-            })
+            });
 
             return {
                 id: createdShowtimeId,
@@ -112,7 +112,7 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
                     id: showtimeSlotId,
                     displayName: ""
                 }
-            }
+            };
         });
     }
 
@@ -198,7 +198,7 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
                 row: seat.row,
                 seatType: seat.seatType as any,
                 status: status
-            })
+            });
         }
 
         return {
@@ -207,7 +207,7 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
             seats: seatsMetadata,
             showtime: showtimeRecord,
             theater: theater
-        }
+        };
     }
 
     private isValidReleaseDate(timestamp: number): boolean {
@@ -226,7 +226,7 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
         const hours = new Date(timestamp).getHours();
 
         if (hours < 17) return ShowtimeSlotType.BEFORE5PM;
-        return ShowtimeSlotType.AFTER5PM
+        return ShowtimeSlotType.AFTER5PM;
     }
 }
 

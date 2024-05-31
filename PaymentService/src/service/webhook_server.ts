@@ -15,11 +15,11 @@ export class WebhookHTTPServer {
     public start(): void {
         const server = this.getWebhookHTTPServer();
         server.listen(this.stripeConfig.port, () => {
-            console.log(`server webhook http is listening on port ${this.stripeConfig.port} `)
+            console.log(`server webhook http is listening on port ${this.stripeConfig.port} `);
             this.logger.info("started webhook http server", {
                 port: this.stripeConfig.port,
             });
-        })
+        });
     }
 
     private getWebhookHTTPServer(): express.Express {

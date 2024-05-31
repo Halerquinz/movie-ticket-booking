@@ -46,7 +46,7 @@ export class MovieTypeHasScreenTypeDataAccessorImpl implements MovieTypeHasScree
                 { movie_type_id: 4, screen_type_id: 4 },  // 3D Dubbing with 3D Small
                 { movie_type_id: 4, screen_type_id: 5 },  // 3D Dubbing with 3D Medium
                 { movie_type_id: 4, screen_type_id: 6 }   // 3D Dubbing with 3D Large
-            ])
+            ]);
         } catch (error) {
             this.logger.error("failed to insert movie type has screen type", error);
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
@@ -60,7 +60,7 @@ export class MovieTypeHasScreenTypeDataAccessorImpl implements MovieTypeHasScree
                 .count()
                 .from(TabNameMovieServiceMovieTypeHasScreenTypeTab);
         } catch (error) {
-            this.logger.error("get price count fail", {
+            this.logger.error("get price count failed", {
                 error
             });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
@@ -100,7 +100,7 @@ export class MovieTypeHasScreenTypeDataAccessorImpl implements MovieTypeHasScree
         return new MovieTypeHasScreenType(
             +row[ColNameMovieServiceMovieTypeHasScreenTypeMovieTypeId],
             +row[ColNameMovieServiceMovieTypeHasScreenTypeScreenTypeId]
-        )
+        );
     }
 }
 

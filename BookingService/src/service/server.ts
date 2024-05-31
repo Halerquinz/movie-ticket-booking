@@ -21,7 +21,7 @@ export class BookingServiceGRPCServer {
         server.addService(bookingServiceProtoGrpc.BookingService.service, this.handlerFactory.getBookingServiceHandlers());
         server.bindAsync(`0.0.0.0:${this.grpcServerConfig.port}`, ServerCredentials.createInsecure(), (error, port) => {
             if (error) {
-                this.logger.error("fail to start grpc server");
+                this.logger.error("failed to start grpc server");
             }
 
             console.log(`start grpc server on port ${port}`);
@@ -36,7 +36,7 @@ export class BookingServiceGRPCServer {
             defaults: false,
             oneofs: true,
             longs: Number
-        })
+        });
         const packageObject = loadPackageDefinition(packageDefinition) as unknown;
         return packageObject as ProtoGrpcType;
     }
