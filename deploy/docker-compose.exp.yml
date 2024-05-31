@@ -1,0 +1,77 @@
+version: "3.8"
+services:
+ gateway:
+    build: ../gateway
+    ports:
+      - '8080:8080'
+    env_file:
+      - ../config/.gateway.env
+    networks:
+      - intranet
+      - default
+    restart: always
+
+ user_service_db:
+    image: 'postgres:14.2-bullseye'
+    ports:
+      - '5432:5432'
+    env_file: 
+      - ../config/.user_service_db.env
+    restart: always
+    networks:
+      - intranet
+    volumes:
+      - ../db-data/user_service:/var/lib/postgresql/data
+
+ payment_service_db:
+    image: 'postgres:14.2-bullseye'
+    ports:
+      - '5435:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=movie_ticket_booking_payment_service_db
+    restart: always
+    networks:
+      - intranet
+    volumes:
+      - ../db-data/payment_service:/var/lib/postgresql/data
+
+ user_service:
+    build: ../UserService
+    env_file:
+      - ../config/.user_service.env
+    depends_on:
+      - user_service_db
+    networks:
+      - intranet
+    restart: always
+
+ payment_service:
+    build: ../PaymentService
+    ports:
+      - 20000:20000
+    env_file:
+      - ../config/.payment_service.env
+    depends_on:
+      - payment_service_db
+    networks:
+      - intranet
+    restart: always
+
+ stripe-cli:
+    image: stripe/stripe-cli
+    command: listen --api-key sk_test_51P6wPQP8gU29IW1UUuoTwgIr7S53CY3B9bPXkLvOJQAhlW1XeBK95avwaX03VcR760BmvarFq4itDgmt0PCxUf6m00HQ3ObFsm  --events checkout.session.completed,checkout.session.expired --forward-to "0.0.0.0:4200/webhook"
+    tty: true
+    stdin_open: true
+    restart: unless-stopped
+    networks:
+      - default
+      - intranet
+    ports:
+      - "4242:4242"
+
+networks:
+  intranet: {}
+  default: {}
+    
