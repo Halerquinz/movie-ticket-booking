@@ -42,6 +42,17 @@ export function getTheatersRouter(
         })
     );
 
+    router.get(
+        "/api/theaters",
+        theatersManageAuthMiddleware,
+        asyncHandler(async (req, res, next) => {
+            errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
+                const theaterList = await theaterManagementOperator.getTheaterList();
+                res.json({ theater_list: theaterList });
+            }, next);
+        })
+    );
+
     router.delete(
         "/api/theaters/:theaterId",
         theatersManageAuthMiddleware,

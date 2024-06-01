@@ -13,8 +13,8 @@ export async function up(knex: Knex): Promise<void> {
     if (!(await knex.schema.hasTable(TabNameUserServiceUser))) {
         await knex.schema.createTable(TabNameUserServiceUser, (table) => {
             table.increments("user_id", { primaryKey: true });
-            table.string('username', 64).notNullable().unique();
-            table.string('display_name', 256).notNullable();
+            table.string("username", 64).notNullable().unique();
+            table.string("display_name", 256).notNullable();
 
             table.index(["username"], "user_service_user_username_idx");
             table.index(["display_name"], "user_service_user_display_name_idx");
@@ -84,7 +84,7 @@ export async function up(knex: Knex): Promise<void> {
     if (!(await knex.schema.hasTable(TabNameUserServicePassword))) {
         await knex.schema.createTable(TabNameUserServicePassword, (table) => {
             table.integer("of_user_id");
-            table.string('hash', 256).notNullable();
+            table.string("hash", 256).notNullable();
 
             table.primary(["of_user_id"]);
             table.foreign("of_user_id").references("user_id").inTable(TabNameUserServiceUser);

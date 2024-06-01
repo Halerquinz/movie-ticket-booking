@@ -9,6 +9,7 @@ export interface TheaterManagementOperator {
     createTheater(displayName: string, location: string): Promise<Theater>;
     updateTheater(id: number, displayName: string, location: string): Promise<Theater>;
     getTheater(id: number): Promise<Theater>;
+    getTheaterList(): Promise<Theater[]>;
     deleteTheater(id: number): Promise<void>;
 }
 
@@ -61,6 +62,10 @@ export class TheaterManagementOperatorImpl implements TheaterManagementOperator 
         }
 
         return theater;
+    }
+
+    public async getTheaterList(): Promise<Theater[]> {
+        return this.theaterDM.getTheaterList();
     }
 
     public async deleteTheater(id: number): Promise<void> {

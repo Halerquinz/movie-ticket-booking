@@ -505,6 +505,16 @@ export class MovieServiceHandlerFactory {
                 }
             },
 
+            GetTheaterList: async (call, callback) => {
+                const req = call.request;
+                try {
+                    const theaterList = await this.theaterManagementOperator.getTheaterList();
+                    callback(null, { theaterList });
+                } catch (error) {
+                    this.handleError(error, callback);
+                }
+            },
+
             GetShowtimeMetadata: async (call, callback) => {
                 const req = call.request;
                 if (req.showtimeId === undefined) {

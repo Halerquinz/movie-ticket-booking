@@ -16,6 +16,7 @@ service MovieService {
 
    rpc CreateTheater(CreateTheaterRequest) returns (CreateTheaterResponse) {}
    rpc GetTheater(GetTheaterRequest) returns (GetTheaterResponse) {}
+   rpc GetTheaterList(GetTheaterListRequest) returns (GetTheaterListResponse) {}
    rpc DeleteTheater(DeleteTheaterRequest) returns (DeleteTheaterResponse) {}
 
    rpc CreateScreen(CreateScreenRequest) returns (CreateScreenResponse) {}
@@ -317,6 +318,13 @@ message GetTheaterRequest {
 
 message GetTheaterResponse {
     Theater theater = 1;
+}
+
+message GetTheaterListRequest {
+}
+
+message GetTheaterListResponse {
+    repeated Theater theater_list = 1;
 }
 
 message DeleteTheaterRequest {

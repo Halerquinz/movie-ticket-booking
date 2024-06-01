@@ -39,12 +39,12 @@ export class CheckoutSessionHandlerImpl implements CheckoutSessionHandler {
         let checkoutSession: Stripe.Response<Stripe.Checkout.Session>;
         try {
             checkoutSession = await this.stripe.checkout.sessions.create({
-                payment_method_types: ['card'],
+                payment_method_types: ["card"],
                 line_items: [{
                     price_data: {
-                        currency: 'vnd',
+                        currency: "vnd",
                         product_data: {
-                            name: 'Đặt vé xem phim',
+                            name: "Đặt vé xem phim",
                             images: ["https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/1/image/c5f0a1eff4c394a251036189ccddaacd/p/o/poster_dune_2_bb_3_no_qr_1_.jpg"],
                             description: `Tên phim: ${paymentTransactionDetail.movieTitle} || Ghế: ${paymentTransactionDetail.seatNo} || Ngày: ${this.unixTimeToVNDateTime(paymentTransactionDetail.showtimeStartDate)} || Rạp: ${paymentTransactionDetail.theaterName} || Phòng: ${paymentTransactionDetail.screenName} `,
                         },
@@ -57,10 +57,10 @@ export class CheckoutSessionHandlerImpl implements CheckoutSessionHandler {
                     user_id: paymentTransactionDetail.userId,
                     booking_id: paymentTransactionDetail.bookingId
                 },
-                mode: 'payment',
+                mode: "payment",
                 expires_at: this.msToSecond(paymentTransactionDetail.expireAt),
-                success_url: 'https://www.facebook.com/',
-                cancel_url: 'https://www.instagram.com/'
+                success_url: "https://www.facebook.com/",
+                cancel_url: "https://www.instagram.com/"
             });
         } catch (error) {
             this.logger.error("failed to create checkout session with stripe", { error });
@@ -106,13 +106,13 @@ export class CheckoutSessionHandlerImpl implements CheckoutSessionHandler {
 
     private unixTimeToVNDateTime(timestamp: number): string {
         return new Date(timestamp).toLocaleString("vi-VN", {
-            weekday: 'long',
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
+            weekday: "long",
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
             hour12: false
         });
     }

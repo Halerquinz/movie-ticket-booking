@@ -10,6 +10,7 @@ export interface TheaterManagementOperator {
         displayName: string,
         location: string,
     ): Promise<Theater>;
+    getTheaterList(): Promise<Theater[]>;
     deleteTheater(id: number): Promise<void>;
 }
 
@@ -34,6 +35,19 @@ export class TheaterManagementOperatorImpl implements TheaterManagementOperator 
         }
 
         return Theater.fromProto(createTheaterResponse);
+    }
+
+    public async getTheaterList(): Promise<Theater[]> {
+        const { error: getTheaterListError, response: getTheaterListResponse } = await promisifyGRPCCall(
+            this.movieServiceDM.getTheaterList.bind(this.movieServiceDM), {}
+        );
+
+        if (getTheaterListError !== null) {
+            this.logger.error("failed to call movie_service.getTheaterList()", { error: getTheaterListError });
+            throw new ErrorWithHTTPCode("failed to get theater list", getHttpCodeFromGRPCStatus(getTheaterListError.code));
+        }
+
+        return getTheaterListResponse?.theaterList?.map((theater) => Theater.fromProto(theater)) || [];
     }
 
     public async deleteTheater(id: number): Promise<void> {

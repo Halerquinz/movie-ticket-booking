@@ -24,8 +24,8 @@ export class WebhookHTTPServer {
 
     private getWebhookHTTPServer(): express.Express {
         const server = express();
-        server.post('/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
-            const signature = req.headers['stripe-signature'] as string;
+        server.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
+            const signature = req.headers["stripe-signature"] as string;
             await this.checkoutOperator.onPaymentThirdPartyResponse(req.body, signature);
         });
         return server;
