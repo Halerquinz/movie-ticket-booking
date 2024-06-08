@@ -45,7 +45,6 @@ export class CheckoutSessionHandlerImpl implements CheckoutSessionHandler {
                         currency: "vnd",
                         product_data: {
                             name: "Đặt vé xem phim",
-                            images: ["https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/1/image/c5f0a1eff4c394a251036189ccddaacd/p/o/poster_dune_2_bb_3_no_qr_1_.jpg"],
                             description: `Tên phim: ${paymentTransactionDetail.movieTitle} || Ghế: ${paymentTransactionDetail.seatNo} || Ngày: ${this.unixTimeToVNDateTime(paymentTransactionDetail.showtimeStartDate)} || Rạp: ${paymentTransactionDetail.theaterName} || Phòng: ${paymentTransactionDetail.screenName} `,
                         },
                         unit_amount: paymentTransactionDetail.amount,
@@ -59,8 +58,8 @@ export class CheckoutSessionHandlerImpl implements CheckoutSessionHandler {
                 },
                 mode: "payment",
                 expires_at: this.msToSecond(paymentTransactionDetail.expireAt),
-                success_url: "https://www.facebook.com/",
-                cancel_url: "https://www.instagram.com/"
+                success_url: "http://localhost:5173/",
+                cancel_url: "http://localhost:5173/"
             });
         } catch (error) {
             this.logger.error("failed to create checkout session with stripe", { error });

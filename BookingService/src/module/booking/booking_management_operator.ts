@@ -24,7 +24,6 @@ export interface BookingManagementOperator {
 }
 
 export class BookingManagementOperatorImpl implements BookingManagementOperator {
-    private readonly bookingTimeInMS: number;
     private readonly bookingTimeBeforeShowtimeStartInMs: number;
 
     constructor(
@@ -35,7 +34,6 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
         private readonly movieServiceDM: MovieServiceClient,
         private readonly checkBookingStatusAfterInitializeQueue: CheckBookingStatusAfterInitializeQueue
     ) {
-        this.bookingTimeInMS = ms(this.applicationConfig.expireTimeAfterInitializeBooking);
         this.bookingTimeBeforeShowtimeStartInMs = ms(this.applicationConfig.bookingTimeBeforeShowtimeStart);
     }
 
@@ -46,6 +44,12 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
         if (showtime === null) {
             this.logger.error("no showtime with showtime_id found", { showtimeId: showtimeId });
             throw new ErrorWithStatus(`no showtime with showtime_id=${showtimeId}`, status.NOT_FOUND);
+        }
+
+        const requestTime = this.timer.getCurrentTime();
+        if (requestTime > showtime.timeStart - this.bookingTimeBeforeShowtimeStartInMs) {
+            this.logger.error("expired time to create booking of showtime_id found", { showtimeId: showtimeId });
+            throw new ErrorWithStatus(`expired time to create booking of showtime_id=${showtimeId}`, status.DEADLINE_EXCEEDED);
         }
 
         const seat = await this.getSeat(seatId);
@@ -63,12 +67,6 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
         if (amount !== price.price) {
             this.logger.error("invalid amount", { amount });
             throw new ErrorWithStatus(`invalid amount ${amount}`, status.INVALID_ARGUMENT);
-        }
-
-        const requestTime = this.timer.getCurrentTime();
-        if (requestTime > showtime.timeStart - this.bookingTimeBeforeShowtimeStartInMs) {
-            this.logger.error("expired time to create booking of showtime_id found", { showtimeId: showtimeId });
-            throw new ErrorWithStatus(`expired time to create booking of showtime_id=${showtimeId}`, status.DEADLINE_EXCEEDED);
         }
 
         const bookingId = await this.bookingDM.createBooking({

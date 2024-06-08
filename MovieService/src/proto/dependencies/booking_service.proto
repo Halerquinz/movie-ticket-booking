@@ -63,7 +63,6 @@ message GetBookingListProcessingAndConfirmedByShowtimeIdResponse {
     repeated Booking booking_list = 1;
 }
 
-
 message Theater {
     uint32 id = 1;
     string display_name = 2;

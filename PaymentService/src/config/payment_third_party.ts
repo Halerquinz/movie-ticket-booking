@@ -4,7 +4,7 @@ export class PaymentThirdPartyConfig {
     public host = "127.0.0.0";
     public port = 5432;
     public user = "postgres";
-    public password = "201171";
+    public password = "admin";
     public database = "movie_ticket_booking_payment_service_db";
 
     public static fromEnv(): PaymentThirdPartyConfig {

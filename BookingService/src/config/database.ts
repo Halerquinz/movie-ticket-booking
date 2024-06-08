@@ -4,7 +4,7 @@ export class DatabaseConfig {
     public host = "127.0.0.1";
     public port = 5434;
     public user = "postgres";
-    public password = "201171";
+    public password = "admin";
     public database = "movie_ticket_booking_booking_service_db";
 
     public static fromEnv(): DatabaseConfig {

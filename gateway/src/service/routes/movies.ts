@@ -55,12 +55,10 @@ export function getMoviesRouter(
                     imageData: fileList["poster" as any][0].buffer,
                     originalFileName: fileList["poster" as any][0].originalname
                 };
-                const imageList = fileList["image_list"].map((image: any) => (
-                    {
-                        imageData: image.buffer,
-                        originalFileName: image.originalname
-                    }
-                ));
+                const imageList = fileList["image_list"].map((image: any) => ({
+                    imageData: image.buffer,
+                    originalFileName: image.originalname
+                }));
 
                 const title = req.body.title as string;
                 const description = req.body.description as string;
@@ -86,19 +84,6 @@ export function getMoviesRouter(
     );
 
     router.get(
-        "/api/movies/search",
-        userLoggedInAuthMiddleware,
-        asyncHandler(async (req, res) => {
-            const query = `${req.query.query || ""}`;
-            const limit = +(req.query.limit || DEFAULT_GET_MOVIE_LIST_LIMIT);
-            const movie_list = await movieManagementOperator.searchMovieList(query, limit);
-            res.json({
-                movie_list: movie_list,
-            });
-        })
-    );
-
-    router.get(
         "/api/movies/detail/:movieId",
         moviesManageAuthMiddleware,
         asyncHandler(async (req, res, next) => {
@@ -111,6 +96,19 @@ export function getMoviesRouter(
                     image_list: imageList
                 });
             }, next);
+        })
+    );
+
+    router.get(
+        "/api/movies/search",
+        userLoggedInAuthMiddleware,
+        asyncHandler(async (req, res) => {
+            const query = `${req.query.query || ""}`;
+            const limit = +(req.query.limit || DEFAULT_GET_MOVIE_LIST_LIMIT);
+            const movie_list = await movieManagementOperator.searchMovieList(query, limit);
+            res.json({
+                movie_list: movie_list,
+            });
         })
     );
 

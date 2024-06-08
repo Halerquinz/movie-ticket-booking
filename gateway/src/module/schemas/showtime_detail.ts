@@ -22,8 +22,8 @@ export class ShowtimeDetail {
             showtimeDetailProto?.theaterName || "",
             showtimeDetailProto?.screenName || "",
             showtimeDetailProto?.seatCount || 0,
-            showtimeDetailProto?.timeStart || 0,
-            showtimeDetailProto?.timeEnd || 0
+            showtimeDetailProto?.timeStart || 0 as any,
+            showtimeDetailProto?.timeEnd || 0 as any
         );
     }
 }

@@ -101,7 +101,6 @@ export class BookingDataAccessorImpl implements BookingDataAccessor {
         }
     }
 
-
     public async getBookingProcessingCount(showtimeId: number, seatId: number): Promise<number> {
         try {
             const rows = await this.knex
@@ -178,6 +177,7 @@ export class BookingDataAccessorImpl implements BookingDataAccessor {
                 .andWhere({
                     [ColNameMBookingServiceBookingStatus]: bookingStatus
                 })
+                .orderBy(ColNameMBookingServiceBookingTime, "desc")
                 .offset(offset)
                 .limit(limit);
 

@@ -44,7 +44,6 @@ export function getTheatersRouter(
 
     router.get(
         "/api/theaters",
-        theatersManageAuthMiddleware,
         asyncHandler(async (req, res, next) => {
             errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
                 const theaterList = await theaterManagementOperator.getTheaterList();
@@ -69,7 +68,7 @@ export function getTheatersRouter(
         asyncHandler(async (req, res, next) => {
             errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
                 const theaterId = +req.params.theaterId;
-                const requestTime = +req.body.request_time;
+                const requestTime = +(req.query.request_time || 0);
                 const { theater, showtimeListOfTheater } = await showtimeListManagementOperator.getShowtimeListOfTheater(
                     theaterId,
                     requestTime
@@ -82,12 +81,12 @@ export function getTheatersRouter(
         }));
 
     router.get(
-        "/api/theaters/:theaterId/showtimes/movie/:movieId",
+        "/api/theaters/:theaterId/movies/:movieId/showtimes",
         asyncHandler(async (req, res, next) => {
             errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
                 const movieId = +req.params.movieId;
                 const theaterId = +req.params.theaterId;
-                const requestTime = +req.body.request_time;
+                const requestTime = +(req.query.request_time || 0);
                 const { theater, showtimeListOfTheater } = await showtimeListManagementOperator.getShowtimeListOfTheaterByMovieId(
                     theaterId,
                     movieId,

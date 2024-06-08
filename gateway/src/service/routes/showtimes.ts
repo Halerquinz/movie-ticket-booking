@@ -48,7 +48,6 @@ export function getShowtimesRouter(
 
     router.get(
         "/api/showtimes/:showtimeId",
-        userLoggedInAuthMiddleware,
         asyncHandler(async (req, res, next) => {
             errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
                 const showtimeId = +req.params.showtimeId;

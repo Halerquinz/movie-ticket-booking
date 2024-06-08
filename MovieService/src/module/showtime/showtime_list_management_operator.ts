@@ -5,7 +5,6 @@ import { Logger } from "winston";
 import {
     MOVIE_DATA_ACCESSOR_TOKEN,
     MovieDataAccessor,
-    MovieTypeDataAccessor,
     SCREEN_DATA_ACCESSOR_TOKEN,
     SHOWTIME_DATA_ACCESSOR_TOKEN,
     ScreenDataAccessor,
@@ -15,9 +14,8 @@ import {
     Theater,
     TheaterDataAccessor
 } from "../../dataaccess/db";
-import { ErrorWithStatus, LOGGER_TOKEN, TIMER_TOKEN, Timer } from "../../utils";
-import ms from "ms";
 import { ShowtimeDetail } from "../../proto/gen/ShowtimeDetail";
+import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 
 export interface ShowtimeListManagementOperator {
     getShowtimeListOfTheater(
@@ -38,18 +36,13 @@ export interface ShowtimeListManagementOperator {
 }
 
 export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagementOperator {
-    private readonly showtimeRangeInMS: number;
-
     constructor(
         private readonly logger: Logger,
         private readonly showtimeDM: ShowtimeDataAccessor,
         private readonly movieDM: MovieDataAccessor,
         private readonly screenDM: ScreenDataAccessor,
         private readonly theaterDM: TheaterDataAccessor,
-        private readonly timer: Timer
-    ) {
-        this.showtimeRangeInMS = ms("1d");
-    }
+    ) { }
 
     public async getShowtimeListOfTheater(theaterId: number, requestTime: number): Promise<{
         theater: Theater;
@@ -57,9 +50,8 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
     }> {
         if (!this.isValidDate(requestTime)) {
             this.logger.error("invalid date", { requestTime });
-            requestTime = this.timer.getCurrentTime();
+            throw new ErrorWithStatus("invalid date", status.INVALID_ARGUMENT);
         }
-        requestTime = this.convertTimeTo0AMInTheSameDay(requestTime);
 
         const theaterRecord = await this.theaterDM.getTheaterById(theaterId);
         if (theaterRecord === null) {
@@ -67,7 +59,7 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
             throw new ErrorWithStatus(`no movie with theater id ${theaterRecord} found`, status.NOT_FOUND);
         }
 
-        const showtimeList = await this.showtimeDM.getShowtimeListOfTheaterId(theaterId, requestTime, this.showtimeRangeInMS);
+        const showtimeList = await this.showtimeDM.getShowtimeListOfTheaterIdDuringTheDay(theaterId, requestTime);
 
         const showtimeListOfTheater = await this.getShowtimeListOfTheaterMetadata(showtimeList, theaterRecord);
 
@@ -87,9 +79,8 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
     }> {
         if (!this.isValidDate(requestTime)) {
             this.logger.error("invalid date", { requestTime });
-            requestTime = this.timer.getCurrentTime();
+            throw new ErrorWithStatus("invalid date", status.INVALID_ARGUMENT);
         }
-        requestTime = this.convertTimeTo0AMInTheSameDay(requestTime);
 
         const theaterRecord = await this.theaterDM.getTheaterById(theaterId);
         if (theaterRecord === null) {
@@ -97,14 +88,14 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
             throw new ErrorWithStatus(`no movie with theater id ${theaterRecord} found`, status.NOT_FOUND);
         }
 
-        const showtimeList = await this.showtimeDM.getShowtimeListOfTheaterByMovieId(
+        const showtimeList = await this.showtimeDM.getShowtimeListOfTheaterByMovieIdDuringTheDay(
             theaterId,
             movieId,
             requestTime,
-            this.showtimeRangeInMS
         );
 
         const showtimeListOfTheater = await this.getShowtimeListOfTheaterMetadata(showtimeList, theaterRecord);
+
 
         return {
             theater: theaterRecord,
@@ -178,15 +169,11 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
                 screenName: screen.displayName,
                 seatCount: screen.screenType.seatCount,
                 theaterName: theaterRecord.displayName,
-                timeEnd: showtimeList[i].timeStart,
+                timeEnd: showtimeList[i].timeEnd,
                 timeStart: showtimeList[i].timeStart
             });
         }
         return showtimeListOfTheater;
-    }
-
-    private convertTimeTo0AMInTheSameDay(requestTime: number): number {
-        return new Date(requestTime).setHours(0, 0, 0, 0);
     }
 
     private isValidDate(date: number): boolean {
@@ -202,7 +189,6 @@ injected(
     MOVIE_DATA_ACCESSOR_TOKEN,
     SCREEN_DATA_ACCESSOR_TOKEN,
     THEATER_DATA_ACCESSOR_TOKEN,
-    TIMER_TOKEN
 );
 
 export const SHOWTIME_LIST_MANAGEMENT_OPERATOR_TOKEN = token<ShowtimeListManagementOperator>("ShowtimeListManagementOperator");

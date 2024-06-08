@@ -104,11 +104,12 @@ export class MovieManagementOperatorImpl implements MovieManagementOperator {
 
         if (getCurrentShowingMovieListResponse?.movieList === undefined) return [];
 
-        let movieListProto = getCurrentShowingMovieListResponse?.movieList as any;
-        movieListProto = await Promise.all(movieListProto.map(async (movieProto: any) => {
-            movieProto.poster = await this.posterProtoToPosterConverter.convert(movieProto?.poster);
-            return movieProto;
-        }));
+        let movieListProto = getCurrentShowingMovieListResponse.movieList as any;
+        movieListProto = await Promise.all(
+            movieListProto.map(async (movieProto: any) => {
+                movieProto.poster = await this.posterProtoToPosterConverter.convert(movieProto?.poster);
+                return movieProto;
+            }));
 
         return (
             movieListProto.map((movieProto: MovieProto) => {

@@ -39,9 +39,12 @@ export class PaymentServiceHandlersFactory {
                 if (req.bookingId === undefined) {
                     return callback({ message: "booking id is required", code: status.INVALID_ARGUMENT });
                 }
+                if (req.userId === undefined) {
+                    return callback({ message: "user id is required", code: status.INVALID_ARGUMENT });
+                }
 
                 try {
-                    await this.paymentTransactionManagementOperator.cancelPaymentTransaction(req.bookingId);
+                    await this.paymentTransactionManagementOperator.cancelPaymentTransaction(req.bookingId, req.userId);
                     callback(null, {});
                 } catch (error) {
                     this.handleError(error, callback);

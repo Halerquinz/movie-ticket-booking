@@ -5,7 +5,8 @@ import { BookingServiceClient } from "../../proto/gen/BookingService";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGRPCCall, } from "../../utils";
 import { AuthenticatedUserInformation } from "../../service/utils";
 import { Booking, BookingMetadata, BookingStatus } from "../schemas";
-
+import { POSTER_PROTO_TO_POSTER_CONVERTER_TOKEN, PosterProtoToPosterConverter } from "../schemas/converters";
+import { BookingMetadata as BookingMetadataProto } from "../../proto/gen/BookingMetadata";
 
 export interface BookingManagementOperator {
     createBooking(
@@ -26,6 +27,7 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
     constructor(
         private readonly bookingServiceDM: BookingServiceClient,
         private readonly logger: Logger,
+        private readonly posterProtoToPosterConverter: PosterProtoToPosterConverter,
     ) { }
 
     public async createBooking(
@@ -63,14 +65,27 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
             throw new ErrorWithHTTPCode("failed to get booking list", getHttpCodeFromGRPCStatus(getBookingListError.code));
         }
 
-        return getBookingListResponse?.bookingList?.map((booking) => BookingMetadata.fromProto(booking)) || [];
+        if (getBookingListResponse?.bookingList === undefined) return [];
+
+        let bookingListProto = getBookingListResponse.bookingList as any;
+        bookingListProto = await Promise.all(
+            bookingListProto.map(async (bookingMetadataProto: any) => {
+                bookingMetadataProto.movie.poster =
+                    await this.posterProtoToPosterConverter.convert(bookingMetadataProto.movie.poster);
+                return bookingMetadataProto;
+            }));
+
+        return bookingListProto.map(
+            (bookingeMetadataProto: BookingMetadataProto) => BookingMetadata.fromProto(bookingeMetadataProto)
+        ) || [];
     }
 }
 
 injected(
     BookingManagementOperatorImpl,
     BOOKING_SERVICE_DM_TOKEN,
-    LOGGER_TOKEN
+    LOGGER_TOKEN,
+    POSTER_PROTO_TO_POSTER_CONVERTER_TOKEN
 );
 
 export const BOOKING_MANAGEMENT_OPERATOR_TOKEN = token<BookingManagementOperatorImpl>("BookingManagementOperator");

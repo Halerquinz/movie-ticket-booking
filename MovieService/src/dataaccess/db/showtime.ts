@@ -31,16 +31,14 @@ export interface ShowtimeDataAccessor {
     deleteShowtime(id: number): Promise<void>;
     getShowtime(id: number): Promise<Showtime | null>;
     getShowtimeList(): Promise<Showtime[]>;
-    getShowtimeListOfTheaterId(
+    getShowtimeListOfTheaterIdDuringTheDay(
         theaterId: number,
         requestTime: number,
-        showtimeRange: number
     ): Promise<Showtime[]>;
-    getShowtimeListOfTheaterByMovieId(
+    getShowtimeListOfTheaterByMovieIdDuringTheDay(
         theaterId: number,
         movieId: number,
         requestTime: number,
-        showtimeRange: number
     ): Promise<Showtime[]>;
     withTransaction<T>(cb: (dataAccessor: ShowtimeDataAccessor) => Promise<T>): Promise<T>;
 }
@@ -199,10 +197,9 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
         }
     }
 
-    public async getShowtimeListOfTheaterId(
+    public async getShowtimeListOfTheaterIdDuringTheDay(
         theaterId: number,
         requestTime: number,
-        showtimeRange: number
     ): Promise<Showtime[]> {
         try {
             const rows = await this.knex
@@ -221,7 +218,7 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
                     `theater.${ColNameMovieServiceTheaterId}`
                 )
                 .where(`theater.${ColNameMovieServiceTheaterId}`, "=", theaterId)
-                .whereRaw(`?? - ?? <= ?`, [`showtime.${ColNameMovieServiceShowtimeTimeStart}`, requestTime, showtimeRange])
+                .whereBetween(`showtime.${ColNameMovieServiceShowtimeTimeStart}`, [requestTime, this.getNextDateIn0AM(requestTime)])
                 .orderBy(`showtime.${ColNameMovieServiceShowtimeOfMovieId}`, "asc")
                 .orderBy(`showtime.${ColNameMovieServiceShowtimeTimeStart}`, "asc");
 
@@ -233,11 +230,10 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
     }
 
 
-    public async getShowtimeListOfTheaterByMovieId(
+    public async getShowtimeListOfTheaterByMovieIdDuringTheDay(
         theaterId: number,
         movieId: number,
         requestTime: number,
-        showtimeRange: number
     ): Promise<Showtime[]> {
         try {
             const rows = await this.knex
@@ -257,7 +253,7 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
                 )
                 .where(`theater.${ColNameMovieServiceTheaterId}`, "=", theaterId)
                 .andWhere(`showtime.${ColNameMovieServiceShowtimeOfMovieId}`, "=", movieId)
-                .whereRaw(`?? - ?? <= ?`, [`showtime.${ColNameMovieServiceShowtimeTimeStart}`, requestTime, showtimeRange])
+                .whereBetween(`showtime.${ColNameMovieServiceShowtimeTimeStart}`, [requestTime, this.getNextDateIn0AM(requestTime)])
                 .orderBy(`showtime.${ColNameMovieServiceShowtimeOfMovieId}`, "asc")
                 .orderBy(`showtime.${ColNameMovieServiceShowtimeTimeStart}`, "asc");
 
@@ -295,6 +291,13 @@ export class ShowtimeDataAccessorImpl implements ShowtimeDataAccessor {
             showtimeDayOfTheWeek,
             showtimeSlot
         );
+    }
+
+    private getNextDateIn0AM(requestTime: number): number {
+        let date = new Date(requestTime);
+        date.setDate(date.getDate() + 1);
+        date.setHours(0, 0, 0, 0);
+        return date.getTime();
     }
 
     private getShowtimeFromJoinedRow(row: Record<string, any>): Showtime {

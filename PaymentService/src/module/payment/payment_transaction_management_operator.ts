@@ -19,7 +19,7 @@ import { Booking, BookingStatus, Movie, Screen, Seat, Showtime, Theater } from "
 
 export interface PaymentTransactionManagementOperator {
     createPaymentTransaction(bookingId: number, userId: number): Promise<string>;
-    cancelPaymentTransaction(bookingId: number): Promise<void>;
+    cancelPaymentTransaction(bookingId: number, userId: number): Promise<void>;
 }
 
 export class PaymentTransactionManagementOperatorImpl implements PaymentTransactionManagementOperator {
@@ -135,16 +135,22 @@ export class PaymentTransactionManagementOperatorImpl implements PaymentTransact
         return url;
     }
 
-    public async cancelPaymentTransaction(bookingId: number): Promise<void> {
+    public async cancelPaymentTransaction(bookingId: number, userId: number): Promise<void> {
+        const booking = this.getBookingWithStatus(bookingId, userId, BookingStatus.PENDING);
+        if (booking === null) {
+            this.logger.error("can not find booking with bookingId with status pending", { bookingId: bookingId });
+            throw new ErrorWithStatus(`can not find booking with bookingId with status pending`, status.NOT_FOUND);
+        }
+
         const paymentTransaction = await this.paymentTransactionDM.getPaymentTransactionByBookingIdWithXLock(bookingId);
         if (paymentTransaction === null) {
-            this.logger.error("can not find payment transaction with bookingId");
+            this.logger.error("can not find payment transaction with bookingId", { bookingId: bookingId });
             throw new ErrorWithStatus(`can not find payment transaction with bookingId`, status.INVALID_ARGUMENT);
         }
 
         const checkoutSession = await this.checkoutSessionDM.getCheckoutSession(paymentTransaction.id);
         if (checkoutSession === null) {
-            this.logger.error("can not find payment transaction with paymentTransactionId");
+            this.logger.error("can not find payment transaction with paymentTransactionId", { paymentTransactionId: paymentTransaction.id });
             throw new ErrorWithStatus(`can not find payment transaction with paymentTransactionID`, status.NOT_FOUND);
         }
 

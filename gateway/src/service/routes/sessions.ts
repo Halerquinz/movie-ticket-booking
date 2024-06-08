@@ -77,6 +77,21 @@ export function getSessionsRouter(
         })
     );
 
+    router.delete("/api/sessions/user/bookings/:bookingId/payment-transaction",
+        userLoggedInAuthMiddleware,
+        asyncHandler(async (req, res, next) => {
+            errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
+                const bookingId = +req.params.bookingId;
+                const authenticatedUserInformation = res.locals.authenticatedUserInformation as AuthenticatedUserInformation;
+                await paymentTransactionManagementOperator.cancelPaymentTransaction(
+                    authenticatedUserInformation,
+                    bookingId
+                );
+                res.json({});
+            }, next);
+        })
+    );
+
     router.get("/api/sessions/user/bookings",
         userLoggedInAuthMiddleware,
         asyncHandler(async (req, res, next) => {
@@ -91,7 +106,7 @@ export function getSessionsRouter(
                     limit,
                     bookingStatus
                 );
-                res.json({ bookingList: bookingList });
+                res.json({ booking_list: bookingList });
             }, next);
         })
     );

@@ -401,8 +401,8 @@ message ShowtimeDetail {
     string movie_name = 3;
     MovieType movie_type = 4;
     string screen_name = 5;
-    uint32 time_start = 6;
-    uint32 time_end = 7;
+    uint64 time_start = 6;
+    uint64 time_end = 7;
     uint32 seat_count = 8;
 }
 

@@ -7,3 +7,4 @@ redis-data
 Web
 config/*.env
 .DS_Store
+db-data-backup

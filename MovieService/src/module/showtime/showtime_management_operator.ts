@@ -142,6 +142,7 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
             this.logger.error("no screen with screen_id found", { screenId: showtimeRecord.ofScreenId });
             throw new ErrorWithStatus(`no screen with screen_id=${showtimeRecord.ofScreenId}`, status.NOT_FOUND);
         }
+
         const seats = await this.seatDM.getSeatsOfScreen(showtimeRecord.ofScreenId);
 
         const movie = await this.movieDM.getMovieById(showtimeRecord.ofMovieId);
@@ -156,10 +157,11 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
             throw new ErrorWithStatus(`no theater with theater_id=${screen.ofTheaterId}`, status.NOT_FOUND);
         }
 
-        const { error: getBookingListProcessingAndConfirmedError, response: getBookingListProcessingAndConfirmedResponse } = await promisifyGRPCCall(
-            this.bookingServiceDM.getBookingListProcessingAndConfirmedByShowtimeId.bind(this.bookingServiceDM),
-            { showtimeId: id }
-        );
+        const { error: getBookingListProcessingAndConfirmedError, response: getBookingListProcessingAndConfirmedResponse } =
+            await promisifyGRPCCall(
+                this.bookingServiceDM.getBookingListProcessingAndConfirmedByShowtimeId.bind(this.bookingServiceDM),
+                { showtimeId: id }
+            );
 
         if (getBookingListProcessingAndConfirmedError !== null) {
             this.logger.error("failed to call booking.getBookingListProcessingAndConfirmedByShowtimeId()", {
@@ -168,20 +170,24 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
             throw new ErrorWithStatus("failed to get booking list processing and confirmed", status.INTERNAL);
         }
 
-        const bookingListProcessingAndConfirmed = getBookingListProcessingAndConfirmedResponse?.bookingList!;
 
         const bookingProcessingAndConfirmedMap = new Map<number, number>();
-        for (const booking of bookingListProcessingAndConfirmed) {
-            bookingProcessingAndConfirmedMap.set(booking.ofSeatId!, booking.bookingStatus!);
+        // Fix if getBookingListProcessingAndConfirmedResponse.bookingList is undefined can't loop this
+        if (getBookingListProcessingAndConfirmedResponse && getBookingListProcessingAndConfirmedResponse.bookingList) {
+            const bookingListProcessingAndConfirmed = getBookingListProcessingAndConfirmedResponse?.bookingList!;
+
+            for (const booking of bookingListProcessingAndConfirmed) {
+                bookingProcessingAndConfirmedMap.set(booking.ofSeatId!, booking.bookingStatus!);
+            }
         }
 
         let seatsMetadata: SeatMetadata[] = [];
         for (const seat of seats) {
             const price = await this.priceDM.getPrice(
-                showtimeRecord.ofMovieId,
+                movie.movieType?.id!,
                 seat.seatType?.id!,
-                showtimeRecord.showtimeDayOfTheWeek?.id!,
                 showtimeRecord.showtimeSlot?.id!,
+                showtimeRecord.showtimeDayOfTheWeek?.id!,
             );
 
             let status: _SeatStatus_Values = _SeatStatus_Values.AVAILABLE;

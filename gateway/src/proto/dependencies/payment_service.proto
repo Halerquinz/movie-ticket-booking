@@ -33,6 +33,7 @@ message CreatePaymentTransactionResponse {
 
 message CancelPaymentTransactionRequest {
     uint32 booking_id = 1;
+    uint32 user_id = 2;
 }
 
 message CancelPaymentTransactionResponse { }

@@ -403,6 +403,7 @@ export class MovieServiceHandlerFactory {
                         req.movieId,
                         requestTime
                     );
+
                     callback(null, { theater: theater, showtimeListOfTheater: showtimeListOfTheater });
                 } catch (error) {
                     this.handleError(error, callback);

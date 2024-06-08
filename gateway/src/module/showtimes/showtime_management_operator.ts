@@ -4,6 +4,7 @@ import { MOVIE_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
 import { MovieServiceClient } from "../../proto/gen/MovieService";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGRPCCall, } from "../../utils";
 import { Showtime, ShowtimeMetadata } from "../schemas";
+import { POSTER_PROTO_TO_POSTER_CONVERTER_TOKEN, PosterProtoToPosterConverter } from "../schemas/converters";
 
 export interface ShowtimeManagementOperator {
     createShowtime(
@@ -18,6 +19,7 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
     constructor(
         private readonly movieServiceDM: MovieServiceClient,
         private readonly logger: Logger,
+        private readonly posterProtoToPosterConverter: PosterProtoToPosterConverter,
     ) { }
 
     public async createShowtime(
@@ -49,14 +51,21 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
             throw new ErrorWithHTTPCode("failed to get showtime metadata", getHttpCodeFromGRPCStatus(getShowtimeMetadataError.code));
         }
 
-        return ShowtimeMetadata.fromProto(getShowtimeMetadataResponse?.showtimeMetadata);
+        const showtimeMetadata = getShowtimeMetadataResponse?.showtimeMetadata;
+        if (showtimeMetadata?.movie && showtimeMetadata.movie.poster) {
+            const moviePosterProto = await this.posterProtoToPosterConverter.convert(getShowtimeMetadataResponse?.showtimeMetadata?.movie?.poster);
+            showtimeMetadata.movie.poster = moviePosterProto as any;
+        }
+
+        return ShowtimeMetadata.fromProto(showtimeMetadata);
     }
 }
 
 injected(
     ShowtimeManagementOperatorImpl,
     MOVIE_SERVICE_DM_TOKEN,
-    LOGGER_TOKEN
+    LOGGER_TOKEN,
+    POSTER_PROTO_TO_POSTER_CONVERTER_TOKEN
 );
 
 export const SHOWTIME_MANAGEMENT_OPERATOR_TOKEN = token<ShowtimeManagementOperatorImpl>("ShowtimeManagementOperator");
