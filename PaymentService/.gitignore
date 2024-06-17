@@ -90,3 +90,6 @@ src/proto/gen
 
 # DS_Store file
 .DS_Store
+
+# Env file
+.env
