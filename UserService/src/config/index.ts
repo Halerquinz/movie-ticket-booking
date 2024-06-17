@@ -7,6 +7,7 @@ import { TOKEN_CONFIG_TOKEN } from "./token";
 import { DISTRIBUTED_CONFIG_TOKEN } from "./distributed";
 import { APPLICATION_CONFIG_TOKEN } from "./application";
 import { ELASTICSEARCH_CONFIG_TOKEN } from "./elasticsearch";
+import { CACHE_CONFIG_TOKEN } from "./cache";
 
 export * from "./config";
 export * from "./database";
@@ -16,6 +17,7 @@ export * from "./token";
 export * from "./distributed";
 export * from "./application";
 export * from "./elasticsearch";
+export * from "./cache";
 
 export function bindToContainer(container: Container): void {
     container.bind(USER_SERVICE_CONFIG_TOKEN).toInstance(UserServiceConfig.fromEnv).inSingletonScope();
@@ -46,5 +48,9 @@ export function bindToContainer(container: Container): void {
     container
         .bind(ELASTICSEARCH_CONFIG_TOKEN)
         .toInstance(() => UserServiceConfig.fromEnv().elasticsearchConfig)
+        .inSingletonScope();
+    container
+        .bind(CACHE_CONFIG_TOKEN)
+        .toInstance(() => UserServiceConfig.fromEnv().cacheConfig)
         .inSingletonScope();
 }
