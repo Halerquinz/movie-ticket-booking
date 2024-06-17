@@ -96,7 +96,6 @@ export class ShowtimeListManagementOperatorImpl implements ShowtimeListManagemen
 
         const showtimeListOfTheater = await this.getShowtimeListOfTheaterMetadata(showtimeList, theaterRecord);
 
-
         return {
             theater: theaterRecord,
             showtimeListOfTheater

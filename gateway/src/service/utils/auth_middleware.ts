@@ -19,7 +19,7 @@ export class AuthenticatedUserInformation {
 export declare type AuthorizationFunc = (authUserInfo: AuthenticatedUserInformation, request: Request) => boolean;
 
 export interface AuthMiddlewareFactory {
-    getAuthMiddleware(authorizationFunc: AuthorizationFunc, shouldRenewToken: boolean): RequestHandler
+    getAuthMiddleware(authorizationFunc: AuthorizationFunc, shouldRenewToken: boolean): RequestHandler;
 }
 
 export const MOVIE_TICKET_BOOKING_AUTH_COOKIE_NAME = "MOVIE_TICKET_BOOKING_AUTH";
@@ -67,7 +67,7 @@ export class AuthMiddlewareFactoryImpl implements AuthMiddlewareFactory {
             }
 
             next();
-        })
+        });
     }
 }
 

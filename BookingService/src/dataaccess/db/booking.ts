@@ -231,7 +231,6 @@ export class BookingDataAccessorImpl implements BookingDataAccessor {
             }
             return this.getBookingFromRow(rows[0]);
         } catch (error) {
-            console.log(error);
             this.logger.error("failed to get booking", { error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }

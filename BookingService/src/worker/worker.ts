@@ -1,9 +1,9 @@
 import { injected, token } from "brandi";
 import { Logger } from "winston";
-import { BullWorker, WORKER_TOKEN } from "../dataaccess/bull/worker/worker";
-import { BOOKING_MANAGEMENT_OPERATOR_TOKEN, BOOKING_OPERATOR_TOKEN, BookingManagementOperator, BookingOperator } from "../module/booking";
-import { LOGGER_TOKEN } from "../utils";
 import { QueueNameCheckBookingStatusAfterInitialize } from "../dataaccess/bull";
+import { BullWorker, WORKER_TOKEN } from "../dataaccess/bull/worker/worker";
+import { BOOKING_OPERATOR_TOKEN, BookingOperator } from "../module/booking";
+import { LOGGER_TOKEN } from "../utils";
 
 export class BookingServiceWorker {
     constructor(

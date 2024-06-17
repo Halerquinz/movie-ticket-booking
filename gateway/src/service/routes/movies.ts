@@ -85,7 +85,6 @@ export function getMoviesRouter(
 
     router.get(
         "/api/movies/detail/:movieId",
-        moviesManageAuthMiddleware,
         asyncHandler(async (req, res, next) => {
             errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
                 const movieId = +req.params.movieId;
