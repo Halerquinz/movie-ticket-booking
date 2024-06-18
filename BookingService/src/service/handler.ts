@@ -16,6 +16,9 @@ export class BookingServiceHandlersFactory {
                 if (req.amount === undefined) {
                     return callback({ message: "amount is required", code: status.INVALID_ARGUMENT });
                 }
+                if (req.currency === undefined) {
+                    return callback({ message: "currency is required", code: status.INVALID_ARGUMENT });
+                }
                 if (req.userId === undefined) {
                     return callback({ message: "user id is required", code: status.INVALID_ARGUMENT });
                 }
@@ -31,7 +34,8 @@ export class BookingServiceHandlersFactory {
                         req.userId,
                         req.showtimeId,
                         req.seatId,
-                        req.amount
+                        req.amount,
+                        req.currency
                     );
                     callback(null, { booking: booking as any });
                 } catch (error) {

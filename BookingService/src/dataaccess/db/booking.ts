@@ -4,6 +4,7 @@ import { Knex } from "knex";
 import { Logger } from "winston";
 import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 import { KNEX_INSTANCE_TOKEN } from "./knex";
+import { APPLICATION_CONFIG_TOKEN, ApplicationConfig } from "../../config";
 
 export interface CreateBookingArguments {
     ofUserId: number,
@@ -12,6 +13,7 @@ export interface CreateBookingArguments {
     bookingTime: number,
     bookingStatus: BookingStatus,
     amount: number;
+    currency: string;
 }
 
 export enum BookingStatus {
@@ -29,7 +31,8 @@ export class Booking {
         public ofSeatId: number,
         public bookingTime: number,
         public bookingStatus: BookingStatus,
-        public amount: number
+        public amount: number,
+        public currency: string
     ) { }
 }
 
@@ -53,11 +56,13 @@ const ColNameMBookingServiceOfSeatId = "of_seat_id";
 const ColNameMBookingServiceBookingTime = "booking_time";
 const ColNameMBookingServiceBookingStatus = "booking_status";
 const ColNameMBookingServiceBookingAmount = "amount";
+const ColNameBookingServiceBookingCurrency = "currency";
 
 export class BookingDataAccessorImpl implements BookingDataAccessor {
     constructor(
         private readonly knex: Knex<any, any[]>,
         private readonly logger: Logger,
+        private readonly applicationConfig: ApplicationConfig
     ) { }
 
     public async createBooking(args: CreateBookingArguments): Promise<number> {
@@ -69,7 +74,8 @@ export class BookingDataAccessorImpl implements BookingDataAccessor {
                     [ColNameMBookingServiceOfSeatId]: args.ofSeatId,
                     [ColNameMBookingServiceBookingTime]: args.bookingTime,
                     [ColNameMBookingServiceBookingStatus]: args.bookingStatus,
-                    [ColNameMBookingServiceBookingAmount]: args.amount
+                    [ColNameMBookingServiceBookingAmount]: args.amount * this.applicationConfig.multiplier,
+                    [ColNameBookingServiceBookingCurrency]: args.currency
                 })
                 .returning(ColNameMBookingServiceBookingId)
                 .into(TabNameBookingServiceBooking);
@@ -238,7 +244,7 @@ export class BookingDataAccessorImpl implements BookingDataAccessor {
 
     public async withTransaction<T>(cb: (dataAccessor: BookingDataAccessor) => Promise<T>): Promise<T> {
         return this.knex.transaction(async (tx) => {
-            const txDataAccessor = new BookingDataAccessorImpl(tx, this.logger);
+            const txDataAccessor = new BookingDataAccessorImpl(tx, this.logger, this.applicationConfig);
             return cb(txDataAccessor);
         });
     }
@@ -251,11 +257,12 @@ export class BookingDataAccessorImpl implements BookingDataAccessor {
             +row[ColNameMBookingServiceOfSeatId],
             +row[ColNameMBookingServiceBookingTime],
             +row[ColNameMBookingServiceBookingStatus],
-            +row[ColNameMBookingServiceBookingAmount]
+            +((+row[ColNameMBookingServiceBookingAmount]) / this.applicationConfig.multiplier),
+            row[ColNameBookingServiceBookingCurrency]
         );
     }
 }
 
-injected(BookingDataAccessorImpl, KNEX_INSTANCE_TOKEN, LOGGER_TOKEN);
+injected(BookingDataAccessorImpl, KNEX_INSTANCE_TOKEN, LOGGER_TOKEN, APPLICATION_CONFIG_TOKEN);
 
 export const BOOKING_DATA_ACCESSOR_TOKEN = token<BookingDataAccessor>("BookingDataAccessor"); 

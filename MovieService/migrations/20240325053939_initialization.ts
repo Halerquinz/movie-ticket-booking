@@ -310,9 +310,12 @@ export async function up(knex: Knex): Promise<void> {
                 .inTable(TabNameMovieServiceShowtimeDayOfTheWeek)
                 .onDelete("CASCADE");
 
-            table.bigInteger("price").notNullable();
+            table.specificType("currency", "char(3)").notNullable();
+            table.bigInteger("price").unsigned().notNullable();
 
-            table.unique(["of_movie_type_id", "of_seat_type_id", "of_showtime_slot_id", "of_showtime_day_of_the_week_id"]);
+            table.unique(["of_movie_type_id", "of_seat_type_id", "of_showtime_slot_id", "of_showtime_day_of_the_week_id"], {
+                indexName: "movie_service_movie_type_seat_type_showtime_slot_showtime_day_of_the_week_idx"
+            });
         });
     }
 }

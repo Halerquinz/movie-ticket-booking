@@ -110,7 +110,6 @@ export class PaymentTransactionManagementOperatorImpl implements PaymentTransact
 
         const paymentTransactionId = await this.paymentTransactionDM.createPaymentTransaction(
             bookingId,
-            booking.amount,
             requestTime,
             PaymentTransactionStatus.PENDING
         );
@@ -121,6 +120,7 @@ export class PaymentTransactionManagementOperatorImpl implements PaymentTransact
                 userId,
                 bookingId,
                 booking.amount,
+                booking.currency,
                 theater.displayName,
                 screen.displayName,
                 seat.no,

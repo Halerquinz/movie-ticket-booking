@@ -26,7 +26,8 @@ export class Booking {
         public ofSeatId: number,
         public bookingTime: number,
         public bookingStatus: BookingStatus,
-        public amount: number
+        public amount: number,
+        public currency: string
     ) { }
 
     public static fromProto(bookingProto: BookingProto | undefined | null): Booking {
@@ -37,7 +38,8 @@ export class Booking {
             bookingProto?.ofSeatId || 0,
             bookingProto?.bookingTime as number || 0,
             bookingProto?.bookingStatus as any || 0,
-            bookingProto?.amount || 0
+            bookingProto?.amount as number || 0,
+            bookingProto?.currency || ""
         );
     }
 }

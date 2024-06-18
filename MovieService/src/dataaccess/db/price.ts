@@ -5,6 +5,7 @@ import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 import { KNEX_INSTANCE_TOKEN } from "./knex";
 import { status } from "@grpc/grpc-js";
 import { Price } from "./models";
+import { APPLICATION_CONFIG_TOKEN, ApplicationConfig } from "../../config";
 
 export interface PriceDataAccessor {
     insertDefaultPrice(): Promise<void>;
@@ -25,12 +26,13 @@ const ColNameMovieServicePriceOfSeatTypeId = "of_seat_type_id";
 const ColNameMovieServicePriceOfShowtimeSlotId = "of_showtime_slot_id";
 const ColNameMovieServicePriceOfShowtimeDayOfTheWeekId = "of_showtime_day_of_the_week_id";
 const ColNameMovieServicePrice = "price";
-
+const ColNameMovieServicePriceCurrency = "currency";
 
 export class PriceDataAccessorImpl implements PriceDataAccessor {
     constructor(
         private readonly knex: Knex<any, any[]>,
-        private readonly logger: Logger
+        private readonly logger: Logger,
+        private readonly applicationConfig: ApplicationConfig
     ) { }
 
     public async getPrice(
@@ -65,7 +67,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
             +row[ColNameMovieServicePriceOfSeatTypeId],
             +row[ColNameMovieServicePriceOfShowtimeDayOfTheWeekId],
             +row[ColNameMovieServicePriceOfShowtimeSlotId],
-            +row[ColNameMovieServicePrice]
+            (+row[ColNameMovieServicePrice]) / this.applicationConfig.multiplier,
+            row[ColNameMovieServicePriceCurrency]
         );
     }
 
@@ -93,7 +96,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 1,
                     of_showtime_slot_id: 1,
                     of_showtime_day_of_the_week_id: 1,
-                    price: 100000
+                    price: 100000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 2D Subtitle Normal T2-T5 After 5pm
                 {
@@ -101,7 +105,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 1,
                     of_showtime_slot_id: 2,
                     of_showtime_day_of_the_week_id: 1,
-                    price: 100000
+                    price: 100000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 2D Subtitle Normal T6-CN Before 5pm
                 {
@@ -109,7 +114,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 1,
                     of_showtime_slot_id: 1,
                     of_showtime_day_of_the_week_id: 2,
-                    price: 120000
+                    price: 120000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 2D Subtitle Normal T6-CN After 5pm
                 {
@@ -117,7 +123,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 1,
                     of_showtime_slot_id: 2,
                     of_showtime_day_of_the_week_id: 2,
-                    price: 120000
+                    price: 120000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
 
                 // 2D Subtitle Vip T2-T5 Before 5pm
@@ -126,7 +133,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 2,
                     of_showtime_slot_id: 1,
                     of_showtime_day_of_the_week_id: 1,
-                    price: 110000
+                    price: 110000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 2D Subtitle Vip T2-T5 After 5pm
                 {
@@ -134,7 +142,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 2,
                     of_showtime_slot_id: 2,
                     of_showtime_day_of_the_week_id: 1,
-                    price: 110000
+                    price: 110000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 2D Subtitle Vip T6-CN Before 5pm
                 {
@@ -142,7 +151,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 2,
                     of_showtime_slot_id: 1,
                     of_showtime_day_of_the_week_id: 2,
-                    price: 130000
+                    price: 130000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 2D Subtitle Vip T6-CN After 5pm
                 {
@@ -150,7 +160,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 2,
                     of_showtime_slot_id: 2,
                     of_showtime_day_of_the_week_id: 2,
-                    price: 130000
+                    price: 130000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
 
 
@@ -160,7 +171,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 1,
                     of_showtime_slot_id: 1,
                     of_showtime_day_of_the_week_id: 1,
-                    price: 100000
+                    price: 100000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 2D Dubbing Normal T2-T5 After 5pm
                 {
@@ -168,7 +180,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 1,
                     of_showtime_slot_id: 2,
                     of_showtime_day_of_the_week_id: 1,
-                    price: 100000
+                    price: 100000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 2D Dubbing Normal T6-CN Before 5pm
                 {
@@ -176,7 +189,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 1,
                     of_showtime_slot_id: 1,
                     of_showtime_day_of_the_week_id: 2,
-                    price: 120000
+                    price: 120000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 2D Dubbing Normal T6-CN After 5pm
                 {
@@ -184,7 +198,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 1,
                     of_showtime_slot_id: 2,
                     of_showtime_day_of_the_week_id: 2,
-                    price: 120000
+                    price: 120000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
 
                 // 2D Dubbing Vip T2-T5 Before 5pm
@@ -193,7 +208,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 2,
                     of_showtime_slot_id: 1,
                     of_showtime_day_of_the_week_id: 1,
-                    price: 110000
+                    price: 110000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 2D Dubbing Vip T2-T5 After 5pm
                 {
@@ -201,7 +217,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 2,
                     of_showtime_slot_id: 2,
                     of_showtime_day_of_the_week_id: 1,
-                    price: 110000
+                    price: 110000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 2D Dubbing Vip T6-CN Before 5pm
                 {
@@ -209,7 +226,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 2,
                     of_showtime_slot_id: 1,
                     of_showtime_day_of_the_week_id: 2,
-                    price: 130000
+                    price: 130000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 2D Dubbing Vip T6-CN After 5pm
                 {
@@ -217,7 +235,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 2,
                     of_showtime_slot_id: 2,
                     of_showtime_day_of_the_week_id: 2,
-                    price: 130000
+                    price: 130000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
 
                 // 3D Subtitle Normal T2-T5 Before 5pm
@@ -226,7 +245,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 1,
                     of_showtime_slot_id: 1,
                     of_showtime_day_of_the_week_id: 1,
-                    price: 150000
+                    price: 150000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 3D Subtitle Normal T2-T5 After 5pm
                 {
@@ -234,7 +254,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 1,
                     of_showtime_slot_id: 2,
                     of_showtime_day_of_the_week_id: 1,
-                    price: 150000
+                    price: 150000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 3D Subtitle Normal T6-CN Before 5pm
                 {
@@ -242,7 +263,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 1,
                     of_showtime_slot_id: 1,
                     of_showtime_day_of_the_week_id: 2,
-                    price: 170000
+                    price: 170000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 3D Subtitle Normal T6-CN After 5pm
                 {
@@ -250,7 +272,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 1,
                     of_showtime_slot_id: 2,
                     of_showtime_day_of_the_week_id: 2,
-                    price: 170000
+                    price: 170000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
 
                 // 3D Subtitle Vip T2-T5 Before 5pm
@@ -259,7 +282,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 2,
                     of_showtime_slot_id: 1,
                     of_showtime_day_of_the_week_id: 1,
-                    price: 160000
+                    price: 160000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 3D Subtitle Vip T2-T5 After 5pm
                 {
@@ -267,7 +291,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 2,
                     of_showtime_slot_id: 2,
                     of_showtime_day_of_the_week_id: 1,
-                    price: 160000
+                    price: 160000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 3D Subtitle Vip T6-CN Before 5pm
                 {
@@ -275,7 +300,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 2,
                     of_showtime_slot_id: 1,
                     of_showtime_day_of_the_week_id: 2,
-                    price: 180000
+                    price: 180000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 3D Subtitle Vip T6-CN After 5pm
                 {
@@ -283,7 +309,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 2,
                     of_showtime_slot_id: 2,
                     of_showtime_day_of_the_week_id: 2,
-                    price: 180000
+                    price: 180000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
 
                 // 3D Dubbing Normal T2-T5 Before 5pm
@@ -292,7 +319,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 1,
                     of_showtime_slot_id: 1,
                     of_showtime_day_of_the_week_id: 1,
-                    price: 150000
+                    price: 150000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 3D Dubbing Normal T2-T5 After 5pm
                 {
@@ -300,7 +328,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 1,
                     of_showtime_slot_id: 2,
                     of_showtime_day_of_the_week_id: 1,
-                    price: 150000
+                    price: 150000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 3D Dubbing Normal T6-CN Before 5pm
                 {
@@ -308,7 +337,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 1,
                     of_showtime_slot_id: 1,
                     of_showtime_day_of_the_week_id: 2,
-                    price: 170000
+                    price: 170000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 3D Dubbing Normal T6-CN After 5pm
                 {
@@ -316,7 +346,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 1,
                     of_showtime_slot_id: 2,
                     of_showtime_day_of_the_week_id: 2,
-                    price: 170000
+                    price: 170000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
 
                 // 3D Dubbing Vip T2-T5 Before 5pm
@@ -325,7 +356,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 2,
                     of_showtime_slot_id: 1,
                     of_showtime_day_of_the_week_id: 1,
-                    price: 160000
+                    price: 160000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 3D Dubbing Vip T2-T5 After 5pm
                 {
@@ -333,7 +365,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 2,
                     of_showtime_slot_id: 2,
                     of_showtime_day_of_the_week_id: 1,
-                    price: 160000
+                    price: 160000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 3D Dubbing Vip T6-CN Before 5pm
                 {
@@ -341,7 +374,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 2,
                     of_showtime_slot_id: 1,
                     of_showtime_day_of_the_week_id: 2,
-                    price: 180000
+                    price: 180000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
                 // 3D Dubbing Vip T6-CN After 5pm
                 {
@@ -349,7 +383,8 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
                     of_seat_type_id: 2,
                     of_showtime_slot_id: 2,
                     of_showtime_day_of_the_week_id: 2,
-                    price: 180000
+                    price: 180000 * this.applicationConfig.multiplier,
+                    currency: "VND"
                 },
             ]);
         } catch (error) {
@@ -360,12 +395,12 @@ export class PriceDataAccessorImpl implements PriceDataAccessor {
 
     public async withTransaction<T>(cb: (dataAccessor: PriceDataAccessor) => Promise<T>): Promise<T> {
         return this.knex.transaction(async (tx) => {
-            const txDataAccessor = new PriceDataAccessorImpl(tx, this.logger);
+            const txDataAccessor = new PriceDataAccessorImpl(tx, this.logger, this.applicationConfig);
             return cb(txDataAccessor);
         });
     }
 }
 
-injected(PriceDataAccessorImpl, KNEX_INSTANCE_TOKEN, LOGGER_TOKEN);
+injected(PriceDataAccessorImpl, KNEX_INSTANCE_TOKEN, LOGGER_TOKEN, APPLICATION_CONFIG_TOKEN);
 
 export const PRICE_DATA_ACCESSOR_TOKEN = token<PriceDataAccessor>("PriceDataAccessor");

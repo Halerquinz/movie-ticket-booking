@@ -12,7 +12,8 @@ export async function up(knex: Knex): Promise<void> {
 
             table.bigInteger("booking_time").notNullable();
             table.smallint("booking_status").notNullable().defaultTo(0);
-            table.integer("amount").notNullable();
+            table.bigInteger("amount").unsigned().notNullable();
+            table.specificType("currency", "char(3)").notNullable();
 
             table.unique(["of_showtime_id", "of_seat_id", "booking_time"]);
 

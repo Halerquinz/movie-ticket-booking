@@ -143,6 +143,7 @@ export class Price {
         public ofSeatTypeId: number,
         public ofShowtimeSlotId: number,
         public ofShowtimeDayOfTheWeekId: number,
-        public price: number
+        public price: number,
+        public currency: string
     ) { }
 }

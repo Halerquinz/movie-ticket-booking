@@ -12,6 +12,7 @@ export class PaymentTransactionDetail {
         public userId: number,
         public bookingId: number,
         public amount: number,
+        public currency: string,
         public theaterName: string,
         public screenName: string,
         public seatNo: string,
@@ -42,7 +43,7 @@ export class CheckoutSessionHandlerImpl implements CheckoutSessionHandler {
                 payment_method_types: ["card"],
                 line_items: [{
                     price_data: {
-                        currency: "vnd",
+                        currency: paymentTransactionDetail.currency,
                         product_data: {
                             name: "Đặt vé xem phim",
                             description: `Tên phim: ${paymentTransactionDetail.movieTitle} || Ghế: ${paymentTransactionDetail.seatNo} || Ngày: ${this.unixTimeToVNDateTime(paymentTransactionDetail.showtimeStartDate)} || Rạp: ${paymentTransactionDetail.theaterName} || Phòng: ${paymentTransactionDetail.screenName} `,
@@ -58,8 +59,8 @@ export class CheckoutSessionHandlerImpl implements CheckoutSessionHandler {
                 },
                 mode: "payment",
                 expires_at: this.msToSecond(paymentTransactionDetail.expireAt),
-                success_url: "http://localhost:5173/",
-                cancel_url: "http://localhost:5173/"
+                success_url: "",
+                cancel_url: ""
             });
         } catch (error) {
             this.logger.error("failed to create checkout session with stripe", { error });

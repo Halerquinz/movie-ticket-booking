@@ -15,7 +15,6 @@ export class PaymentTransaction {
     constructor(
         public id: number,
         public ofBookingId: number,
-        public amount: number,
         public status: PaymentTransactionStatus,
         public requestTime: number,
         public updateTime: number
@@ -23,7 +22,7 @@ export class PaymentTransaction {
 }
 
 export interface PaymentTransactionDataAccessor {
-    createPaymentTransaction(ofBookingId: number, amount: number, requestTime: number, transactionStatus: PaymentTransactionStatus): Promise<number>;
+    createPaymentTransaction(ofBookingId: number, requestTime: number, transactionStatus: PaymentTransactionStatus): Promise<number>;
     updatePaymentTransaction(paymentTransaction: PaymentTransaction): Promise<void>;
     getPaymentTransactionWithXLock(id: number): Promise<PaymentTransaction | null>;
     getPaymentTransactionByBookingIdWithXLock(bookingId: number): Promise<PaymentTransaction | null>;
@@ -35,7 +34,6 @@ export interface PaymentTransactionDataAccessor {
 const TabNamePaymentServicePaymentTransaction = "payment_service_payment_transaction_tab";
 const ColNamePaymentServicePaymentTransactionId = "payment_transaction_id";
 const ColNamePaymentServicePaymentTransactionOfBookingId = "of_booking_id";
-const ColNamePaymentServicePaymentTransactionAmount = "amount";
 const ColNamePaymentServicePaymentTransactionRequestTime = "request_time";
 const ColNamePaymentServicePaymentTransactionUpdateTime = "update_time";
 const ColNamePaymentServicePaymentTransactionStatus = "status";
@@ -49,7 +47,6 @@ export class PaymentTransactionDataAccessorImpl implements PaymentTransactionDat
 
     public async createPaymentTransaction(
         ofBookingId: number,
-        amount: number,
         requestTime: number,
         transactionStatus: PaymentTransactionStatus
     ): Promise<number> {
@@ -57,7 +54,6 @@ export class PaymentTransactionDataAccessorImpl implements PaymentTransactionDat
             const rows = await this.knex
                 .insert({
                     [ColNamePaymentServicePaymentTransactionOfBookingId]: ofBookingId,
-                    [ColNamePaymentServicePaymentTransactionAmount]: amount,
                     [ColNamePaymentServicePaymentTransactionStatus]: transactionStatus,
                     [ColNamePaymentServicePaymentTransactionRequestTime]: requestTime,
                     [ColNamePaymentServicePaymentTransactionUpdateTime]: this.timer.getCurrentTime()
@@ -78,7 +74,6 @@ export class PaymentTransactionDataAccessorImpl implements PaymentTransactionDat
                 .table(TabNamePaymentServicePaymentTransaction)
                 .update({
                     [ColNamePaymentServicePaymentTransactionOfBookingId]: paymentTransaction.ofBookingId,
-                    [ColNamePaymentServicePaymentTransactionAmount]: paymentTransaction.amount,
                     [ColNamePaymentServicePaymentTransactionStatus]: paymentTransaction.status,
                     [ColNamePaymentServicePaymentTransactionRequestTime]: paymentTransaction.requestTime,
                     [ColNamePaymentServicePaymentTransactionUpdateTime]: this.timer.getCurrentTime()
@@ -197,7 +192,6 @@ export class PaymentTransactionDataAccessorImpl implements PaymentTransactionDat
         return new PaymentTransaction(
             +row[ColNamePaymentServicePaymentTransactionId],
             +row[ColNamePaymentServicePaymentTransactionOfBookingId],
-            +row[ColNamePaymentServicePaymentTransactionAmount],
             +row[ColNamePaymentServicePaymentTransactionStatus],
             +row[ColNamePaymentServicePaymentTransactionRequestTime],
             +row[ColNamePaymentServicePaymentTransactionUpdateTime]

@@ -15,7 +15,8 @@ export class Booking {
         public booking_time: number,
         public expire_at: number,
         public booking_status: BookingStatus,
-        public amount: number
+        public amount: number,
+        public currency: string
     ) { }
 
     public static fromProto(bookingProto: BookingProto | undefined | null): Booking {
@@ -27,7 +28,8 @@ export class Booking {
             bookingProto?.bookingTime as number || 0,
             bookingProto?.expireAt as number || 0,
             bookingProto?.bookingStatus as any,
-            bookingProto?.amount || 0
+            bookingProto?.amount as number || 0,
+            bookingProto?.currency || ""
         );
     }
 }

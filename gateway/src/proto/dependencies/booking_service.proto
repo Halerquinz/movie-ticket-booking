@@ -24,14 +24,16 @@ message Booking {
     uint64 bookingTime = 5;
     uint64 expireAt = 6;
     BookingStatus.Values bookingStatus = 7;
-    uint32 amount = 8;
+    uint64 amount = 8;
+    string currency = 9;
 }
 
 message CreateBookingRequest {
     uint32 user_id = 1;
     uint32 showtime_id = 2;
     uint32 seat_id = 3;
-    uint32 amount = 4;
+    uint64 amount = 4;
+    string currency = 5;
 }
 
 message CreateBookingResponse {

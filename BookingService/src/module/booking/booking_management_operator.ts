@@ -15,7 +15,8 @@ export interface BookingManagementOperator {
         userId: number,
         showtimeId: number,
         seatId: number,
-        amount: number
+        amount: number,
+        currency: string
     ): Promise<Booking>;
     getBookingWithStatus(bookingId: number, userId: number, bookingStatus: BookingStatus): Promise<Booking>;
     updateBookingStatusFromInitializingToPending(bookingId: number): Promise<void>;
@@ -37,7 +38,7 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
         this.bookingTimeBeforeShowtimeStartInMs = ms(this.applicationConfig.bookingTimeBeforeShowtimeStart);
     }
 
-    public async createBooking(userId: number, showtimeId: number, seatId: number, amount: number): Promise<Booking> {
+    public async createBooking(userId: number, showtimeId: number, seatId: number, amount: number, currency: string): Promise<Booking> {
         await this.checkBookingProcessingAndConfirmed(showtimeId, seatId);
 
         const showtime = await this.getShowtime(showtimeId);
@@ -76,6 +77,7 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
             amount: amount,
             bookingStatus: BookingStatus.INITIALIZING,
             bookingTime: requestTime,
+            currency: currency
         });
 
         await this.checkBookingStatusAfterInitializeQueue.addCheckBookingStatusAfterInitializeQueue(bookingId);
@@ -88,6 +90,7 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
             bookingStatus: BookingStatus.INITIALIZING,
             amount: amount,
             bookingTime: requestTime,
+            currency: currency
         };
     }
 

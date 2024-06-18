@@ -14,6 +14,7 @@ export interface BookingManagementOperator {
         showtimeId: number,
         seatId: number,
         amount: number,
+        currency: string
     ): Promise<Booking>;
     getBookingList(
         authenticatedUserInfo: AuthenticatedUserInformation,
@@ -34,11 +35,12 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
         authenticatedUserInfo: AuthenticatedUserInformation,
         showtimeId: number,
         seatId: number,
-        amount: number
+        amount: number,
+        currency: string
     ): Promise<Booking> {
         const { error: createBookingError, response: createBookingResponse } = await promisifyGRPCCall(
             this.bookingServiceDM.createBooking.bind(this.bookingServiceDM),
-            { userId: authenticatedUserInfo.user.id, amount, seatId, showtimeId }
+            { userId: authenticatedUserInfo.user.id, amount, seatId, showtimeId, currency }
         );
 
         if (createBookingError !== null) {
@@ -76,7 +78,7 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
             }));
 
         return bookingListProto.map(
-            (bookingeMetadataProto: BookingMetadataProto) => BookingMetadata.fromProto(bookingeMetadataProto)
+            (bookingMetadataProto: BookingMetadataProto) => BookingMetadata.fromProto(bookingMetadataProto)
         ) || [];
     }
 }

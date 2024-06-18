@@ -9,7 +9,6 @@ export async function up(knex: Knex): Promise<void> {
             table.increments("payment_transaction_id", { primaryKey: true });
             table.integer("of_booking_id").notNullable();
 
-            table.bigInteger("amount").notNullable();
             table.smallint("status").notNullable();
             table.bigInteger("request_time").notNullable();
             table.bigInteger("update_time").notNullable().defaultTo(0);

@@ -68,12 +68,14 @@ export function getShowtimesRouter(
                     .authenticatedUserInformation as AuthenticatedUserInformation;
                 const showtimeId = +req.params.showtimeId;
                 const amount = +req.body.amount;
+                const currency = req.body.currency;
                 const seatId = +req.body.seat_id;
                 const booking = await bookingManagementOperator.createBooking(
                     authenticatedUserInformation,
                     showtimeId,
                     seatId,
-                    amount
+                    amount,
+                    currency
                 );
                 res.json(booking);
             }, next);
