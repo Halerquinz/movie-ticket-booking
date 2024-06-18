@@ -124,9 +124,9 @@ export class Price {
             priceProto?.id || 0,
             priceProto?.ofMovieTypeId || 0,
             priceProto?.ofSeatTypeId || 0,
+            priceProto?.ofShowtimeSlotId || 0,
             priceProto?.ofShowtimeDayOfTheWeekId || 0,
-            priceProto?.price || 0,
-            priceProto?.price || 0
+            priceProto?.price as number || 0
         );
     }
 }

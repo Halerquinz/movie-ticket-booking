@@ -432,7 +432,7 @@ message Price {
     uint32 of_seat_type_id = 3;
     uint32 of_showtime_slot_id = 4;
     uint32 of_showtime_day_of_the_week_id = 5;
-    uint32 price = 6;
+    uint64 price = 6;
 }
 message GetPriceResponse {
     Price price = 1;
@@ -453,7 +453,7 @@ message SeatMetadata {
     string row = 5;
     string no = 6;
     SeatStatus.Values status = 7;
-    uint32 price = 8;
+    uint64 price = 8;
 }
 
 message ShowtimeMetadata {
