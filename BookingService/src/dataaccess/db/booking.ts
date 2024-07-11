@@ -38,6 +38,7 @@ export class Booking {
 
 export interface BookingDataAccessor {
     createBooking(args: CreateBookingArguments): Promise<number>;
+    getBookingById(id: number): Promise<Booking | null>;
     updateBooking(booking: Booking): Promise<void>;
     getBookingWithStatus(id: number, userId: number, bookingStatus: BookingStatus): Promise<Booking | null>;
     getBookingProcessingCount(showtimeId: number, seatId: number): Promise<number>;
@@ -84,6 +85,35 @@ export class BookingDataAccessorImpl implements BookingDataAccessor {
             this.logger.error("failed to create booking", { args, error });
             throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
         }
+    }
+
+    public async getBookingById(id: number): Promise<Booking | null> {
+        let rows: Record<string, any>;
+        try {
+            rows = await this.knex
+                .select()
+                .from(TabNameBookingServiceBooking)
+                .where({
+                    [ColNameMBookingServiceBookingId]: id
+                });
+        } catch (error) {
+            this.logger.error("failed to get booking by bookingId", {
+                id
+            });
+            throw ErrorWithStatus.wrapWithStatus(error, status.INTERNAL);
+        }
+
+        if (rows.length === 0) {
+            this.logger.error("cannot found booking with bookingId", { id });
+            return null;
+        }
+
+        if (rows.length > 1) {
+            this.logger.error("more than one booking with bookingId", { id });
+            throw ErrorWithStatus.wrapWithStatus("more than one booking with bookingId", status.INTERNAL);
+        }
+
+        return this.getBookingFromRow(rows[0]);
     }
 
     public async updateBooking(booking: Booking): Promise<void> {

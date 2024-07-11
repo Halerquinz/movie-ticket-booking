@@ -18,6 +18,7 @@ export interface BookingManagementOperator {
         amount: number,
         currency: string
     ): Promise<Booking>;
+    getBooking(bookingId: number): Promise<Booking>;
     getBookingWithStatus(bookingId: number, userId: number, bookingStatus: BookingStatus): Promise<Booking>;
     updateBookingStatusFromInitializingToPending(bookingId: number): Promise<void>;
     getBookingListProcessingAndConfirmedByShowtimeId(showtimeId: number): Promise<Booking[]>;
@@ -92,6 +93,16 @@ export class BookingManagementOperatorImpl implements BookingManagementOperator 
             bookingTime: requestTime,
             currency: currency
         };
+    }
+
+    public async getBooking(bookingId: number): Promise<Booking> {
+        const booking = await this.bookingDM.getBookingById(bookingId);
+        if (booking === null) {
+            this.logger.error("can not find booking with bookingId");
+            throw new ErrorWithStatus(`can not find booking with bookingId`, status.INVALID_ARGUMENT);
+        }
+
+        return booking;
     }
 
     public async getBookingWithStatus(bookingId: number, userId: number, bookingStatus: BookingStatus): Promise<Booking> {
