@@ -35,9 +35,16 @@ export class UserServiceHandlersFactory {
                 if (req.displayName === undefined) {
                     return callback({ message: "displayName is required", code: status.INVALID_ARGUMENT });
                 }
+                if (req.email === undefined) {
+                    return callback({ message: "email is required", code: status.INVALID_ARGUMENT });
+                }
 
                 try {
-                    const createdUser = await this.userManagementOperator.createUser(req.username, req.displayName);
+                    const createdUser = await this.userManagementOperator.createUser(
+                        req.username,
+                        req.displayName,
+                        req.email,
+                    );
                     callback(null, { user: createdUser });
                 } catch (error) {
                     this.handleError(error, callback);

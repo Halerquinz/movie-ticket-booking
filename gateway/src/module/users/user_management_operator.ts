@@ -6,7 +6,7 @@ import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGR
 import { User } from "../schemas";
 
 export interface UserManagementOperator {
-    createUser(username: string, displayName: string, password: string): Promise<User>;
+    createUser(username: string, displayName: string, password: string, email: string): Promise<User>;
     updateUser(
         id: number,
         username: string | undefined,
@@ -22,10 +22,10 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
         private readonly logger: Logger
     ) { }
 
-    public async createUser(username: string, displayName: string, password: string): Promise<User> {
+    public async createUser(username: string, displayName: string, password: string, email: string): Promise<User> {
         const { error: createUserError, response: createUserResponse } = await promisifyGRPCCall(
             this.userServiceDM.createUser.bind(this.userServiceDM),
-            { username, displayName }
+            { username, displayName, email }
         );
 
         if (createUserError !== null) {
@@ -52,10 +52,10 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
         return user;
     }
 
-    public async updateUser(id: number, username: string | undefined, displayName: string | undefined, password: string | undefined): Promise<User> {
+    public async updateUser(id: number, username: string | undefined, displayName: string | undefined, password: string | undefined,): Promise<User> {
         const { error: updateUserError, response: updateUserResponse } = await promisifyGRPCCall(
             this.userServiceDM.updateUser.bind(this.userServiceDM),
-            { user: { id, username, displayName, password } }
+            { user: { id, username, displayName, password, email: undefined } }
         );
         if (updateUserError !== null) {
             this.logger.error("failed to call user_service.updateUser()", { error: updateUserError });

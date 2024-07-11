@@ -14,6 +14,7 @@ export async function up(knex: Knex): Promise<void> {
         await knex.schema.createTable(TabNameUserServiceUser, (table) => {
             table.increments("user_id", { primaryKey: true });
             table.string("username", 64).notNullable().unique();
+            table.string("email", 256).notNullable().unique();
             table.string("display_name", 256).notNullable();
 
             table.index(["username"], "user_service_user_username_idx");

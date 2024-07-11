@@ -38,6 +38,7 @@ message User {
     uint32 id = 1;
     string username = 2;
     string display_name = 3;
+    string email = 4;
 }
 
 message UserPassword {
@@ -48,6 +49,7 @@ message UserPassword {
 message CreateUserRequest {
     string username = 1;
     string display_name = 2;
+    string email = 3;
 }
 
 message UserRole {

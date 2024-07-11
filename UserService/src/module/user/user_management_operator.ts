@@ -8,7 +8,7 @@ import { injected, token } from "brandi";
 import { LOGGER_TOKEN } from "../../utils/logging";
 
 export interface UserManagementOperator {
-    createUser(username: string, displayName: string): Promise<User>;
+    createUser(username: string, displayName: string, email: string): Promise<User>;
     updateUser(user: User): Promise<User>;
     getUserList(
         offset: number,
@@ -26,7 +26,7 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
         private readonly logger: Logger
     ) { }
 
-    public async createUser(username: string, displayName: string): Promise<User> {
+    public async createUser(username: string, displayName: string, email: string): Promise<User> {
         if (!this.isValidUsername(username)) {
             this.logger.error("invalid username", { username });
             throw new ErrorWithStatus(`invalid username ${username}`, status.INVALID_ARGUMENT);
@@ -47,11 +47,12 @@ export class UserManagementOperatorImpl implements UserManagementOperator {
                 throw new ErrorWithStatus(`username ${username} has already been taken`, status.ALREADY_EXISTS);
             }
 
-            const createUserId = await dm.createUser(username, displayName);
+            const createUserId = await dm.createUser(username, displayName, email);
             return {
                 id: createUserId,
                 username,
-                displayName
+                displayName,
+                email,
             };
         });
     }

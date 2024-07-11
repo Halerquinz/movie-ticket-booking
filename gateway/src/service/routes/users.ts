@@ -18,8 +18,9 @@ export function getUsersRouter(
             errorHandlerMiddlewareFactory.catchToErrorHandlerMiddleware(async () => {
                 const username = req.body.username as string;
                 const displayName = req.body.display_name as string;
+                const email = req.body.email as string;
                 const password = req.body.password as string;
-                const user = await userManagementOperator.createUser(username, displayName, password);
+                const user = await userManagementOperator.createUser(username, displayName, password, email);
                 res.json(user);
             }, next);
         })

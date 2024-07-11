@@ -7,7 +7,12 @@ import { KNEX_INSTANCE_TOKEN } from "./knex";
 import { LOGGER_TOKEN } from "../../utils/logging";
 
 export class User {
-    constructor(public id: number, public username: string, public displayName: string) { }
+    constructor(
+        public id: number,
+        public username: string,
+        public displayName: string,
+        public email: string
+    ) { }
 }
 
 export enum UserListSortOrder {
@@ -26,7 +31,7 @@ export class UserListFilterOptions {
 }
 
 export interface UserDataAccessor {
-    createUser(username: string, displayName: string): Promise<number>;
+    createUser(username: string, displayName: string, email: string): Promise<number>;
     updateUser(user: User): Promise<void>;
     getUserByUserId(userId: number): Promise<User | null>;
     getUserByUserIdWithXLock(userId: number): Promise<User | null>;
@@ -47,17 +52,19 @@ const TabNameUserServiceUser = "user_service_user_tab";
 const ColNameUserServiceUserId = "user_id";
 const ColNameUserServiceUserUsername = "username";
 const ColNameUserServiceUserDisplayName = "display_name";
+const ColNameUserServiceUserEmail = "email";
 const ColNameUserServiceUserFullTextSearchDocument = "full_text_search_document";
 
 export default class UserDataAccessorImpl implements UserDataAccessor {
     constructor(private readonly knex: Knex<any, any[]>, private readonly logger: Logger) { }
 
-    public async createUser(username: string, displayName: string): Promise<number> {
+    public async createUser(username: string, displayName: string, email: string): Promise<number> {
         try {
             const rows = await this.knex
                 .insert({
                     [ColNameUserServiceUserUsername]: username,
-                    [ColNameUserServiceUserDisplayName]: displayName
+                    [ColNameUserServiceUserDisplayName]: displayName,
+                    [ColNameUserServiceUserEmail]: email,
                 })
                 .returning(ColNameUserServiceUserId)
                 .into(TabNameUserServiceUser);
@@ -78,7 +85,8 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
                 .table(TabNameUserServiceUser)
                 .update({
                     [ColNameUserServiceUserUsername]: user.username,
-                    [ColNameUserServiceUserDisplayName]: user.displayName
+                    [ColNameUserServiceUserDisplayName]: user.displayName,
+                    [ColNameUserServiceUserEmail]: user.email,
                 })
                 .where(ColNameUserServiceUserId, user.id);
         } catch (error) {
@@ -316,7 +324,8 @@ export default class UserDataAccessorImpl implements UserDataAccessor {
         return new User(
             +row[ColNameUserServiceUserId],
             row[ColNameUserServiceUserUsername],
-            row[ColNameUserServiceUserDisplayName]
+            row[ColNameUserServiceUserDisplayName],
+            row[ColNameUserServiceUserEmail],
         );
     }
 }
