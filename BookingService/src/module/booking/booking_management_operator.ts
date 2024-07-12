@@ -4,7 +4,7 @@ import { Logger } from "winston";
 import { APPLICATION_CONFIG_TOKEN, ApplicationConfig } from "../../config";
 import { BOOKING_DATA_ACCESSOR_TOKEN, Booking, BookingDataAccessor, BookingStatus } from "../../dataaccess/db";
 import { ErrorWithStatus, LOGGER_TOKEN, TIMER_TOKEN, Timer, promisifyGRPCCall } from "../../utils";
-import { MovieServiceClient } from "../../proto/gen/MovieService";
+import { MovieServiceClient } from "../../proto/gen/movie_service/MovieService";
 import { MOVIE_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
 import { status } from "@grpc/grpc-js";
 import { Movie, Price, Seat, Showtime, Theater, Screen, BookingMetadata } from "./booking_metadata_model";

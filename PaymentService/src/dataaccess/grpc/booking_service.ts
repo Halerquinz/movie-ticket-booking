@@ -2,12 +2,12 @@ import { credentials, loadPackageDefinition } from "@grpc/grpc-js";
 import { loadSync } from "@grpc/proto-loader";
 import { injected, token } from "brandi";
 import { BOOKING_SERVICE_CONFIG_TOKEN, BookingServiceConfig } from "../../config";
-import { BookingServiceClient } from "../../proto/gen/BookingService";
+import { BookingServiceClient } from "../../proto/gen/booking_service/BookingService";
 import { ProtoGrpcType } from "../../proto/gen/booking_service";
 
 export function getBookingServiceDM(bookingServiceConfig: BookingServiceConfig): BookingServiceClient {
     const bookingServiceProtoGrpc = loadBookingServiceProtoGrpc(bookingServiceConfig.protoPath);
-    return new bookingServiceProtoGrpc.BookingService(
+    return new bookingServiceProtoGrpc.booking_service.BookingService(
         `${bookingServiceConfig.host}:${bookingServiceConfig.port}`,
         credentials.createInsecure(),
         {

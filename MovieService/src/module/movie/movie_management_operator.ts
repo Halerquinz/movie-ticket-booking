@@ -22,7 +22,7 @@ import {
     MovieType,
     MovieTypeDataAccessor
 } from "../../dataaccess/db";
-import { Movie } from "../../proto/gen/Movie";
+import { Movie } from "../../proto/gen/movie_service/Movie";
 import { ErrorWithStatus, LOGGER_TOKEN, TIMER_TOKEN, Timer } from "../../utils";
 import { MOVIE_IMAGE_OPERATOR_TOKEN, MovieImageOperator } from "./movie_image_operator";
 import { MOVIE_POSTER_OPERATOR_TOKEN, MoviePosterOperator } from "./movie_poster_operator";

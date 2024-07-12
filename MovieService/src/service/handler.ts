@@ -13,7 +13,7 @@ import {
     ShowtimeManagementOperator
 } from "../module/showtime";
 import { THEATER_MANAGEMENT_OPERATOR_TOKEN, TheaterManagementOperator } from "../module/theater";
-import { MovieServiceHandlers } from "../proto/gen/MovieService";
+import { MovieServiceHandlers } from "../proto/gen/movie_service/MovieService";
 import { ErrorWithStatus } from "../utils";
 
 const DEFAULT_MOVIE_SEARCH_LIMIT = 10;

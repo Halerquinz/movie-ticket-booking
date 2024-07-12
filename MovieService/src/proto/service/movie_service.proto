@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package movie_service;
+
 service MovieService {
    rpc CreateMovieGenre(CreateMovieGenreRequest) returns (CreateMovieGenreResponse)  {}
    rpc UpdateMovieGenre(UpdateMovieGenreRequest) returns (UpdateMovieGenreResponse)  {}
@@ -94,8 +96,8 @@ message Showtime {
     uint32 id = 1;
     uint32 of_movie_id = 2;
     uint32 of_screen_id = 3;
-    uint64 time_start = 4;
-    uint64 time_end = 5;
+    int64 time_start = 4;
+    int64 time_end = 5;
     ShowtimeSlot showtime_slot = 6;
     ShowtimeDayOfTheWeek showtime_day_of_the_week = 7;
 }
@@ -376,7 +378,7 @@ message CreateAllSeatOfScreenResponse {}
 message CreateShowtimeRequest {
     uint32 movie_id = 1;
     uint32 screen_id = 3;
-    uint64 time_start = 4;
+    int64 time_start = 4;
 }
 
 message CreateShowtimeResponse {
@@ -392,7 +394,7 @@ message DeleteShowtimeResponse {}
 message GetShowtimeListOfTheaterByMovieIdRequest {
     uint32 theater_id = 1;
     uint32 movie_id = 2;
-    uint64 request_time = 3;
+    int64 request_time = 3;
 }
 
 message ShowtimeDetail {
@@ -401,8 +403,8 @@ message ShowtimeDetail {
     string movie_name = 3;
     MovieType movie_type = 4;
     string screen_name = 5;
-    uint64 time_start = 6;
-    uint64 time_end = 7;
+    int64 time_start = 6;
+    int64 time_end = 7;
     uint32 seat_count = 8;
 }
 
@@ -413,7 +415,7 @@ message GetShowtimeListOfTheaterByMovieIdResponse {
 
 message GetShowtimeListOfTheaterRequest {
     uint32 theater_id = 1;
-    uint64 request_time = 2;
+    int64 request_time = 2;
 }
 
 message GetShowtimeListOfTheaterResponse {

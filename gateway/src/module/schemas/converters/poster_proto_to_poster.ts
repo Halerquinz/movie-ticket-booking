@@ -2,7 +2,7 @@ import { injected, token } from "brandi";
 import httpStatus from "http-status";
 import { Logger } from "winston";
 import { APPLICATION_CONFIG_TOKEN, ApplicationConfig } from "../../../config";
-import { MoviePoster as MoviePosterProto } from "../../../proto/gen/MoviePoster";
+import { MoviePoster as MoviePosterProto } from "../../../proto/gen/movie_service/MoviePoster";
 import { ErrorWithHTTPCode, LOGGER_TOKEN } from "../../../utils";
 import { MoviePoster } from "../movie_poster";
 

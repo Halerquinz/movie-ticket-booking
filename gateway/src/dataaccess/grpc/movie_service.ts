@@ -2,13 +2,13 @@ import { credentials, loadPackageDefinition } from "@grpc/grpc-js";
 import { loadSync } from "@grpc/proto-loader";
 import { injected, token } from "brandi";
 import { MOVIE_SERVICE_CONFIG_TOKEN, MovieServiceConfig } from "../../config";
-import { MovieServiceClient } from "../../proto/gen/MovieService";
+import { MovieServiceClient } from "../../proto/gen/movie_service/MovieService";
 import { ProtoGrpcType } from "../../proto/gen/movie_service";
 
 
 export function getMovieServiceDM(movieServiceConfig: MovieServiceConfig): MovieServiceClient {
     const movieServiceProtoGrpc = loadMovieServiceProtoGrpc(movieServiceConfig.protoPath);
-    return new movieServiceProtoGrpc.MovieService(
+    return new movieServiceProtoGrpc.movie_service.MovieService(
         `${movieServiceConfig.host}:${movieServiceConfig.port}`,
         credentials.createInsecure(),
         {

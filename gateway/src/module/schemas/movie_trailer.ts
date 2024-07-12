@@ -1,4 +1,4 @@
-import { MovieTrailer as MovieTrailerProto } from "../../proto/gen/MovieTrailer";
+import { MovieTrailer as MovieTrailerProto } from "../../proto/gen/movie_service/MovieTrailer";
 
 export class MovieTrailer {
     constructor(

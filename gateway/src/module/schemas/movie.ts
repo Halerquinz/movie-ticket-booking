@@ -1,6 +1,6 @@
 import { MoviePoster } from "./movie_poster";
 import { MovieTrailer } from "./movie_trailer";
-import { Movie as MovieProto } from "../../proto/gen/Movie";
+import { Movie as MovieProto } from "../../proto/gen/movie_service/Movie";
 import { MovieType } from "./movie_type";
 
 export class Movie {

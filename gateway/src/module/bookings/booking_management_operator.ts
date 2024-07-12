@@ -1,12 +1,12 @@
 import { injected, token } from "brandi";
 import { Logger } from "winston";
 import { BOOKING_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
-import { BookingServiceClient } from "../../proto/gen/BookingService";
+import { BookingServiceClient } from "../../proto/gen/booking_service/BookingService";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGRPCCall, } from "../../utils";
 import { AuthenticatedUserInformation } from "../../service/utils";
 import { Booking, BookingMetadata, BookingStatus } from "../schemas";
 import { POSTER_PROTO_TO_POSTER_CONVERTER_TOKEN, PosterProtoToPosterConverter } from "../schemas/converters";
-import { BookingMetadata as BookingMetadataProto } from "../../proto/gen/BookingMetadata";
+import { BookingMetadata as BookingMetadataProto } from "../../proto/gen/booking_service/BookingMetadata";
 
 export interface BookingManagementOperator {
     createBooking(

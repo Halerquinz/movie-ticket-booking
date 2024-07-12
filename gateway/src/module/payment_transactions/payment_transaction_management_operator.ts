@@ -1,6 +1,6 @@
 import { injected, token } from "brandi";
 import { Logger } from "winston";
-import { PaymentServiceClient } from "../../proto/gen/PaymentService";
+import { PaymentServiceClient } from "../../proto/gen/payment_service/PaymentService";
 import { AuthenticatedUserInformation } from "../../service/utils";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGRPCCall, } from "../../utils";
 import { PAYMENT_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";

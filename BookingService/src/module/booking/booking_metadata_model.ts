@@ -1,15 +1,15 @@
-import { Showtime as ShowtimeProto } from "../../proto/gen/Showtime";
-import { ShowtimeSlot as ShowtimeSlotProto } from "../../proto/gen/ShowtimeSlot";
-import { ShowtimeDayOfTheWeek as ShowtimeDayOfTheWeekProto } from "../../proto/gen/ShowtimeDayOfTheWeek";
-import { Seat as SeatProto } from "../../proto/gen/Seat";
-import { SeatType as SeatTypeProto } from "../../proto/gen/SeatType";
-import { Price as PriceProto } from "../../proto/gen/Price";
-import { ScreenType as ScreenTypeProto } from "../../proto/gen/ScreenType";
-import { Screen as ScreenProto } from "../../proto/gen/Screen";
-import { Theater as TheaterProto } from "../../proto/gen/Theater";
-import { MoviePoster } from "../../proto/gen/MoviePoster";
-import { MovieTrailer } from "../../proto/gen/MovieTrailer";
-import { Movie as MovieProto } from "../../proto/gen/Movie";
+import { Showtime as ShowtimeProto } from "../../proto/gen/movie_service/Showtime";
+import { ShowtimeSlot as ShowtimeSlotProto } from "../../proto/gen/movie_service/ShowtimeSlot";
+import { ShowtimeDayOfTheWeek as ShowtimeDayOfTheWeekProto } from "../../proto/gen/movie_service/ShowtimeDayOfTheWeek";
+import { Seat as SeatProto } from "../../proto/gen/movie_service/Seat";
+import { SeatType as SeatTypeProto } from "../../proto/gen/movie_service/SeatType";
+import { Price as PriceProto } from "../../proto/gen/movie_service/Price";
+import { ScreenType as ScreenTypeProto } from "../../proto/gen/movie_service/ScreenType";
+import { Screen as ScreenProto } from "../../proto/gen/movie_service/Screen";
+import { Theater as TheaterProto } from "../../proto/gen/movie_service/Theater";
+import { MoviePoster } from "../../proto/gen/movie_service/MoviePoster";
+import { MovieTrailer } from "../../proto/gen/movie_service/MovieTrailer";
+import { Movie as MovieProto } from "../../proto/gen/movie_service/Movie";
 import { Booking } from "../../dataaccess/db";
 
 export class ShowtimeSlot {

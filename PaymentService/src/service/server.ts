@@ -18,7 +18,7 @@ export class PaymentServiceGRPCServer {
         const paymentServiceProtoGrpc = this.loadPaymentServiceProtoGrpc(protoPath);
 
         const server = new Server();
-        server.addService(paymentServiceProtoGrpc.PaymentService.service, this.handlerFactory.getPaymentServiceHandlers());
+        server.addService(paymentServiceProtoGrpc.payment_service.PaymentService.service, this.handlerFactory.getPaymentServiceHandlers());
         server.bindAsync(`0.0.0.0:${this.grpcServerConfig.port}`, ServerCredentials.createInsecure(), (error, port) => {
             if (error) {
                 this.logger.error("failed to start grpc server");

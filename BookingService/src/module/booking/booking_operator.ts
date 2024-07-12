@@ -2,7 +2,7 @@ import { injected, token } from "brandi";
 import { Logger } from "winston";
 import { BOOKING_DATA_ACCESSOR_TOKEN, Booking, BookingDataAccessor, BookingStatus } from "../../dataaccess/db";
 import { USER_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
-import { UserServiceClient } from "../../proto/gen/UserService";
+import { UserServiceClient } from "../../proto/gen/user_service/UserService";
 import { LOGGER_TOKEN } from "../../utils";
 
 export enum PaymentTransactionStatus {

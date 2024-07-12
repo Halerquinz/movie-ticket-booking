@@ -1,5 +1,5 @@
 import { Logger } from "winston";
-import { UserServiceClient } from "../../proto/gen/UserService";
+import { UserServiceClient } from "../../proto/gen/user_service/UserService";
 import { promisifyGRPCCall, ErrorWithHTTPCode, getHttpCodeFromGRPCStatus, LOGGER_TOKEN } from "../../utils";
 import { User, UserPermission, UserRole } from "../schemas";
 import { injected, token } from "brandi";

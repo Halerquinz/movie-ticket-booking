@@ -1,6 +1,6 @@
 import { injected, token } from "brandi";
 import { CacheConfig, CACHE_CONFIG_TOKEN } from "../../config";
-import { User } from "../../proto/gen/User";
+import { User } from "../../proto/gen/user_service/User";
 import { CACHE_CLIENT_TOKEN, Client } from "./client";
 
 export interface UserCacheDM {

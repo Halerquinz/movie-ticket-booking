@@ -1,13 +1,13 @@
 import { injected, token } from "brandi";
 import { Logger } from "winston";
 import { MOVIE_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
-import { ImageInfo } from "../../proto/gen/ImageInfo";
-import { MovieServiceClient } from "../../proto/gen/MovieService";
-import { PosterInfo } from "../../proto/gen/PosterInfo";
+import { ImageInfo } from "../../proto/gen/movie_service/ImageInfo";
+import { MovieServiceClient } from "../../proto/gen/movie_service/MovieService";
+import { PosterInfo } from "../../proto/gen/movie_service/PosterInfo";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGRPCCall, } from "../../utils";
 import { Movie, MovieGenre, MovieImage } from "../schemas";
 import { IMAGE_PROTO_TO_IMAGE_CONVERTER_TOKEN, ImageProtoToImageConverter, POSTER_PROTO_TO_POSTER_CONVERTER_TOKEN, PosterProtoToPosterConverter } from "../schemas/converters";
-import { Movie as MovieProto } from "../../proto/gen/Movie";
+import { Movie as MovieProto } from "../../proto/gen/movie_service/Movie";
 
 export interface MovieManagementOperator {
     createMovie(

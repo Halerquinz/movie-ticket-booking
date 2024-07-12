@@ -23,11 +23,12 @@ import {
     TheaterDataAccessor
 } from "../../dataaccess/db";
 import { ErrorWithStatus, LOGGER_TOKEN, TIMER_TOKEN, Timer, promisifyGRPCCall } from "../../utils";
-import { ShowtimeMetadata } from "../../proto/gen/ShowtimeMetadata";
-import { SeatMetadata } from "../../proto/gen/SeatMetadata";
-import { BookingServiceClient } from "../../proto/gen/BookingService";
-import { _SeatStatus_Values } from "../../proto/gen/SeatStatus";
+import { } from "../../proto/gen/movie_service/MovieService";
+import { SeatMetadata } from "../../proto/gen/movie_service/SeatMetadata";
+import { BookingServiceClient } from "../../proto/gen/booking_service/BookingService";
+import { _movie_service_SeatStatus_Values } from "../../proto/gen/movie_service/SeatStatus";
 import { BOOKING_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
+import { ShowtimeMetadata } from "../../proto/gen/movie_service/ShowtimeMetadata";
 
 export interface ShowtimeManagementOperator {
     createShowtime(
@@ -190,9 +191,9 @@ export class ShowtimeManagementOperatorImpl implements ShowtimeManagementOperato
                 showtimeRecord.showtimeDayOfTheWeek?.id!,
             );
 
-            let status: _SeatStatus_Values = _SeatStatus_Values.AVAILABLE;
+            let status: _movie_service_SeatStatus_Values = _movie_service_SeatStatus_Values.AVAILABLE;
             if (bookingProcessingAndConfirmedMap.has(seat.id)) {
-                status = _SeatStatus_Values.UNAVAILABLE;
+                status = _movie_service_SeatStatus_Values.UNAVAILABLE;
             }
 
             seatsMetadata.push({

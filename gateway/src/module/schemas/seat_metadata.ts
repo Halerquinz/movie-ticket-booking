@@ -1,5 +1,5 @@
-import { SeatMetadata as SeatMetadataProto } from "../../proto/gen/SeatMetadata";
-import { _SeatStatus_Values } from "../../proto/gen/SeatStatus";
+import { SeatMetadata as SeatMetadataProto } from "../../proto/gen/movie_service/SeatMetadata";
+import { _movie_service_SeatStatus_Values } from "../../proto/gen/movie_service/SeatStatus";
 import { SeatType } from "./seat_type";
 
 export class SeatMetadata {
@@ -10,7 +10,7 @@ export class SeatMetadata {
         public row: string,
         public column: number,
         public no: string,
-        public status: _SeatStatus_Values,
+        public status: _movie_service_SeatStatus_Values,
         public price: number
     ) { }
 
@@ -24,7 +24,7 @@ export class SeatMetadata {
             seatMetadataProto?.column || 0,
             seatMetadataProto?.no || "",
             seatMetadataProto?.status as any,
-            seatMetadataProto?.price || 0
+            seatMetadataProto?.price || 0 as any
         );
     }
 }

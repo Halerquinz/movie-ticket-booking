@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package booking_service;
+
 service BookingService {
     rpc CreateBooking(CreateBookingRequest) returns (CreateBookingResponse) {}
     rpc GetBookingById(GetBookingByIdRequest) returns (GetBookingByIdResponse){}
@@ -22,8 +24,8 @@ message Booking {
     uint32 of_user_id = 2;
     uint32 ofShowtimeId = 3;
     uint32 ofSeatId = 4;
-    uint64 bookingTime = 5;
-    uint64 expireAt = 6;
+    int64 bookingTime = 5;
+    int64 expireAt = 6;
     BookingStatus.Values bookingStatus = 7;
     uint64 amount = 8;
     string currency = 9;
@@ -97,8 +99,8 @@ message Showtime {
     uint32 id = 1;
     uint32 of_movie_id = 2;
     uint32 of_screen_id = 3;
-    uint64 time_start = 4;
-    uint64 time_end = 5;
+    int64 time_start = 4;
+    int64 time_end = 5;
     ShowtimeSlot showtime_slot = 6;
     ShowtimeDayOfTheWeek showtime_day_of_the_week = 7;
 }
@@ -160,7 +162,7 @@ message Movie {
     string title = 2;
     string description = 3;
     uint32 duration = 4;
-    uint64 release_date = 5;
+    int64 release_date = 5;
     MoviePoster poster = 6;
     MovieTrailer trailer = 7;
     MovieType movie_type = 8;

@@ -3,6 +3,7 @@ import { token } from "brandi";
 export class ApplicationConfig {
     public firstUserDisplayName = "";
     public firstUserUsername = "";
+    public firstUserEmail = "";
     public firstUserPassword = "";
     public firstUserRoleDisplayName = "Admin";
     public firstUserRoleDescription = "";
@@ -15,6 +16,9 @@ export class ApplicationConfig {
         }
         if (process.env.USER_SERVICE_FIRST_USER_USERNAME !== undefined) {
             config.firstUserUsername = process.env.USER_SERVICE_FIRST_USER_USERNAME;
+        }
+        if (process.env.USER_SERVICE_FIRST_USER_EMAIL !== undefined) {
+            config.firstUserEmail = process.env.USER_SERVICE_FIRST_USER_EMAIL;
         }
         if (process.env.USER_SERVICE_FIRST_USER_PASSWORD !== undefined) {
             config.firstUserPassword = process.env.USER_SERVICE_FIRST_USER_PASSWORD;

@@ -1,7 +1,7 @@
 import { injected, token } from "brandi";
 import { Logger } from "winston";
 import { MOVIE_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
-import { MovieServiceClient } from "../../proto/gen/MovieService";
+import { MovieServiceClient } from "../../proto/gen/movie_service/MovieService";
 import { ErrorWithHTTPCode, LOGGER_TOKEN, getHttpCodeFromGRPCStatus, promisifyGRPCCall, } from "../../utils";
 import { ShowtimeDetail, Theater } from "../schemas";
 

@@ -12,8 +12,8 @@ import {
 } from "../../dataaccess/db";
 import { BOOKING_SERVICE_DM_TOKEN, MOVIE_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
 import { CHECKOUT_OPERATOR_TOKEN, CheckoutOperator, PaymentTransactionDetail } from "../../payment-service-provider";
-import { BookingServiceClient } from "../../proto/gen/BookingService";
-import { MovieServiceClient } from "../../proto/gen/MovieService";
+import { BookingServiceClient } from "../../proto/gen/booking_service/BookingService";
+import { MovieServiceClient } from "../../proto/gen/movie_service/MovieService";
 import { ErrorWithStatus, LOGGER_TOKEN, TIMER_TOKEN, Timer, promisifyGRPCCall } from "../../utils";
 import { Booking, BookingStatus, Movie, Screen, Seat, Showtime, Theater } from "./payment_transaction_detail_models";
 

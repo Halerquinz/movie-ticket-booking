@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package payment_service;
+
 service PaymentService {
     rpc CreatePaymentTransaction(CreatePaymentTransactionRequest) returns (CreatePaymentTransactionResponse) {};
     rpc CancelPaymentTransaction(CancelPaymentTransactionRequest) returns (CancelPaymentTransactionResponse) {}
@@ -16,8 +18,8 @@ message PaymentTransactionStatus {
 message PaymentTransaction {
     uint32 id = 1;
     uint32 of_booking_id = 2;
-    uint64 request_time = 3;
-    uint64 update_time = 4;
+    int64 request_time = 3;
+    int64 update_time = 4;
     PaymentTransactionStatus.Values status = 5;
 }
 

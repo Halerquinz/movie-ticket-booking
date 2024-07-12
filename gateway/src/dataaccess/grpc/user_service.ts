@@ -3,12 +3,12 @@ import { loadSync } from "@grpc/proto-loader";
 import { ProtoGrpcType } from "../../proto/gen/user_service";
 import { USER_SERVICE_CONFIG_TOKEN, UserServiceConfig } from "../../config/user_service";
 import { injected, token } from "brandi";
-import { UserServiceClient } from "../../proto/gen/UserService";
+import { UserServiceClient } from "../../proto/gen/user_service/UserService";
 
 
 export function getUserServiceDM(userServiceConfig: UserServiceConfig): UserServiceClient {
     const userServiceProtoGrpc = loadUserServiceProtoGrpc(userServiceConfig.protoPath);
-    return new userServiceProtoGrpc.UserService(
+    return new userServiceProtoGrpc.user_service.UserService(
         `${userServiceConfig.host}:${userServiceConfig.port}`,
         credentials.createInsecure()
     );

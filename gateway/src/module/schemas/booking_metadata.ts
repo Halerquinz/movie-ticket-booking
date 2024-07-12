@@ -1,4 +1,4 @@
-import { BookingMetadata as BookingMetadataProto } from "../../proto/gen/BookingMetadata";
+import { BookingMetadata as BookingMetadataProto } from "../../proto/gen/booking_service/BookingMetadata";
 import { Booking } from "./booking";
 import { Movie } from "./movie";
 import { Screen } from "./screen";

@@ -1,5 +1,5 @@
 import { injected, token } from "brandi";
-import { PaymentServiceHandlers } from "../proto/gen/PaymentService";
+import { PaymentServiceHandlers } from "../proto/gen/payment_service/PaymentService";
 import { ErrorWithStatus } from "../utils";
 import { sendUnaryData, status } from "@grpc/grpc-js";
 import { PaymentTransactionManagementOperator, PAYMENT_TRANSACTION_MANAGEMENT_OPERATOR_TOKEN } from "../module/payment";

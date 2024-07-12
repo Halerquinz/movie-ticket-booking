@@ -1,4 +1,4 @@
-import { Booking as BookingProto } from "../../proto/gen/Booking";
+import { Booking as BookingProto } from "../../proto/gen/booking_service/Booking";
 
 export enum BookingStatus {
     PENDING = 0,

@@ -1,5 +1,5 @@
 import { injected, token } from "brandi";
-import { BookingServiceHandlers } from "../proto/gen/BookingService";
+import { BookingServiceHandlers } from "../proto/gen/booking_service/BookingService";
 import { ErrorWithStatus } from "../utils";
 import { sendUnaryData, status } from "@grpc/grpc-js";
 import { BOOKING_MANAGEMENT_OPERATOR_TOKEN, BookingManagementOperator } from "../module/booking";

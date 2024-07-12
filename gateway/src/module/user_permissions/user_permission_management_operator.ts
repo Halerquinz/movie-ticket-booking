@@ -1,7 +1,7 @@
 import { injected, token } from "brandi";
 import { Logger } from "winston";
 import { USER_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
-import { UserServiceClient } from "../../proto/gen/UserService";
+import { UserServiceClient } from "../../proto/gen/user_service/UserService";
 import { ErrorWithHTTPCode, getHttpCodeFromGRPCStatus, LOGGER_TOKEN, promisifyGRPCCall } from "../../utils";
 import { UserPermission } from "../schemas";
 

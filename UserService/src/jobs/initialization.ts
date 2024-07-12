@@ -55,7 +55,8 @@ export class InitializationJobImpl implements InitializationJob {
         this.logger.info("creating first user");
         const firstUser = await this.userManagementOperator.createUser(
             this.applicationConfig.firstUserUsername,
-            this.applicationConfig.firstUserDisplayName
+            this.applicationConfig.firstUserDisplayName,
+            this.applicationConfig.firstUserEmail,
         );
 
         this.logger.info("creating first user password");

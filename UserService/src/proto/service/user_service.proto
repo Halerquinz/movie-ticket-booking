@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package user_service;
+
 service UserService {
     rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
     rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}

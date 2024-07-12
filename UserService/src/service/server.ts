@@ -18,7 +18,7 @@ export class UserServiceGRPCServer {
         const userServiceProtoGrpc = this.loadUserServiceProtoGrpc(protoPath);
 
         const server = new Server();
-        server.addService(userServiceProtoGrpc.UserService.service, this.handlerFactory.getUserServiceHandlers());
+        server.addService(userServiceProtoGrpc.user_service.UserService.service, this.handlerFactory.getUserServiceHandlers());
         server.bindAsync(`0.0.0.0:${this.grpcServerConfig.port}`, ServerCredentials.createInsecure(), (error, port) => {
             if (error) {
                 this.logger.error("failed to start grpc server");

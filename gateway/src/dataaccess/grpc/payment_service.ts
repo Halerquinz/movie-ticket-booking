@@ -2,13 +2,13 @@ import { credentials, loadPackageDefinition } from "@grpc/grpc-js";
 import { loadSync } from "@grpc/proto-loader";
 import { injected, token } from "brandi";
 import { PAYMENT_SERVICE_CONFIG_TOKEN, PaymentServiceConfig } from "../../config";
-import { PaymentServiceClient } from "../../proto/gen/PaymentService";
+import { PaymentServiceClient } from "../../proto/gen/payment_service/PaymentService";
 import { ProtoGrpcType } from "../../proto/gen/payment_service";
 
 
 export function getPaymentServiceDM(paymentServiceConfig: PaymentServiceConfig): PaymentServiceClient {
     const paymentServiceProtoGrpc = loadPaymentServiceProtoGrpc(paymentServiceConfig.protoPath);
-    return new paymentServiceProtoGrpc.PaymentService(
+    return new paymentServiceProtoGrpc.payment_service.PaymentService(
         `${paymentServiceConfig.host}:${paymentServiceConfig.port}`,
         credentials.createInsecure(),
         {

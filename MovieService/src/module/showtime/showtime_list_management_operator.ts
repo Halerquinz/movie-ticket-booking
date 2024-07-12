@@ -14,7 +14,7 @@ import {
     Theater,
     TheaterDataAccessor
 } from "../../dataaccess/db";
-import { ShowtimeDetail } from "../../proto/gen/ShowtimeDetail";
+import { ShowtimeDetail } from "../../proto/gen/movie_service/ShowtimeDetail";
 import { ErrorWithStatus, LOGGER_TOKEN } from "../../utils";
 
 export interface ShowtimeListManagementOperator {

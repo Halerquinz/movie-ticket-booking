@@ -1,4 +1,4 @@
-import { Seat as SeatProto } from "../../proto/gen/Seat";
+import { Seat as SeatProto } from "../../proto/gen/movie_service/Seat";
 import { SeatType } from "./seat_type";
 
 export class Seat {

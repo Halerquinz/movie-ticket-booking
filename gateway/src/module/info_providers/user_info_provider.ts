@@ -3,8 +3,8 @@ import { injected, token } from "brandi";
 import httpStatus from "http-status";
 import { Logger } from "winston";
 import { USER_SERVICE_DM_TOKEN } from "../../dataaccess/grpc";
-import { User } from "../../proto/gen/User";
-import { UserServiceClient } from "../../proto/gen/UserService";
+import { User } from "../../proto/gen/user_service/User";
+import { UserServiceClient } from "../../proto/gen/user_service/UserService";
 import { promisifyGRPCCall, ErrorWithHTTPCode, getHttpCodeFromGRPCStatus, LOGGER_TOKEN } from "../../utils";
 
 export interface UserInfoProvider {

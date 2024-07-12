@@ -21,7 +21,7 @@ export class MovieServiceGRPCServer {
             "grpc.max_send_message_length": -1,
             "grpc.max_receive_message_length": -1
         });
-        server.addService(movieServiceProtoGrpc.MovieService.service, this.handlerFactory.getMovieServiceHandlers());
+        server.addService(movieServiceProtoGrpc.movie_service.MovieService.service, this.handlerFactory.getMovieServiceHandlers());
         server.bindAsync(`0.0.0.0:${this.grpcServerConfig.port}`, ServerCredentials.createInsecure(), (error, port) => {
             if (error) {
                 this.logger.error("failed to start grpc server");
