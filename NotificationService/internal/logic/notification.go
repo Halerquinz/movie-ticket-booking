@@ -106,45 +106,51 @@ func (n notificationLogic) GeneratePDFAndSendEmail(ctx context.Context, notifica
 
 	booking, err := n.getBooking(ctx, notification.OfBookingId)
 	if err != nil {
+		n.updateNotificationStatusToFailed(ctx, *notification)
 		return err
 	}
 
 	user, err := n.getUser(ctx, booking.OfUserId)
 	if err != nil {
+		n.updateNotificationStatusToFailed(ctx, *notification)
 		return err
 	}
 
 	switch booking.BookingStatus {
 	case booking_service.BookingStatus_CANCEL:
-		notification.Status = database.NotificationStatus_NOTIFICATION_STATUS_SUCCESS
-		_, err = n.notificationDataAccessor.UpdateNotification(ctx, notification)
-		if err != nil {
-			return err
-		}
+		break
 	case booking_service.BookingStatus_CONFIRMED:
 		originalPDFFilename, err := n.genPDF(ctx, &booking, &user)
 		if err != nil {
+			n.updateNotificationStatusToFailed(ctx, *notification)
 			return err
 		}
-		notification.Status = database.NotificationStatus_NOTIFICATION_STATUS_SUCCESS
 		notification.OriginalPDFFilename = originalPDFFilename
 		_, err = n.notificationDataAccessor.UpdateNotification(ctx, notification)
 		if err != nil {
+			n.updateNotificationStatusToFailed(ctx, *notification)
 			return err
 		}
 	default:
 		logger.With(zap.Any("booking_status", booking.BookingStatus)).Error("unsupported booking status")
-		notification.Status = database.NotificationStatus_NOTIFICATION_STATUS_FAILED
-		_, err = n.notificationDataAccessor.UpdateNotification(ctx, notification)
-		if err != nil {
-			return err
-		}
+		n.updateNotificationStatusToFailed(ctx, *notification)
+		return nil
 	}
 
 	err = n.mailer.Send(ctx, &user, &booking, notification)
 	if err != nil {
+		n.updateNotificationStatusToFailed(ctx, *notification)
 		return err
 	}
+
+	notification.Status = database.NotificationStatus_NOTIFICATION_STATUS_SUCCESS
+	_, err = n.notificationDataAccessor.UpdateNotification(ctx, notification)
+	if err != nil {
+		logger.With(zap.Error(err)).Warn("failed to update notification status to success")
+	}
+
+	logger.Info("notification successfully with booking_id",
+		zap.Uint32("booking_id", notification.OfBookingId))
 
 	return nil
 }
@@ -178,13 +184,6 @@ func (n notificationLogic) updateNotificationFromPendingToProcessing(
 			return err
 		}
 
-		if err := n.notificationCreatedProducer.Produce(
-			ctx,
-			producer.NotificationCreated{ID: notification.OfBookingId},
-		); err != nil {
-			return err
-		}
-
 		updated = true
 		return nil
 	})
@@ -193,6 +192,16 @@ func (n notificationLogic) updateNotificationFromPendingToProcessing(
 	}
 
 	return updated, notification, nil
+}
+
+func (n notificationLogic) updateNotificationStatusToFailed(ctx context.Context, notification database.Notification) {
+	logger := n.logger.With(zap.Any("update_notification_status_to_failed", notification.ID))
+
+	notification.Status = database.NotificationStatus_NOTIFICATION_STATUS_FAILED
+	_, err := n.notificationDataAccessor.UpdateNotification(ctx, &notification)
+	if err != nil {
+		logger.With(zap.Error(err)).Warn("failed to update notification status to failed")
+	}
 }
 
 func (n notificationLogic) getUser(ctx context.Context, userId uint32) (user_service.User, error) {
