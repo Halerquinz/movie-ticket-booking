@@ -1,0 +1,486 @@
+syntax = "proto3";
+
+package movie_service;
+
+option go_package = "grpc/movie_service";
+
+service MovieService {
+   rpc CreateMovieGenre(CreateMovieGenreRequest) returns (CreateMovieGenreResponse)  {}
+   rpc UpdateMovieGenre(UpdateMovieGenreRequest) returns (UpdateMovieGenreResponse)  {}
+   rpc DeleteMovieGenre(DeleteMovieGenreRequest) returns (DeleteMovieGenreResponse)  {}
+   
+   rpc CreateMovie(CreateMovieRequest) returns (CreateMovieResponse)  {}
+   rpc GetMovie(GetMovieRequest) returns (GetMovieResponse)  {}
+   rpc DeleteMovie(DeleteMovieRequest) returns (DeleteMovieResponse)  {}
+   rpc GetCurrentShowingMovieList(GetCurrentShowingMovieListRequest) returns (GetCurrentShowingMovieListResponse)  {}
+   rpc GetUpcomingMovieList(GetUpcomingMovieListRequest) returns (GetUpcomingMovieListResponse)  {}
+
+   rpc CreateScreenType(CreateScreenTypeRequest) returns (CreateScreenTypeResponse) {}
+   rpc DeleteScreenType(DeleteScreenTypeRequest) returns (DeleteScreenTypeResponse) {}
+
+   rpc CreateTheater(CreateTheaterRequest) returns (CreateTheaterResponse) {}
+   rpc GetTheater(GetTheaterRequest) returns (GetTheaterResponse) {}
+   rpc GetTheaterList(GetTheaterListRequest) returns (GetTheaterListResponse) {}
+   rpc DeleteTheater(DeleteTheaterRequest) returns (DeleteTheaterResponse) {}
+
+   rpc CreateScreen(CreateScreenRequest) returns (CreateScreenResponse) {}
+   rpc GetScreen(GetScreenRequest) returns (GetScreenResponse) {}
+   rpc DeleteScreen(DeleteScreenRequest) returns (DeleteScreenResponse) {}
+
+   rpc GetSeat(GetSeatRequest) returns (GetSeatResponse) {}
+
+   rpc CreateAllSeatOfScreen(CreateAllSeatOfScreenRequest) returns (CreateAllSeatOfScreenResponse) {}
+
+   rpc CreateShowtime(CreateShowtimeRequest) returns (CreateShowtimeResponse) {}
+   rpc DeleteShowtime(DeleteShowtimeRequest) returns (DeleteShowtimeResponse) {}
+   rpc GetShowtime(GetShowtimeRequest) returns (GetShowtimeResponse) {}
+
+   rpc GetShowtimeListOfTheaterByMovieId(GetShowtimeListOfTheaterByMovieIdRequest) returns (GetShowtimeListOfTheaterByMovieIdResponse) {}
+   rpc GetShowtimeListOfTheater(GetShowtimeListOfTheaterRequest) returns (GetShowtimeListOfTheaterResponse) {}
+
+   rpc GetShowtimeMetadata(GetShowtimeMetadataRequest) returns (GetShowtimeMetadataResponse) {}
+
+   rpc GetPrice(GetPriceRequest) returns (GetPriceResponse) {}
+
+   rpc SearchMovie(SearchMovieRequest) returns (SearchMovieResponse) {}
+}
+
+message MovieGenre {
+    uint32 id = 1;
+    string display_name = 2;
+}
+
+message MovieType {
+    uint32 id = 1;
+    string display_name = 2;
+}
+
+message MovieImage {
+    uint32 id = 1;
+    uint32 of_movie_id = 2;
+    string original_file_name = 3;
+    string original_image_file_name = 4;
+}
+
+message MoviePoster {
+    uint32 of_movie_id = 1;
+    string original_file_name = 2;
+    string original_image_file_name = 3;
+}
+
+message MovieTrailer {
+    uint32 of_movie_id = 1;
+    string youtube_link_url = 2;
+}
+
+message Movie {
+    uint32 id = 1;
+    string title = 2;
+    string description = 3;
+    uint32 duration = 4;
+    uint64 release_date = 5;
+    MoviePoster poster = 6;
+    MovieTrailer trailer = 7;
+    MovieType movie_type = 8;
+}
+
+message ShowtimeDayOfTheWeek {
+    uint32 id = 1;
+    string display_name = 2;
+}
+
+message ShowtimeSlot {
+    uint32 id = 1;
+    string display_name = 2;
+}
+
+message Showtime {
+    uint32 id = 1;
+    uint32 of_movie_id = 2;
+    uint32 of_screen_id = 3;
+    int64 time_start = 4;
+    int64 time_end = 5;
+    ShowtimeSlot showtime_slot = 6;
+    ShowtimeDayOfTheWeek showtime_day_of_the_week = 7;
+}
+
+message Theater {
+    uint32 id = 1;
+    string display_name = 2;
+    string location = 3;
+    uint32 screen_count = 4;
+    uint32 seat_count = 5;
+}
+
+message ScreenType {
+    uint32 id = 1 ;
+    string display_name = 2;
+    string description = 3;
+    uint32 seat_count = 4;
+    uint32 row_count = 5;
+    uint32 seat_of_row_count = 6;
+}
+message Screen {
+    uint32 id = 1;
+    uint32 of_theater_id = 2;
+    ScreenType screen_type = 3;
+    string display_name = 4;
+}
+
+message SeatType {
+    uint32 id = 1;
+    string display_name = 2;
+}
+
+message Seat {
+    uint32 id = 1;
+    SeatType seat_type = 2;
+    uint32 of_screen_id = 3;
+    uint32 column = 4;
+    string row = 5;
+    string no = 6;
+}
+
+message CreateMovieGenreRequest {
+    string display_name = 1;
+}
+
+message CreateMovieGenreResponse {
+    MovieGenre movie_genre = 1;
+}
+
+message UpdateMovieGenreRequest {
+    uint32 id = 1;
+    string display_name = 2;
+}
+
+message UpdateMovieGenreResponse {
+    MovieGenre movie_genre = 1;
+}
+
+message DeleteMovieGenreRequest {
+    uint32 id = 1;
+}
+
+message DeleteMovieGenreResponse {}
+
+message GetShowtimeRequest {
+    uint32 showtime_id = 1;
+}
+
+message GetShowtimeResponse {
+    Showtime showtime = 1;
+}
+
+message CreateImageRequest {
+    uint32 of_movie_id = 1; 
+    string original_file_name = 2;
+    bytes image_data = 3;
+}
+
+message CreateImageResponse {
+    MovieImage movie_image = 1;
+}
+
+message GetImageRequest {
+    uint32 movie_id = 1;
+}
+
+message GetImageResponse {
+    repeated MovieImage movie_image_list = 1;
+}
+
+message DeleteImageRequest {
+    uint32 id = 1;
+}
+
+message DeleteImageResponse {}
+
+message CreatePosterRequest {
+    uint32 of_movie_id = 1; 
+    string originalFileName = 2;
+    bytes imageData = 3; 
+}
+
+message CreatePosterResponse {
+    MoviePoster movie_poster = 1;
+}
+
+message GetPosterRequest {
+    uint32 movie_id = 1;
+}
+
+message GetPosterResponse {
+    MoviePoster movie_poster = 1;
+}
+
+message DeletePosterRequest {
+    uint32 of_movie_id = 1;
+}
+
+message DeletePosterResponse {}
+
+message PosterInfo {
+    string original_file_name = 1;
+    bytes image_data = 2;
+}
+
+message ImageInfo {
+    string original_file_name = 1;
+    bytes image_data = 2;
+}
+
+message CreateMovieRequest {
+    string title = 1;
+    string description = 2;
+    uint32 duration = 3;
+    uint64 release_date = 4;
+    repeated uint32 genre_id_list = 5;
+    repeated ImageInfo image_list = 6;
+    PosterInfo poster = 7;
+    uint32 type_id = 8;
+    string trailer = 9;
+}
+
+message CreateMovieResponse {
+    Movie movie = 1;
+}
+
+message GetMovieRequest {
+    uint32 id = 1;
+}
+
+message GetMovieResponse {
+    Movie movie = 1;
+    repeated MovieGenre genre_list = 2;
+    repeated MovieImage image_list = 3;
+}
+
+message GetCurrentShowingMovieListRequest {
+    uint32 offset = 1;
+    uint32 limit = 2;
+}
+
+message GetCurrentShowingMovieListResponse {
+    repeated Movie movie_list = 1;
+}
+
+message GetUpcomingMovieListRequest {
+    uint32 offset = 1;
+    uint32 limit = 2;
+}
+
+message GetUpcomingMovieListResponse {
+    repeated Movie movie_list = 1;
+}
+
+message DeleteMovieRequest {
+    uint32 id = 1;
+}
+
+message DeleteMovieResponse {}
+
+message CreateScreenTypeRequest {
+    string display_name = 1;
+    string description = 2;
+    uint32 seat_count = 3;
+    uint32 seat_of_row_count = 4;
+    uint32 row_count = 5;
+}
+
+message CreateScreenTypeResponse {
+    uint32 screen_type_id = 1;
+    string display_name = 2;
+    string description = 3;
+    uint32 seat_count = 4;
+    uint32 seat_of_row_count = 5;
+    uint32 row_count = 6;
+}
+
+message DeleteScreenTypeRequest {
+    uint32 id = 1;
+}
+
+message DeleteScreenTypeResponse {}
+
+message CreateTheaterRequest {
+    string display_name = 1;
+    string location = 2;
+}
+
+message CreateTheaterResponse {
+    uint32 theater_id = 1;
+    string display_name = 2;
+    string location = 3;
+    uint32 screen_count = 4;
+    uint32 seat_count = 5;
+}
+
+message GetTheaterRequest {
+    uint32 theater_id = 1;
+}
+
+message GetTheaterResponse {
+    Theater theater = 1;
+}
+
+message GetTheaterListRequest {
+}
+
+message GetTheaterListResponse {
+    repeated Theater theater_list = 1;
+}
+
+message DeleteTheaterRequest {
+    uint32 id = 1;
+}
+
+message DeleteTheaterResponse {}
+
+message CreateScreenRequest {
+    uint32 theater_id = 1;
+    uint32 screen_type_id = 2;
+    string display_name = 3;
+}
+
+message CreateScreenResponse {
+    Screen screen = 1;
+}
+
+
+message GetScreenRequest {
+    uint32 screen_id = 1;
+}
+
+message GetScreenResponse {
+    Screen screen = 1;
+}
+
+message DeleteScreenRequest {
+    uint32 id = 1;
+}
+
+message DeleteScreenResponse {}
+
+message GetSeatRequest {
+    uint32 seat_id = 1;
+}
+
+message GetSeatResponse {
+    Seat seat = 1;
+}
+
+message CreateAllSeatOfScreenRequest {
+    uint32 screen_id = 1;
+    uint32 screen_type_id = 2;
+}
+
+message CreateAllSeatOfScreenResponse {}
+
+message CreateShowtimeRequest {
+    uint32 movie_id = 1;
+    uint32 screen_id = 3;
+    int64 time_start = 4;
+}
+
+message CreateShowtimeResponse {
+  Showtime showtime = 1; 
+}
+
+message DeleteShowtimeRequest {
+    uint32 id = 1;
+}
+
+message DeleteShowtimeResponse {}
+
+message GetShowtimeListOfTheaterByMovieIdRequest {
+    uint32 theater_id = 1;
+    uint32 movie_id = 2;
+    uint64 request_time = 3;
+}
+
+message ShowtimeDetail {
+    uint32 id = 1;
+    string theater_name = 2;
+    string movie_name = 3;
+    MovieType movie_type = 4;
+    string screen_name = 5;
+    int64 time_start = 6;
+    int64 time_end = 7;
+    uint32 seat_count = 8;
+}
+
+message GetShowtimeListOfTheaterByMovieIdResponse {
+    Theater theater = 1;
+    repeated ShowtimeDetail showtime_list_of_theater = 2;
+}
+
+message GetShowtimeListOfTheaterRequest {
+    uint32 theater_id = 1;
+    uint64 request_time = 2;
+}
+
+message GetShowtimeListOfTheaterResponse {
+    Theater theater = 1;
+    repeated ShowtimeDetail showtime_list_of_theater = 2;
+}
+
+message GetPriceRequest {
+    uint32 showtime_id = 1;
+    uint32 seat_id= 2;
+}
+
+message Price {
+    uint32 id = 1;
+    uint32 of_movie_type_id = 2;
+    uint32 of_seat_type_id = 3;
+    uint32 of_showtime_slot_id = 4;
+    uint32 of_showtime_day_of_the_week_id = 5;
+    uint64 price = 6;
+}
+message GetPriceResponse {
+    Price price = 1;
+}
+
+message SeatStatus {
+    enum Values {
+        AVAILABLE = 0;
+        UNAVAILABLE = 1;
+    }
+}
+
+message SeatMetadata {
+    uint32 id = 1;
+    SeatType seat_type = 2;
+    uint32 of_screen_id = 3;
+    uint32 column = 4;
+    string row = 5;
+    string no = 6;
+    SeatStatus.Values status = 7;
+    uint64 price = 8;
+}
+
+message ShowtimeMetadata {
+    Theater theater = 1;
+    Showtime showtime = 2;
+    Movie movie = 3;
+    Screen screen = 4;
+    repeated SeatMetadata seats = 5;
+}
+
+message GetShowtimeMetadataRequest {
+    uint32 showtime_id = 1;
+}
+
+message GetShowtimeMetadataResponse {
+    ShowtimeMetadata showtime_metadata = 1;
+}
+
+message SearchMovieRequest {
+    string query = 1;
+    uint32 limit = 2;
+}
+
+message SearchMovieResponse {
+    repeated Movie movie_list = 1;
+}

@@ -1,0 +1,1923 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "movie_service/movie_service.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "MovieService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/movie_service.MovieService/CreateAllSeatOfScreen": {
+      "post": {
+        "operationId": "MovieService_CreateAllSeatOfScreen",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceCreateAllSeatOfScreenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceCreateAllSeatOfScreenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/CreateMovie": {
+      "post": {
+        "operationId": "MovieService_CreateMovie",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceCreateMovieResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceCreateMovieRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/CreateMovieGenre": {
+      "post": {
+        "operationId": "MovieService_CreateMovieGenre",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceCreateMovieGenreResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceCreateMovieGenreRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/CreateScreen": {
+      "post": {
+        "operationId": "MovieService_CreateScreen",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceCreateScreenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceCreateScreenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/CreateScreenType": {
+      "post": {
+        "operationId": "MovieService_CreateScreenType",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceCreateScreenTypeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceCreateScreenTypeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/CreateShowtime": {
+      "post": {
+        "operationId": "MovieService_CreateShowtime",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceCreateShowtimeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceCreateShowtimeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/CreateTheater": {
+      "post": {
+        "operationId": "MovieService_CreateTheater",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceCreateTheaterResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceCreateTheaterRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/DeleteMovie": {
+      "post": {
+        "operationId": "MovieService_DeleteMovie",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceDeleteMovieResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceDeleteMovieRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/DeleteMovieGenre": {
+      "post": {
+        "operationId": "MovieService_DeleteMovieGenre",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceDeleteMovieGenreResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceDeleteMovieGenreRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/DeleteScreen": {
+      "post": {
+        "operationId": "MovieService_DeleteScreen",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceDeleteScreenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceDeleteScreenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/DeleteScreenType": {
+      "post": {
+        "operationId": "MovieService_DeleteScreenType",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceDeleteScreenTypeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceDeleteScreenTypeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/DeleteShowtime": {
+      "post": {
+        "operationId": "MovieService_DeleteShowtime",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceDeleteShowtimeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceDeleteShowtimeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/DeleteTheater": {
+      "post": {
+        "operationId": "MovieService_DeleteTheater",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceDeleteTheaterResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceDeleteTheaterRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/GetCurrentShowingMovieList": {
+      "post": {
+        "operationId": "MovieService_GetCurrentShowingMovieList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetCurrentShowingMovieListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetCurrentShowingMovieListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/GetMovie": {
+      "post": {
+        "operationId": "MovieService_GetMovie",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetMovieResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetMovieRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/GetPrice": {
+      "post": {
+        "operationId": "MovieService_GetPrice",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetPriceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetPriceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/GetScreen": {
+      "post": {
+        "operationId": "MovieService_GetScreen",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetScreenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetScreenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/GetSeat": {
+      "post": {
+        "operationId": "MovieService_GetSeat",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetSeatResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetSeatRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/GetShowtime": {
+      "post": {
+        "operationId": "MovieService_GetShowtime",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetShowtimeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetShowtimeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/GetShowtimeListOfTheater": {
+      "post": {
+        "operationId": "MovieService_GetShowtimeListOfTheater",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetShowtimeListOfTheaterResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetShowtimeListOfTheaterRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/GetShowtimeListOfTheaterByMovieId": {
+      "post": {
+        "operationId": "MovieService_GetShowtimeListOfTheaterByMovieId",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetShowtimeListOfTheaterByMovieIdResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetShowtimeListOfTheaterByMovieIdRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/GetShowtimeMetadata": {
+      "post": {
+        "operationId": "MovieService_GetShowtimeMetadata",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetShowtimeMetadataResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetShowtimeMetadataRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/GetTheater": {
+      "post": {
+        "operationId": "MovieService_GetTheater",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetTheaterResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetTheaterRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/GetTheaterList": {
+      "post": {
+        "operationId": "MovieService_GetTheaterList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetTheaterListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetTheaterListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/GetUpcomingMovieList": {
+      "post": {
+        "operationId": "MovieService_GetUpcomingMovieList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetUpcomingMovieListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceGetUpcomingMovieListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/SearchMovie": {
+      "post": {
+        "operationId": "MovieService_SearchMovie",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceSearchMovieResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceSearchMovieRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    },
+    "/movie_service.MovieService/UpdateMovieGenre": {
+      "post": {
+        "operationId": "MovieService_UpdateMovieGenre",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/movie_serviceUpdateMovieGenreResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/movie_serviceUpdateMovieGenreRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MovieService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "movie_serviceCreateAllSeatOfScreenRequest": {
+      "type": "object",
+      "properties": {
+        "screenId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "screenTypeId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceCreateAllSeatOfScreenResponse": {
+      "type": "object"
+    },
+    "movie_serviceCreateMovieGenreRequest": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        }
+      }
+    },
+    "movie_serviceCreateMovieGenreResponse": {
+      "type": "object",
+      "properties": {
+        "movieGenre": {
+          "$ref": "#/definitions/movie_serviceMovieGenre"
+        }
+      }
+    },
+    "movie_serviceCreateMovieRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "releaseDate": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "genreIdList": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "imageList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/movie_serviceImageInfo"
+          }
+        },
+        "poster": {
+          "$ref": "#/definitions/movie_servicePosterInfo"
+        },
+        "typeId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "trailer": {
+          "type": "string"
+        }
+      }
+    },
+    "movie_serviceCreateMovieResponse": {
+      "type": "object",
+      "properties": {
+        "movie": {
+          "$ref": "#/definitions/movie_serviceMovie"
+        }
+      }
+    },
+    "movie_serviceCreateScreenRequest": {
+      "type": "object",
+      "properties": {
+        "theaterId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "screenTypeId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        }
+      }
+    },
+    "movie_serviceCreateScreenResponse": {
+      "type": "object",
+      "properties": {
+        "screen": {
+          "$ref": "#/definitions/movie_serviceScreen"
+        }
+      }
+    },
+    "movie_serviceCreateScreenTypeRequest": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "seatCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "seatOfRowCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "rowCount": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceCreateScreenTypeResponse": {
+      "type": "object",
+      "properties": {
+        "screenTypeId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "seatCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "seatOfRowCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "rowCount": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceCreateShowtimeRequest": {
+      "type": "object",
+      "properties": {
+        "movieId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "screenId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "timeStart": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceCreateShowtimeResponse": {
+      "type": "object",
+      "properties": {
+        "showtime": {
+          "$ref": "#/definitions/movie_serviceShowtime"
+        }
+      }
+    },
+    "movie_serviceCreateTheaterRequest": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        }
+      }
+    },
+    "movie_serviceCreateTheaterResponse": {
+      "type": "object",
+      "properties": {
+        "theaterId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "screenCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "seatCount": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceDeleteMovieGenreRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceDeleteMovieGenreResponse": {
+      "type": "object"
+    },
+    "movie_serviceDeleteMovieRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceDeleteMovieResponse": {
+      "type": "object"
+    },
+    "movie_serviceDeleteScreenRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceDeleteScreenResponse": {
+      "type": "object"
+    },
+    "movie_serviceDeleteScreenTypeRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceDeleteScreenTypeResponse": {
+      "type": "object"
+    },
+    "movie_serviceDeleteShowtimeRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceDeleteShowtimeResponse": {
+      "type": "object"
+    },
+    "movie_serviceDeleteTheaterRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceDeleteTheaterResponse": {
+      "type": "object"
+    },
+    "movie_serviceGetCurrentShowingMovieListRequest": {
+      "type": "object",
+      "properties": {
+        "offset": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceGetCurrentShowingMovieListResponse": {
+      "type": "object",
+      "properties": {
+        "movieList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/movie_serviceMovie"
+          }
+        }
+      }
+    },
+    "movie_serviceGetMovieRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceGetMovieResponse": {
+      "type": "object",
+      "properties": {
+        "movie": {
+          "$ref": "#/definitions/movie_serviceMovie"
+        },
+        "genreList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/movie_serviceMovieGenre"
+          }
+        },
+        "imageList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/movie_serviceMovieImage"
+          }
+        }
+      }
+    },
+    "movie_serviceGetPriceRequest": {
+      "type": "object",
+      "properties": {
+        "showtimeId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "seatId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceGetPriceResponse": {
+      "type": "object",
+      "properties": {
+        "price": {
+          "$ref": "#/definitions/movie_servicePrice"
+        }
+      }
+    },
+    "movie_serviceGetScreenRequest": {
+      "type": "object",
+      "properties": {
+        "screenId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceGetScreenResponse": {
+      "type": "object",
+      "properties": {
+        "screen": {
+          "$ref": "#/definitions/movie_serviceScreen"
+        }
+      }
+    },
+    "movie_serviceGetSeatRequest": {
+      "type": "object",
+      "properties": {
+        "seatId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceGetSeatResponse": {
+      "type": "object",
+      "properties": {
+        "seat": {
+          "$ref": "#/definitions/movie_serviceSeat"
+        }
+      }
+    },
+    "movie_serviceGetShowtimeListOfTheaterByMovieIdRequest": {
+      "type": "object",
+      "properties": {
+        "theaterId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "movieId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "requestTime": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "movie_serviceGetShowtimeListOfTheaterByMovieIdResponse": {
+      "type": "object",
+      "properties": {
+        "theater": {
+          "$ref": "#/definitions/movie_serviceTheater"
+        },
+        "showtimeListOfTheater": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/movie_serviceShowtimeDetail"
+          }
+        }
+      }
+    },
+    "movie_serviceGetShowtimeListOfTheaterRequest": {
+      "type": "object",
+      "properties": {
+        "theaterId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "requestTime": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "movie_serviceGetShowtimeListOfTheaterResponse": {
+      "type": "object",
+      "properties": {
+        "theater": {
+          "$ref": "#/definitions/movie_serviceTheater"
+        },
+        "showtimeListOfTheater": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/movie_serviceShowtimeDetail"
+          }
+        }
+      }
+    },
+    "movie_serviceGetShowtimeMetadataRequest": {
+      "type": "object",
+      "properties": {
+        "showtimeId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceGetShowtimeMetadataResponse": {
+      "type": "object",
+      "properties": {
+        "showtimeMetadata": {
+          "$ref": "#/definitions/movie_serviceShowtimeMetadata"
+        }
+      }
+    },
+    "movie_serviceGetShowtimeRequest": {
+      "type": "object",
+      "properties": {
+        "showtimeId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceGetShowtimeResponse": {
+      "type": "object",
+      "properties": {
+        "showtime": {
+          "$ref": "#/definitions/movie_serviceShowtime"
+        }
+      }
+    },
+    "movie_serviceGetTheaterListRequest": {
+      "type": "object"
+    },
+    "movie_serviceGetTheaterListResponse": {
+      "type": "object",
+      "properties": {
+        "theaterList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/movie_serviceTheater"
+          }
+        }
+      }
+    },
+    "movie_serviceGetTheaterRequest": {
+      "type": "object",
+      "properties": {
+        "theaterId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceGetTheaterResponse": {
+      "type": "object",
+      "properties": {
+        "theater": {
+          "$ref": "#/definitions/movie_serviceTheater"
+        }
+      }
+    },
+    "movie_serviceGetUpcomingMovieListRequest": {
+      "type": "object",
+      "properties": {
+        "offset": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceGetUpcomingMovieListResponse": {
+      "type": "object",
+      "properties": {
+        "movieList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/movie_serviceMovie"
+          }
+        }
+      }
+    },
+    "movie_serviceImageInfo": {
+      "type": "object",
+      "properties": {
+        "originalFileName": {
+          "type": "string"
+        },
+        "imageData": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "movie_serviceMovie": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "releaseDate": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "poster": {
+          "$ref": "#/definitions/movie_serviceMoviePoster"
+        },
+        "trailer": {
+          "$ref": "#/definitions/movie_serviceMovieTrailer"
+        },
+        "movieType": {
+          "$ref": "#/definitions/movie_serviceMovieType"
+        }
+      }
+    },
+    "movie_serviceMovieGenre": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        }
+      }
+    },
+    "movie_serviceMovieImage": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ofMovieId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "originalFileName": {
+          "type": "string"
+        },
+        "originalImageFileName": {
+          "type": "string"
+        }
+      }
+    },
+    "movie_serviceMoviePoster": {
+      "type": "object",
+      "properties": {
+        "ofMovieId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "originalFileName": {
+          "type": "string"
+        },
+        "originalImageFileName": {
+          "type": "string"
+        }
+      }
+    },
+    "movie_serviceMovieTrailer": {
+      "type": "object",
+      "properties": {
+        "ofMovieId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "youtubeLinkUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "movie_serviceMovieType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        }
+      }
+    },
+    "movie_servicePosterInfo": {
+      "type": "object",
+      "properties": {
+        "originalFileName": {
+          "type": "string"
+        },
+        "imageData": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "movie_servicePrice": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ofMovieTypeId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ofSeatTypeId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ofShowtimeSlotId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ofShowtimeDayOfTheWeekId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "price": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "movie_serviceScreen": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ofTheaterId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "screenType": {
+          "$ref": "#/definitions/movie_serviceScreenType"
+        },
+        "displayName": {
+          "type": "string"
+        }
+      }
+    },
+    "movie_serviceScreenType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "seatCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "rowCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "seatOfRowCount": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceSearchMovieRequest": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceSearchMovieResponse": {
+      "type": "object",
+      "properties": {
+        "movieList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/movie_serviceMovie"
+          }
+        }
+      }
+    },
+    "movie_serviceSeat": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "seatType": {
+          "$ref": "#/definitions/movie_serviceSeatType"
+        },
+        "ofScreenId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "column": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "row": {
+          "type": "string"
+        },
+        "no": {
+          "type": "string"
+        }
+      }
+    },
+    "movie_serviceSeatMetadata": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "seatType": {
+          "$ref": "#/definitions/movie_serviceSeatType"
+        },
+        "ofScreenId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "column": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "row": {
+          "type": "string"
+        },
+        "no": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/movie_serviceSeatStatusValues"
+        },
+        "price": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "movie_serviceSeatStatusValues": {
+      "type": "string",
+      "enum": [
+        "AVAILABLE",
+        "UNAVAILABLE"
+      ],
+      "default": "AVAILABLE"
+    },
+    "movie_serviceSeatType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        }
+      }
+    },
+    "movie_serviceShowtime": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ofMovieId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ofScreenId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "timeStart": {
+          "type": "string",
+          "format": "int64"
+        },
+        "timeEnd": {
+          "type": "string",
+          "format": "int64"
+        },
+        "showtimeSlot": {
+          "$ref": "#/definitions/movie_serviceShowtimeSlot"
+        },
+        "showtimeDayOfTheWeek": {
+          "$ref": "#/definitions/movie_serviceShowtimeDayOfTheWeek"
+        }
+      }
+    },
+    "movie_serviceShowtimeDayOfTheWeek": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        }
+      }
+    },
+    "movie_serviceShowtimeDetail": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "theaterName": {
+          "type": "string"
+        },
+        "movieName": {
+          "type": "string"
+        },
+        "movieType": {
+          "$ref": "#/definitions/movie_serviceMovieType"
+        },
+        "screenName": {
+          "type": "string"
+        },
+        "timeStart": {
+          "type": "string",
+          "format": "int64"
+        },
+        "timeEnd": {
+          "type": "string",
+          "format": "int64"
+        },
+        "seatCount": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceShowtimeMetadata": {
+      "type": "object",
+      "properties": {
+        "theater": {
+          "$ref": "#/definitions/movie_serviceTheater"
+        },
+        "showtime": {
+          "$ref": "#/definitions/movie_serviceShowtime"
+        },
+        "movie": {
+          "$ref": "#/definitions/movie_serviceMovie"
+        },
+        "screen": {
+          "$ref": "#/definitions/movie_serviceScreen"
+        },
+        "seats": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/movie_serviceSeatMetadata"
+          }
+        }
+      }
+    },
+    "movie_serviceShowtimeSlot": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        }
+      }
+    },
+    "movie_serviceTheater": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "screenCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "seatCount": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "movie_serviceUpdateMovieGenreRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        }
+      }
+    },
+    "movie_serviceUpdateMovieGenreResponse": {
+      "type": "object",
+      "properties": {
+        "movieGenre": {
+          "$ref": "#/definitions/movie_serviceMovieGenre"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1373 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "user_service/user_service.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "UserService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/user_service.UserService/AddUserPermissionToUserRole": {
+      "post": {
+        "operationId": "UserService_AddUserPermissionToUserRole",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceAddUserPermissionToUserRoleResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceAddUserPermissionToUserRoleRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/AddUserRoleToUser": {
+      "post": {
+        "operationId": "UserService_AddUserRoleToUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceAddUserRoleToUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceAddUserRoleToUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/BlacklistToken": {
+      "post": {
+        "operationId": "UserService_BlacklistToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceBlacklistTokenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceBlacklistTokenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/CreateUser": {
+      "post": {
+        "operationId": "UserService_CreateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceCreateUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceCreateUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/CreateUserPassword": {
+      "post": {
+        "operationId": "UserService_CreateUserPassword",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceCreateUserPasswordResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceCreateUserPasswordRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/CreateUserPermission": {
+      "post": {
+        "operationId": "UserService_CreateUserPermission",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceCreateUserPermissionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceCreateUserPermissionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/CreateUserRole": {
+      "post": {
+        "operationId": "UserService_CreateUserRole",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceCreateUserRoleResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceCreateUserRoleRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/DeleteUserPermission": {
+      "post": {
+        "operationId": "UserService_DeleteUserPermission",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceDeleteUserPermissionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceDeleteUserPermissionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/DeleteUserRole": {
+      "post": {
+        "operationId": "UserService_DeleteUserRole",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceDeleteUserRoleResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceDeleteUserRoleRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/GetUser": {
+      "post": {
+        "operationId": "UserService_GetUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceGetUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceGetUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/GetUserFromToken": {
+      "post": {
+        "operationId": "UserService_GetUserFromToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceGetUserFromTokenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceGetUserFromTokenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/GetUserList": {
+      "post": {
+        "operationId": "UserService_GetUserList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceGetUserListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceGetUserListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/GetUserPermissionList": {
+      "post": {
+        "operationId": "UserService_GetUserPermissionList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceGetUserPermissionListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceGetUserPermissionListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/GetUserPermissionListOfUser": {
+      "post": {
+        "operationId": "UserService_GetUserPermissionListOfUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceGetUserPermissionListOfUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceGetUserPermissionListOfUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/GetUserPermissionListOfUserRoleList": {
+      "post": {
+        "operationId": "UserService_GetUserPermissionListOfUserRoleList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceGetUserPermissionListOfUserRoleListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceGetUserPermissionListOfUserRoleListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/GetUserRoleListOfUserList": {
+      "post": {
+        "operationId": "UserService_GetUserRoleListOfUserList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceGetUserRoleListOfUserListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceGetUserRoleListOfUserListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/LoginWithPassword": {
+      "post": {
+        "operationId": "UserService_LoginWithPassword",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceLoginWithPasswordResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceLoginWithPasswordRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/RemoveUserPermissionFromUserRole": {
+      "post": {
+        "operationId": "UserService_RemoveUserPermissionFromUserRole",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceRemoveUserPermissionFromUserRoleResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceRemoveUserPermissionFromUserRoleRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/RemoveUserRoleFromUser": {
+      "post": {
+        "operationId": "UserService_RemoveUserRoleFromUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceRemoveUserRoleFromUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceRemoveUserRoleFromUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/SearchUser": {
+      "post": {
+        "operationId": "UserService_SearchUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceSearchUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceSearchUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/UpdateUser": {
+      "post": {
+        "operationId": "UserService_UpdateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceUpdateUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceUpdateUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/UpdateUserPassword": {
+      "post": {
+        "operationId": "UserService_UpdateUserPassword",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceUpdateUserPasswordResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceUpdateUserPasswordRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/UpdateUserPermission": {
+      "post": {
+        "operationId": "UserService_UpdateUserPermission",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceUpdateUserPermissionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceUpdateUserPermissionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    },
+    "/user_service.UserService/UpdateUserRole": {
+      "post": {
+        "operationId": "UserService_UpdateUserRole",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/user_serviceUpdateUserRoleResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/user_serviceUpdateUserRoleRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UserService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "user_serviceAddUserPermissionToUserRoleRequest": {
+      "type": "object",
+      "properties": {
+        "userRoleId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userPermissionId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "user_serviceAddUserPermissionToUserRoleResponse": {
+      "type": "object"
+    },
+    "user_serviceAddUserRoleToUserRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userRoleId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "user_serviceAddUserRoleToUserResponse": {
+      "type": "object"
+    },
+    "user_serviceBlacklistTokenRequest": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "user_serviceBlacklistTokenResponse": {
+      "type": "object"
+    },
+    "user_serviceCreateUserPasswordRequest": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "$ref": "#/definitions/user_serviceUserPassword"
+        }
+      }
+    },
+    "user_serviceCreateUserPasswordResponse": {
+      "type": "object"
+    },
+    "user_serviceCreateUserPermissionRequest": {
+      "type": "object",
+      "properties": {
+        "permissionName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "user_serviceCreateUserPermissionResponse": {
+      "type": "object",
+      "properties": {
+        "userPermission": {
+          "$ref": "#/definitions/user_serviceUserPermission"
+        }
+      }
+    },
+    "user_serviceCreateUserRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "user_serviceCreateUserResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/user_serviceUser"
+        }
+      }
+    },
+    "user_serviceCreateUserRoleRequest": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "user_serviceCreateUserRoleResponse": {
+      "type": "object",
+      "properties": {
+        "userRole": {
+          "$ref": "#/definitions/user_serviceUserRole"
+        }
+      }
+    },
+    "user_serviceDeleteUserPermissionRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "user_serviceDeleteUserPermissionResponse": {
+      "type": "object"
+    },
+    "user_serviceDeleteUserRoleRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "user_serviceDeleteUserRoleResponse": {
+      "type": "object"
+    },
+    "user_serviceGetUserFromTokenRequest": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "user_serviceGetUserFromTokenResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/user_serviceUser"
+        },
+        "newToken": {
+          "type": "string"
+        }
+      }
+    },
+    "user_serviceGetUserListRequest": {
+      "type": "object",
+      "properties": {
+        "offset": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "sortOrder": {
+          "$ref": "#/definitions/user_serviceUserListSortOrderValues"
+        },
+        "filterOptions": {
+          "$ref": "#/definitions/user_serviceUserListFilterOptions"
+        }
+      }
+    },
+    "user_serviceGetUserListResponse": {
+      "type": "object",
+      "properties": {
+        "totalUserCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/user_serviceUser"
+          }
+        }
+      }
+    },
+    "user_serviceGetUserPermissionListOfUserRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "user_serviceGetUserPermissionListOfUserResponse": {
+      "type": "object",
+      "properties": {
+        "userPermissionList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/user_serviceUserPermission"
+          }
+        }
+      }
+    },
+    "user_serviceGetUserPermissionListOfUserRoleListRequest": {
+      "type": "object",
+      "properties": {
+        "userRoleIdList": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
+    },
+    "user_serviceGetUserPermissionListOfUserRoleListResponse": {
+      "type": "object",
+      "properties": {
+        "userPermissionListOfUserRoleList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/user_serviceUserPermissionList"
+          }
+        }
+      }
+    },
+    "user_serviceGetUserPermissionListRequest": {
+      "type": "object"
+    },
+    "user_serviceGetUserPermissionListResponse": {
+      "type": "object",
+      "properties": {
+        "userPermissionList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/user_serviceUserPermission"
+          }
+        }
+      }
+    },
+    "user_serviceGetUserRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "user_serviceGetUserResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/user_serviceUser"
+        }
+      }
+    },
+    "user_serviceGetUserRoleListOfUserListRequest": {
+      "type": "object",
+      "properties": {
+        "userIdList": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
+    },
+    "user_serviceGetUserRoleListOfUserListResponse": {
+      "type": "object",
+      "properties": {
+        "userRoleListOfUserList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/user_serviceUserRoleList"
+          }
+        }
+      }
+    },
+    "user_serviceLoginWithPasswordRequest": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "user_serviceLoginWithPasswordResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/user_serviceUser"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "user_serviceRemoveUserPermissionFromUserRoleRequest": {
+      "type": "object",
+      "properties": {
+        "userRoleId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userPermissionId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "user_serviceRemoveUserPermissionFromUserRoleResponse": {
+      "type": "object"
+    },
+    "user_serviceRemoveUserRoleFromUserRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userRoleId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "user_serviceRemoveUserRoleFromUserResponse": {
+      "type": "object"
+    },
+    "user_serviceSearchUserRequest": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "includedUserIdList": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
+    },
+    "user_serviceSearchUserResponse": {
+      "type": "object",
+      "properties": {
+        "userList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/user_serviceUser"
+          }
+        }
+      }
+    },
+    "user_serviceUpdateUserPasswordRequest": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "$ref": "#/definitions/user_serviceUserPassword"
+        }
+      }
+    },
+    "user_serviceUpdateUserPasswordResponse": {
+      "type": "object"
+    },
+    "user_serviceUpdateUserPermissionRequest": {
+      "type": "object",
+      "properties": {
+        "userPermission": {
+          "$ref": "#/definitions/user_serviceUserPermission"
+        }
+      }
+    },
+    "user_serviceUpdateUserPermissionResponse": {
+      "type": "object",
+      "properties": {
+        "userPermission": {
+          "$ref": "#/definitions/user_serviceUserPermission"
+        }
+      }
+    },
+    "user_serviceUpdateUserRequest": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/user_serviceUser"
+        }
+      }
+    },
+    "user_serviceUpdateUserResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/user_serviceUser"
+        }
+      }
+    },
+    "user_serviceUpdateUserRoleRequest": {
+      "type": "object",
+      "properties": {
+        "userRole": {
+          "$ref": "#/definitions/user_serviceUserRole"
+        }
+      }
+    },
+    "user_serviceUpdateUserRoleResponse": {
+      "type": "object",
+      "properties": {
+        "userRole": {
+          "$ref": "#/definitions/user_serviceUserRole"
+        }
+      }
+    },
+    "user_serviceUser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "username": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "user_serviceUserListFilterOptions": {
+      "type": "object",
+      "properties": {
+        "usernameQuery": {
+          "type": "string"
+        },
+        "userTagIdList": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "userRoleIdList": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
+    },
+    "user_serviceUserListSortOrderValues": {
+      "type": "string",
+      "enum": [
+        "ID_ASCENDING",
+        "ID_DESCENDING",
+        "USERNAME_ASCENDING",
+        "USERNAME_DESCENDING",
+        "DISPLAY_NAME_ASCENDING",
+        "DISPLAY_NAME_DESCENDING"
+      ],
+      "default": "ID_ASCENDING"
+    },
+    "user_serviceUserPassword": {
+      "type": "object",
+      "properties": {
+        "ofUserId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "user_serviceUserPermission": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "permissionName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "user_serviceUserPermissionList": {
+      "type": "object",
+      "properties": {
+        "userPermissionList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/user_serviceUserPermission"
+          }
+        }
+      }
+    },
+    "user_serviceUserRole": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "user_serviceUserRoleList": {
+      "type": "object",
+      "properties": {
+        "userRoleList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/user_serviceUserRole"
+          }
+        }
+      }
+    }
+  }
+}

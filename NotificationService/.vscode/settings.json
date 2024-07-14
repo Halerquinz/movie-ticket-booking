@@ -1,0 +1,18 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5436, 
+            "driver": "PostgreSQL", 
+            "name": "NotificationService",
+            "database": "movie_ticket_booking_notification_service_db",
+            "username": "postgres",
+            "password": "admin",
+            "postgresOptions": {
+                "authProtocol": "default",
+                "enableSsl": false
+            }
+        }
+    ]
+}

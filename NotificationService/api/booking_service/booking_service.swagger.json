@@ -1,0 +1,684 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "booking_service/booking_service.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "BookingService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/booking_service.BookingService/CreateBooking": {
+      "post": {
+        "operationId": "BookingService_CreateBooking",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/booking_serviceCreateBookingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/booking_serviceCreateBookingRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BookingService"
+        ]
+      }
+    },
+    "/booking_service.BookingService/GetBookingById": {
+      "post": {
+        "operationId": "BookingService_GetBookingById",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/booking_serviceGetBookingByIdResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/booking_serviceGetBookingByIdRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BookingService"
+        ]
+      }
+    },
+    "/booking_service.BookingService/GetBookingList": {
+      "post": {
+        "operationId": "BookingService_GetBookingList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/booking_serviceGetBookingListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/booking_serviceGetBookingListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BookingService"
+        ]
+      }
+    },
+    "/booking_service.BookingService/GetBookingListProcessingAndConfirmedByShowtimeId": {
+      "post": {
+        "operationId": "BookingService_GetBookingListProcessingAndConfirmedByShowtimeId",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/booking_serviceGetBookingListProcessingAndConfirmedByShowtimeIdResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/booking_serviceGetBookingListProcessingAndConfirmedByShowtimeIdRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BookingService"
+        ]
+      }
+    },
+    "/booking_service.BookingService/GetBookingWithStatus": {
+      "post": {
+        "operationId": "BookingService_GetBookingWithStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/booking_serviceGetBookingWithStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/booking_serviceGetBookingWithStatusRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BookingService"
+        ]
+      }
+    },
+    "/booking_service.BookingService/UpdateBookingStatusFromInitializingToPending": {
+      "post": {
+        "operationId": "BookingService_UpdateBookingStatusFromInitializingToPending",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/booking_serviceUpdateBookingStatusFromInitializingToPendingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/booking_serviceUpdateBookingStatusFromInitializingToPendingRequest"
+            }
+          }
+        ],
+        "tags": [
+          "BookingService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "booking_serviceBooking": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ofUserId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ofShowtimeId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ofSeatId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "bookingTime": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "expireAt": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "bookingStatus": {
+          "$ref": "#/definitions/booking_serviceBookingStatusValues"
+        },
+        "amount": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "currency": {
+          "type": "string"
+        }
+      }
+    },
+    "booking_serviceBookingMetadata": {
+      "type": "object",
+      "properties": {
+        "booking": {
+          "$ref": "#/definitions/booking_serviceBooking"
+        },
+        "theater": {
+          "$ref": "#/definitions/booking_serviceTheater"
+        },
+        "screen": {
+          "$ref": "#/definitions/booking_serviceScreen"
+        },
+        "showtime": {
+          "$ref": "#/definitions/booking_serviceShowtime"
+        },
+        "movie": {
+          "$ref": "#/definitions/booking_serviceMovie"
+        },
+        "seat": {
+          "$ref": "#/definitions/booking_serviceSeat"
+        }
+      }
+    },
+    "booking_serviceBookingStatusValues": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "CONFIRMED",
+        "CANCEL"
+      ],
+      "default": "PENDING"
+    },
+    "booking_serviceCreateBookingRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "showtimeId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "seatId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "amount": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "currency": {
+          "type": "string"
+        }
+      }
+    },
+    "booking_serviceCreateBookingResponse": {
+      "type": "object",
+      "properties": {
+        "booking": {
+          "$ref": "#/definitions/booking_serviceBooking"
+        }
+      }
+    },
+    "booking_serviceGetBookingByIdRequest": {
+      "type": "object",
+      "properties": {
+        "bookingId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "booking_serviceGetBookingByIdResponse": {
+      "type": "object",
+      "properties": {
+        "booking": {
+          "$ref": "#/definitions/booking_serviceBooking"
+        }
+      }
+    },
+    "booking_serviceGetBookingListProcessingAndConfirmedByShowtimeIdRequest": {
+      "type": "object",
+      "properties": {
+        "showtimeId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "booking_serviceGetBookingListProcessingAndConfirmedByShowtimeIdResponse": {
+      "type": "object",
+      "properties": {
+        "bookingList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/booking_serviceBooking"
+          }
+        }
+      }
+    },
+    "booking_serviceGetBookingListRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "bookingStatus": {
+          "$ref": "#/definitions/booking_serviceBookingStatusValues"
+        },
+        "offset": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "booking_serviceGetBookingListResponse": {
+      "type": "object",
+      "properties": {
+        "bookingList": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/booking_serviceBookingMetadata"
+          }
+        }
+      }
+    },
+    "booking_serviceGetBookingWithStatusRequest": {
+      "type": "object",
+      "properties": {
+        "bookingId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "bookingStatus": {
+          "$ref": "#/definitions/booking_serviceBookingStatusValues"
+        }
+      }
+    },
+    "booking_serviceGetBookingWithStatusResponse": {
+      "type": "object",
+      "properties": {
+        "booking": {
+          "$ref": "#/definitions/booking_serviceBooking"
+        }
+      }
+    },
+    "booking_serviceMovie": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "releaseDate": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "poster": {
+          "$ref": "#/definitions/booking_serviceMoviePoster"
+        },
+        "trailer": {
+          "$ref": "#/definitions/booking_serviceMovieTrailer"
+        },
+        "movieType": {
+          "$ref": "#/definitions/booking_serviceMovieType"
+        }
+      }
+    },
+    "booking_serviceMoviePoster": {
+      "type": "object",
+      "properties": {
+        "ofMovieId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "originalFileName": {
+          "type": "string"
+        },
+        "originalImageFileName": {
+          "type": "string"
+        }
+      }
+    },
+    "booking_serviceMovieTrailer": {
+      "type": "object",
+      "properties": {
+        "ofMovieId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "youtubeLinkUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "booking_serviceMovieType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        }
+      }
+    },
+    "booking_serviceScreen": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ofTheaterId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "screenType": {
+          "$ref": "#/definitions/booking_serviceScreenType"
+        },
+        "displayName": {
+          "type": "string"
+        }
+      }
+    },
+    "booking_serviceScreenType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "seatCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "rowCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "seatOfRowCount": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "booking_serviceSeat": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "seatType": {
+          "$ref": "#/definitions/booking_serviceSeatType"
+        },
+        "ofScreenId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "column": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "row": {
+          "type": "string"
+        },
+        "no": {
+          "type": "string"
+        }
+      }
+    },
+    "booking_serviceSeatType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        }
+      }
+    },
+    "booking_serviceShowtime": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ofMovieId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ofScreenId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "timeStart": {
+          "type": "string",
+          "format": "int64"
+        },
+        "timeEnd": {
+          "type": "string",
+          "format": "int64"
+        },
+        "showtimeSlot": {
+          "$ref": "#/definitions/booking_serviceShowtimeSlot"
+        },
+        "showtimeDayOfTheWeek": {
+          "$ref": "#/definitions/booking_serviceShowtimeDayOfTheWeek"
+        }
+      }
+    },
+    "booking_serviceShowtimeDayOfTheWeek": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        }
+      }
+    },
+    "booking_serviceShowtimeSlot": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        }
+      }
+    },
+    "booking_serviceTheater": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "screenCount": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "seatCount": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "booking_serviceUpdateBookingStatusFromInitializingToPendingRequest": {
+      "type": "object",
+      "properties": {
+        "bookingId": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "booking_serviceUpdateBookingStatusFromInitializingToPendingResponse": {
+      "type": "object"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+grpc:
+  address: "127.0.0.1:20004"
+log:
+  level: "debug" # [debug, info, warn, error, panic]
+database:
+  type: "postgres"
+  host: "0.0.0.0"
+  port: 5436
+  username: "postgres"
+  password: "admin"
+  database: "movie_ticket_booking_notification_service_db"
+s3:
+  address: "127.0.0.1:9000"
+  bucket: invoices
+  username: "ROOTUSER"
+  password: "CHANGEME123"
+kafka:
+  addresses:
+    - 127.0.0.1:9092
+  client_id: "notification_service"
+user_service_client:
+  addresses: ["127.0.0.1:20000"]
+movie_service_client:
+  addresses: ["0.0.0.0:20001"]
+booking_service_client:
+  addresses: ["0.0.0.0:20002"]
+mail:
+  host_mail:
+  host_email_app_password:

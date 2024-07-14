@@ -47,6 +47,18 @@ services:
     restart: always
     volumes:
       - ../db-data/payment_service:/var/lib/postgresql/data
+    
+  notification_service_db:
+    image: 'postgres:14.2-bullseye'
+    ports:
+      - '5436:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=movie_ticket_booking_notification_service_db
+    restart: always
+    volumes:
+      - ../db-data/notification_service:/var/lib/postgresql/data
 
   zookeeper:
     image: 'bitnami/zookeeper:3.8-debian-10'

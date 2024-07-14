@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package payment_service;
+
+service PaymentService {
+    rpc CreatePaymentTransaction(CreatePaymentTransactionRequest) returns (CreatePaymentTransactionResponse) {};
+    rpc CancelPaymentTransaction(CancelPaymentTransactionRequest) returns (CancelPaymentTransactionResponse) {}
+}
+
+message PaymentTransactionStatus {
+    enum Values {
+        PENDING = 0;
+        SUCCESS = 1;
+        CANCEL = 2;
+    }
+}
+
+message PaymentTransaction {
+    uint32 id = 1;
+    uint32 of_booking_id = 2;
+    int64 request_time = 3;
+    int64 update_time = 4;
+    PaymentTransactionStatus.Values status = 5;
+}
+
+message CreatePaymentTransactionRequest {
+    uint32 booking_id = 1;
+    uint32 user_id = 2;
+}
+
+message CreatePaymentTransactionResponse {
+   string checkout_url = 1; 
+}
+
+message CancelPaymentTransactionRequest {
+    uint32 booking_id = 1;
+    uint32 user_id = 2;
+}
+
+message CancelPaymentTransactionResponse { }
+ 

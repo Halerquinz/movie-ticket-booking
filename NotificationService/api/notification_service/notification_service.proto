@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package notification_service;
+
+option go_package = "./notification_service";
+
+service NotificationService {
+  rpc SayHello (HelloRequest) returns (HelloResponse) {}
+}
+
+message HelloRequest {
+  uint64 booking_id = 1;
+}
+
+message HelloResponse {
+  string message = 1;
+}
