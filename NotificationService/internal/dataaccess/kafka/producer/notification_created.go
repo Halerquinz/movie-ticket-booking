@@ -46,7 +46,7 @@ func (n notificationCreated) Produce(ctx context.Context, event NotificationCrea
 
 	err = n.producer.Produce(ctx, TopicNameNotificationServiceNotificationCreated, eventBytes)
 	if err != nil {
-		logger.With(zap.Error(err)).Error("failed to produce notification task created event")
+		logger.With(zap.Error(err)).Error("failed to produce notification created event")
 		return err
 	}
 

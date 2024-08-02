@@ -63,10 +63,15 @@ func (m *mailer) Send(
 	}
 	mail.SetBody("text/html", bodyText)
 
+	var tmpfile *os.File
 	if booking.BookingStatus != booking_service.BookingStatus_CANCEL {
-		if err := m.attachPDF(ctx, mail, notification); err != nil {
+		var err error
+		tmpfile, err = m.attachPDF(ctx, mail, notification)
+		if err != nil {
 			return err
 		}
+		defer tmpfile.Close()
+		defer os.Remove(tmpfile.Name())
 	}
 
 	if err := d.DialAndSend(mail); err != nil {
@@ -77,27 +82,27 @@ func (m *mailer) Send(
 	return nil
 }
 
-func (m *mailer) attachPDF(ctx context.Context, mail *gomail.Message, notification *database.Notification) error {
+func (m *mailer) attachPDF(ctx context.Context, mail *gomail.Message, notification *database.Notification) (*os.File, error) {
 	pdfData, err := m.s3DM.GetFile(ctx, notification.OriginalPDFFilename)
 	if err != nil {
 		m.logger.With(zap.Error(err)).Error("failed to get PDF file")
-		return err
+		return nil, err
 	}
 
 	tmpfile, err := os.CreateTemp("", "attachment-*.pdf")
 	if err != nil {
 		m.logger.With(zap.Error(err)).Error("failed to create temp file")
-		return err
+		return nil, err
 	}
-	defer tmpfile.Close()
-	defer os.Remove(tmpfile.Name())
 
 	if _, err := tmpfile.Write(pdfData); err != nil {
+		tmpfile.Close()
+		os.Remove(tmpfile.Name())
 		m.logger.With(zap.Error(err)).Error("failed to write to temp file")
-		return err
+		return nil, err
 	}
 
 	mail.Attach(tmpfile.Name())
 
-	return nil
+	return tmpfile, nil
 }
